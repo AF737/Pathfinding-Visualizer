@@ -4,8 +4,6 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    background-color: white;
-    border: 1px solid black;
 }
 
 div#board {
@@ -15,20 +13,20 @@ div#board {
 
 div.visited {
     background-color: blue;
+    border: 1px solid black;
 }
 
 div.start {
     background-color: red;
+    border: 1px solid black;
 }
 
 div.finish {
     background-color: green;
+    border: 1px solid black;
 }
 
 div.unvisited {
     background-color: white;
-}
-
-div#board {
-    margin-left: 100px;
+    border: 1px solid black;
 }
