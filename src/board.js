@@ -7,5 +7,7 @@ export default class Board {
         this.nodesMatrix = [];
         this.visitedNodes = [];
         this.shortestPath = [];
+        this.mouseIsPressed = false;
+        this.pressedKey = '';
     }
 }

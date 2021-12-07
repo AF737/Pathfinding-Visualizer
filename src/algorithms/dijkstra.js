@@ -1,6 +1,6 @@
 'use strict';
 
-export {dijkstra};
+export {dijkstra, shortestPath};
 
 function dijkstra(grid, startNode, finishNode) {
     const visitedNodes = [];
@@ -41,9 +41,9 @@ function sortNodesByDistance(unvisitedNodes) {
 function updateUnvisitedNeighbors(grid, node) {
     const unvisitedNeighbors = getUnvisitedNeighbors(grid, node);
 
-    for (let i = 0; i < unvisitedNeighbors.length; i++) {
-        unvisitedNeighbors[i].distance = node.distance + 1;
-        unvisitedNeighbors[i].prevNode = node;
+    for (const neighbor of unvisitedNeighbors) {
+        neighbor.distance = node.distance + 1;
+        neighbor.prevNode = node;
     }
 }
 
@@ -68,5 +68,22 @@ function getUnvisitedNeighbors(grid, node) {
         neighbors.push(grid.nodesMatrix[row][col + 1]);
     }
 
-    return neighbors;
+    /* Only return the neighbors that haven't been visited yet */
+    return neighbors.filter(checkUnvisited);
+}
+
+function checkUnvisited(neighbor) {
+    return neighbor.isVisited === false;
+}
+
+function shortestPath(finishNode) {
+    console.log(finishNode);
+    let currentNode = finishNode;
+    const shortestPath = [];
+    while (currentNode !== null) {
+        shortestPath.unshift(currentNode);
+        currentNode = currentNode.prevNode;
+    }
+    console.log(shortestPath);
+    return shortestPath;
 }

@@ -11,8 +11,8 @@ div#board {
     grid-gap: 0;
 }
 
-div.visited {
-    background-color: blue;
+div.unvisited {
+    background-color: white;
     border: 1px solid black;
 }
 
@@ -26,7 +26,22 @@ div.finish {
     border: 1px solid black;
 }
 
-div.unvisited {
-    background-color: white;
+div.visited {
+    background-color: blue;
+    border: 1px solid black;
+}
+
+div.shortestPath {
+    background-color: pink;
+    border: 1px solid black;
+}
+
+div.wall {
+    background-color: orange;
+    border: 1px solid black;
+}
+
+div.weight {
+    background-color: purple;
     border: 1px solid black;
 }

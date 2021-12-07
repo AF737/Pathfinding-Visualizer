@@ -2,7 +2,7 @@
 
 import Node from './node.js';
 import Board from './board.js';
-import {dijkstra} from './algorithms/dijkstra.js';
+import {dijkstra, shortestPath} from './algorithms/dijkstra.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     var dijkstraButton = document.getElementById('dijkstra');
@@ -13,26 +13,47 @@ document.addEventListener('DOMContentLoaded', function() {
     /* TODO:
        - Clean up code
        - Better animation when a node is visited
-       - Animate shortest path when node is found
-       - Get shortest path by backtracking from finish to start */
+       - Decide if className should stay or be replaced with isStart, isFinish...
+        because both do the same thing
+       - Take walls into account
+       - Implement weights (later on different types of weight) */
+
+    document.addEventListener('keydown', function(ev) {
+        if (ev.key === 'w') {
+            gridBoard.pressedKey = ev.key;
+        }
+    });
+
+    document.addEventListener('keyup', function(ev) {
+        gridBoard.pressedKey = '';
+    });
 
     dijkstraButton.addEventListener('click', function() {
         let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
 
         const visitedNodes = dijkstra(gridBoard, startNode, finishNode);
+        const shortestP = shortestPath(finishNode);
         //console.log(visitedNodes);
-        animateDijkstra(visitedNodes);
+        animateDijkstra(visitedNodes, shortestP);
     });
 
-    function animateDijkstra(visitedNodes) {
+    function animateDijkstra(visitedNodes, shortestPath) {
         for (let i = 0; i < visitedNodes.length; i++) {
             setTimeout(function() {
                 const currentNode = visitedNodes[i];
-                console.log(currentNode);
+                //console.log(currentNode);
                 document.getElementById(`node-${currentNode.row}-${currentNode.column}`)
                     .className = 'visited';
             }, i * ANIMATION_SPEED);
+        }
+
+        for (let i = 0; i < shortestPath.length; i++) {
+            setTimeout(function() {
+                const currentNode = shortestPath[i];
+                document.getElementById(`node-${currentNode.row}-${currentNode.column}`)
+                    .className = 'shortestPath';
+            }, (visitedNodes.length + i) * ANIMATION_SPEED);
         }
     }
 
@@ -79,20 +100,24 @@ document.addEventListener('DOMContentLoaded', function() {
             const newGridArr = [];
             for (let col = 0; col < numOfCols; col++) {
                 let newNodeIndex = `${row}-${col}`, newNodeClass, newNode;
+                let isStart = false;
+                let isFinish = false;
 
                 if (row === START_ROW && col === START_COL) {
                     newNodeClass = 'start';
+                    isStart = true;
                 }
 
                 else if (row === FINISH_ROW && col === FINISH_COL) {
                     newNodeClass = 'finish';
+                    isFinish = true;
                 }
 
                 else {
                     newNodeClass = 'unvisited';
                 }
 
-                newNode = new Node(newNodeIndex, row, col, newNodeClass);
+                newNode = new Node(newNodeIndex, row, col, newNodeClass, isStart, isFinish);
                 // gridBoard.nodesMatrix.push(newNode);
                 newGridArr.push(newNode);
 
@@ -104,6 +129,73 @@ document.addEventListener('DOMContentLoaded', function() {
                 /* CSS Grid Layout starts indexing at 1 instead of 0 */
                 newNodeDiv.style.gridRow = `${row + 1}`;
                 newNodeDiv.style.gridColumn = `${col + 1}`;
+
+                newNodeDiv.addEventListener('mousedown', function(ev) {
+                    ev.preventDefault();
+
+                    gridBoard.mouseIsPressed = true;
+
+                    if (gridBoard.pressedKey === '') {
+                        if (this.className !== 'start' && this.className !== 'finish') {
+                            this.className = 'wall';
+
+                            changeWallStatus(this.id, true);
+                        }
+
+                        else if (this.className === 'wall' || this.className === 'weight') {
+                            this.className = 'unvisited';
+
+                            changeWallStatus(this.id, false);
+                        }
+
+                        changeWeightOfNode(this.id, 0);
+                    }
+                    
+                    else if (gridBoard.pressedKey === 'w') {
+                        if (this.className !== 'start' && this.className !== 'finish') {
+                            this.className = 'weight';
+
+                            changeWeightOfNode(this.id, 1);
+                        }
+                    }
+                });
+            
+                newNodeDiv.addEventListener('mouseenter', function(ev) {
+                    ev.preventDefault();
+
+                    if (gridBoard.mouseIsPressed === true) {
+                        if (gridBoard.pressedKey === '') {
+                            if (this.className !== 'start' && this.className !== 'finish') {
+                                this.className = 'wall';
+
+                                changeWallStatus(this.id, true);
+                            }
+
+                            else if (this.className === 'wall') {
+                                this.className = 'unvisited';
+
+                                changeWallStatus(this.id, false);
+                            }
+
+                            changeWeightOfNode(this.id, 0);
+                        }
+
+                        else if (gridBoard.pressedKey === 'w') {
+                            if (this.className != 'start' && this.className !== 'finish') {
+                                this.className = 'weight';
+
+                                changeWeightOfNode(this.id, 1);
+                            }
+                        }
+                    }
+                });
+
+                newNodeDiv.addEventListener('mouseup', function(ev) {
+                    ev.preventDefault();
+
+                    gridBoard.mouseIsPressed = false;
+                });
+
                 // console.log(newNodeDiv);
                 board.appendChild(newNodeDiv);
                 
@@ -114,4 +206,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     createGrid();
+
+    function changeWeightOfNode(id, newWeight) {
+        const [descriptor, row, col] = id.split('-');
+
+        gridBoard.nodesMatrix[row][col].weight = newWeight;
+    }
+
+    function changeWallStatus(id, newWallStatus) {
+        const [descriptor, row, col] = id.split('-');
+
+        gridBoard.nodesMatrix[row][col].isWall = newWallStatus;
+    }
 }); 
