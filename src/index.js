@@ -2,13 +2,17 @@
 
 import Node from './node.js';
 import Board from './board.js';
-import {dijkstra, shortestPath} from './algorithms/dijkstra.js';
+import {dijkstra} from './algorithms/dijkstra.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     var dijkstraButton = document.getElementById('dijkstra');
     var gridBoard = new Board();
     var START_COL, START_ROW, FINISH_COL, FINISH_ROW;
     const ANIMATION_SPEED = 10;
+    const NODE_WEIGHT_NONE = 1;
+    const NODE_WEIGHT_LIGHT = 15;
+    const NODE_WEIGHT_NORMAL = 30;
+    const NODE_WEIGHT_HEAVY = 45;
 
     /* TODO:
        - Clean up code
@@ -19,23 +23,21 @@ document.addEventListener('DOMContentLoaded', function() {
        - Implement weights (later on different types of weight) */
 
     document.addEventListener('keydown', function(ev) {
-        if (ev.key === 'w') {
-            gridBoard.pressedKey = ev.key;
-        }
+        gridBoard.pressedKey = ev.key;
     });
 
     document.addEventListener('keyup', function(ev) {
-        gridBoard.pressedKey = '';
+        gridBoard.pressedKey = null;
     });
 
     dijkstraButton.addEventListener('click', function() {
         let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
 
-        const visitedNodes = dijkstra(gridBoard, startNode, finishNode);
-        const shortestP = shortestPath(finishNode);
+        const [visitedNodes, shortestPath] = dijkstra(gridBoard, startNode, finishNode);
+        //const shortestP = shortestPath(finishNode);
         //console.log(visitedNodes);
-        animateDijkstra(visitedNodes, shortestP);
+        animateDijkstra(visitedNodes, shortestPath);
     });
 
     function animateDijkstra(visitedNodes, shortestPath) {
@@ -48,12 +50,14 @@ document.addEventListener('DOMContentLoaded', function() {
             }, i * ANIMATION_SPEED);
         }
 
-        for (let i = 0; i < shortestPath.length; i++) {
-            setTimeout(function() {
-                const currentNode = shortestPath[i];
-                document.getElementById(`node-${currentNode.row}-${currentNode.column}`)
-                    .className = 'shortestPath';
-            }, (visitedNodes.length + i) * ANIMATION_SPEED);
+        if (shortestPath !== null) {
+            for (let i = 0; i < shortestPath.length; i++) {
+                setTimeout(function() {
+                    const currentNode = shortestPath[i];
+                    document.getElementById(`node-${currentNode.row}-${currentNode.column}`)
+                        .className = 'shortestPath';
+                }, (visitedNodes.length + i) * ANIMATION_SPEED);
+            }
         }
     }
 
@@ -131,63 +135,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 newNodeDiv.style.gridColumn = `${col + 1}`;
 
                 newNodeDiv.addEventListener('mousedown', function(ev) {
-                    ev.preventDefault();
-
-                    gridBoard.mouseIsPressed = true;
-
-                    if (gridBoard.pressedKey === '') {
-                        if (this.className !== 'start' && this.className !== 'finish') {
-                            this.className = 'wall';
-
-                            changeWallStatus(this.id, true);
-                        }
-
-                        else if (this.className === 'wall' || this.className === 'weight') {
-                            this.className = 'unvisited';
-
-                            changeWallStatus(this.id, false);
-                        }
-
-                        changeWeightOfNode(this.id, 0);
-                    }
-                    
-                    else if (gridBoard.pressedKey === 'w') {
-                        if (this.className !== 'start' && this.className !== 'finish') {
-                            this.className = 'weight';
-
-                            changeWeightOfNode(this.id, 1);
-                        }
-                    }
+                    handleMouseDownAndEnter(ev, this, 'mouseDown');
                 });
-            
+
                 newNodeDiv.addEventListener('mouseenter', function(ev) {
-                    ev.preventDefault();
-
-                    if (gridBoard.mouseIsPressed === true) {
-                        if (gridBoard.pressedKey === '') {
-                            if (this.className !== 'start' && this.className !== 'finish') {
-                                this.className = 'wall';
-
-                                changeWallStatus(this.id, true);
-                            }
-
-                            else if (this.className === 'wall') {
-                                this.className = 'unvisited';
-
-                                changeWallStatus(this.id, false);
-                            }
-
-                            changeWeightOfNode(this.id, 0);
-                        }
-
-                        else if (gridBoard.pressedKey === 'w') {
-                            if (this.className != 'start' && this.className !== 'finish') {
-                                this.className = 'weight';
-
-                                changeWeightOfNode(this.id, 1);
-                            }
-                        }
-                    }
+                    handleMouseDownAndEnter(ev, this, 'mouseEnter');
                 });
 
                 newNodeDiv.addEventListener('mouseup', function(ev) {
@@ -206,6 +158,97 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     createGrid();
+
+    function handleMouseDownAndEnter(ev, newThis, mouseEvent) {
+        ev.preventDefault();
+
+        if (mouseEvent === 'mouseDown') {
+            gridBoard.mouseIsPressed = true;
+        }
+
+        else if (mouseEvent === 'mouseEnter') {
+            if (gridBoard.mouseIsPressed === false) {
+                return;
+            }
+        }
+
+        if (gridBoard.pressedKey === null) {
+            switch(newThis.className) {
+                case 'unvisited':
+                case 'lightWeight':
+                case 'normalWeight':
+                case 'heavyWeight':
+                    newThis.className = 'wall';
+                    changeWallStatus(newThis.id, true);
+                    changeWeightOfNode(newThis.id, NODE_WEIGHT_NONE);
+
+                    break;
+
+                case 'wall':
+                    newThis.className = 'unvisited';
+                    changeWallStatus(newThis.id, false);
+
+                    break;
+            }
+        }
+
+        else if (gridBoard.pressedKey === 'q') {
+            switch(newThis.className) {
+                case 'unvisited':
+                case 'wall':
+                case 'normalWeight':
+                case 'heavyWeight':
+                    newThis.className = 'lightWeight';
+                    changeWeightOfNode(newThis.id, NODE_WEIGHT_LIGHT);
+
+                    break;
+
+                case 'lightWeight':
+                    newThis.className = 'unvisited';
+                    changeWeightOfNode(newThis.id, NODE_WEIGHT_NONE);
+
+                    break;
+            }
+        }
+
+        else if (gridBoard.pressedKey === 'w') {
+            switch(newThis.className) {
+                case 'unvisited':
+                case 'wall':
+                case 'lightWeight':
+                case 'heavyWeight':
+                    newThis.className = 'normalWeight';
+                    changeWeightOfNode(newThis.id, NODE_WEIGHT_NORMAL);
+
+                    break;
+                
+                case 'normalWeight':
+                    newThis.className = 'unvisited';
+                    changeWeightOfNode(newThis.id, NODE_WEIGHT_NONE);
+
+                    break;
+            }
+        }
+
+        else if (gridBoard.pressedKey === 'e') {
+            switch(newThis.className) {
+                case 'unvisited':
+                case 'wall':
+                case 'lightWeight':
+                case 'normalWeight':
+                    newThis.className = 'heavyWeight';
+                    changeWeightOfNode(newThis.id, NODE_WEIGHT_HEAVY);
+
+                    break;
+
+                case 'heavyWeight':
+                    newThis.className = 'unvisited';
+                    changeWeightOfNode(newThis.id, NODE_WEIGHT_NONE);
+
+                    break;
+            }
+        }
+    }
 
     function changeWeightOfNode(id, newWeight) {
         const [descriptor, row, col] = id.split('-');

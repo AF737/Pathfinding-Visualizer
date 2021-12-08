@@ -8,6 +8,6 @@ export default class Board {
         this.visitedNodes = [];
         this.shortestPath = [];
         this.mouseIsPressed = false;
-        this.pressedKey = '';
+        this.pressedKey = null;
     }
 }

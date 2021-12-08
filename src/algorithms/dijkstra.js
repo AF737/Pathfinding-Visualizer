@@ -1,6 +1,6 @@
 'use strict';
 
-export {dijkstra, shortestPath};
+export {dijkstra};
 
 function dijkstra(grid, startNode, finishNode) {
     const visitedNodes = [];
@@ -10,11 +10,28 @@ function dijkstra(grid, startNode, finishNode) {
     while (unvisitedNodes.length > 0) {
         sortNodesByDistance(unvisitedNodes);
         const closestNode = unvisitedNodes.shift();
+
+        if (closestNode.isWall === true) {
+            continue;
+        }
+
+        if (closestNode.distance === Infinity) {
+            return [visitedNodes, null];
+        }
+
         closestNode.isVisited = true;
         visitedNodes.push(closestNode);
 
         if (closestNode === finishNode) {
-            return visitedNodes;
+            let currentNode = finishNode;
+            const shortestPath = [];
+            
+            while (currentNode !== null) {
+                shortestPath.unshift(currentNode);
+                currentNode = currentNode.prevNode;
+            }
+
+            return [visitedNodes, shortestPath];
         }
 
         updateUnvisitedNeighbors(grid, closestNode);
@@ -42,7 +59,7 @@ function updateUnvisitedNeighbors(grid, node) {
     const unvisitedNeighbors = getUnvisitedNeighbors(grid, node);
 
     for (const neighbor of unvisitedNeighbors) {
-        neighbor.distance = node.distance + 1;
+        neighbor.distance = node.distance + neighbor.weight;
         neighbor.prevNode = node;
     }
 }
@@ -76,14 +93,12 @@ function checkUnvisited(neighbor) {
     return neighbor.isVisited === false;
 }
 
-function shortestPath(finishNode) {
-    console.log(finishNode);
+/*function shortestPath(finishNode) {
     let currentNode = finishNode;
     const shortestPath = [];
     while (currentNode !== null) {
         shortestPath.unshift(currentNode);
         currentNode = currentNode.prevNode;
     }
-    console.log(shortestPath);
     return shortestPath;
-}
+}*/

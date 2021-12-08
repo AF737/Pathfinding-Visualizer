@@ -41,7 +41,17 @@ div.wall {
     border: 1px solid black;
 }
 
-div.weight {
+div.lightWeight {
     background-color: purple;
+    border: 1px solid black;
+}
+
+div.normalWeight {
+    background-color: cyan;
+    border: 1px solid black;
+}
+
+div.heavyWeight {
+    background-color: lime;
     border: 1px solid black;
 }
