@@ -2,6 +2,8 @@
 
 export {astar2};
 
+// https://briangrinstead.com/blog/astar-search-algorithm-in-javascript/
+
 function astar2(grid, startNode, finishNode) {
     const closedList = [];
     startNode.distance = 0;
