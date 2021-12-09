@@ -3,6 +3,7 @@
 import Node from './node.js';
 import Board from './board.js';
 import {dijkstra} from './algorithms/dijkstra.js';
+import {astar} from './algorithms/astar.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     var dijkstraButton = document.getElementById('dijkstra');
@@ -13,14 +14,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const NODE_WEIGHT_LIGHT = 15;
     const NODE_WEIGHT_NORMAL = 30;
     const NODE_WEIGHT_HEAVY = 45;
+    var aStarButton = document.getElementById('astar');
 
     /* TODO:
        - Clean up code
-       - Better animation when a node is visited
        - Decide if className should stay or be replaced with isStart, isFinish...
-        because both do the same thing
-       - Take walls into account
-       - Implement weights (later on different types of weight) */
+        because both do the same thing */
 
     document.addEventListener('keydown', function(ev) {
         gridBoard.pressedKey = ev.key;
@@ -37,10 +36,18 @@ document.addEventListener('DOMContentLoaded', function() {
         const [visitedNodes, shortestPath] = dijkstra(gridBoard, startNode, finishNode);
         //const shortestP = shortestPath(finishNode);
         //console.log(visitedNodes);
-        animateDijkstra(visitedNodes, shortestPath);
+        animateAlgorithm(visitedNodes, shortestPath);
     });
 
-    function animateDijkstra(visitedNodes, shortestPath) {
+    aStarButton.addEventListener('click', function() {
+        let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
+        let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
+
+        const [visitedNodes, shortestPath] = astar(gridBoard, startNode, finishNode);
+        animateAlgorithm(visitedNodes, shortestPath);
+    });
+
+    function animateAlgorithm(visitedNodes, shortestPath) {
         for (let i = 0; i < visitedNodes.length; i++) {
             setTimeout(function() {
                 const currentNode = visitedNodes[i];
@@ -159,91 +166,90 @@ document.addEventListener('DOMContentLoaded', function() {
 
     createGrid();
 
-    function handleMouseDownAndEnter(ev, newThis, mouseEvent) {
+    function handleMouseDownAndEnter(ev, actualThis, mouseEvent) {
         ev.preventDefault();
 
         if (mouseEvent === 'mouseDown') {
             gridBoard.mouseIsPressed = true;
         }
 
-        else if (mouseEvent === 'mouseEnter') {
-            if (gridBoard.mouseIsPressed === false) {
+        else if (gridBoard.mouseIsPressed === false && 
+            mouseEvent === 'mouseEnter') {
                 return;
-            }
         }
 
         if (gridBoard.pressedKey === null) {
-            switch(newThis.className) {
+            switch(actualThis.className) {
                 case 'unvisited':
                 case 'lightWeight':
                 case 'normalWeight':
                 case 'heavyWeight':
-                    newThis.className = 'wall';
-                    changeWallStatus(newThis.id, true);
-                    changeWeightOfNode(newThis.id, NODE_WEIGHT_NONE);
+                    actualThis.className = 'wall';
+                    changeWallStatus(actualThis.id, true);
+                    changeWeightOfNode(actualThis.id, NODE_WEIGHT_NONE);
 
                     break;
 
                 case 'wall':
-                    newThis.className = 'unvisited';
-                    changeWallStatus(newThis.id, false);
+                    actualThis.className = 'unvisited';
+                    changeWallStatus(actualThis.id, false);
 
                     break;
             }
         }
 
         else if (gridBoard.pressedKey === 'q') {
-            switch(newThis.className) {
+            switch(actualThis.className) {
                 case 'unvisited':
                 case 'wall':
                 case 'normalWeight':
                 case 'heavyWeight':
-                    newThis.className = 'lightWeight';
-                    changeWeightOfNode(newThis.id, NODE_WEIGHT_LIGHT);
+                    actualThis.className = 'lightWeight';
+                    changeWeightOfNode(actualThis.id, NODE_WEIGHT_LIGHT);
 
                     break;
 
                 case 'lightWeight':
-                    newThis.className = 'unvisited';
-                    changeWeightOfNode(newThis.id, NODE_WEIGHT_NONE);
+                    actualThis.className = 'unvisited';
+                    changeWeightOfNode(actualThis.id, NODE_WEIGHT_NONE);
 
                     break;
             }
         }
 
         else if (gridBoard.pressedKey === 'w') {
-            switch(newThis.className) {
+            switch(actualThis.className) {
                 case 'unvisited':
                 case 'wall':
                 case 'lightWeight':
                 case 'heavyWeight':
-                    newThis.className = 'normalWeight';
-                    changeWeightOfNode(newThis.id, NODE_WEIGHT_NORMAL);
+                    actualThis.className = 'normalWeight';
+                    changeWeightOfNode(actualThis.id, NODE_WEIGHT_NORMAL);
 
                     break;
                 
                 case 'normalWeight':
-                    newThis.className = 'unvisited';
-                    changeWeightOfNode(newThis.id, NODE_WEIGHT_NONE);
+                    actualThis.className = 'unvisited';
+                    changeWeightOfNode(actualThis.id, NODE_WEIGHT_NONE);
 
                     break;
             }
         }
 
         else if (gridBoard.pressedKey === 'e') {
-            switch(newThis.className) {
+            switch(actualThis.className) {
                 case 'unvisited':
                 case 'wall':
                 case 'lightWeight':
                 case 'normalWeight':
-                    newThis.className = 'heavyWeight';
-                    changeWeightOfNode(newThis.id, NODE_WEIGHT_HEAVY);
+                    actualThis.className = 'heavyWeight';
+                    changeWeightOfNode(actualThis.id, NODE_WEIGHT_HEAVY);
 
                     break;
 
                 case 'heavyWeight':
-                    newThis.className = 'unvisited';
-                    changeWeightOfNode(newThis.id, NODE_WEIGHT_NONE);
+                    actualThis.className = 'unvisited';
+                    changeWeightOfNode(actualThis.id, NODE_WEIGHT_NONE);
 
                     break;
             }
