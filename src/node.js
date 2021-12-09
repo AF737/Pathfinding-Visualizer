@@ -7,6 +7,7 @@ export default class Node {
         this.row = row;
         this.column = col;
         this.weight = 1;
+        this.heuristic = 0;
         this.isStart = start;
         this.isFinish = finish;
         this.isVisited = false;

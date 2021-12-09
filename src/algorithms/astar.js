@@ -11,6 +11,7 @@ function astar(grid, startNode, finishNode) {
         /*sortNodesByDistance(unvisitedNodes, finishNode);
         const closestNode = unvisitedNodes.shift();*/
         let closestNode = sortNodesByDistance(unvisitedNodes, finishNode);
+        //console.log(closestNode.distance);
 
         if (closestNode.isWall === true) {
             continue;
@@ -82,10 +83,10 @@ function updateUnvisitedNeighbors(grid, node, finishNode) {
 
     for (const neighbor of unvisitedNeighbors) {
         const heuristicDistance = getHeuristicDistance(neighbor, finishNode);
-        neighbor.distance = node.distance + neighbor.weight * heuristicDistance;
+        neighbor.distance = node.distance + neighbor.weight + heuristicDistance;
         //neighbor.distance = neighbor.weight + heuristicDistance;
         neighbor.prevNode = node;
-        console.log(neighbor);
+        //console.log(neighbor);
     }
 }
 
@@ -111,7 +112,7 @@ function getUnvisitedNeighbors(grid, node) {
     }
 
     /* Only return the neighbors that haven't been visited yet */
-    return neighbors.filter(checkUnvisited);
+    return neighbors;
 }
 
 function checkUnvisited(neighbor) {

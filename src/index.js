@@ -4,6 +4,7 @@ import Node from './node.js';
 import Board from './board.js';
 import {dijkstra} from './algorithms/dijkstra.js';
 import {astar} from './algorithms/astar.js';
+import {astar2} from './algorithms/astar2.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     var dijkstraButton = document.getElementById('dijkstra');
@@ -43,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
 
-        const [visitedNodes, shortestPath] = astar(gridBoard, startNode, finishNode);
+        const [visitedNodes, shortestPath] = astar2(gridBoard, startNode, finishNode);
         animateAlgorithm(visitedNodes, shortestPath);
     });
 
