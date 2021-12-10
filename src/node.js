@@ -7,12 +7,13 @@ export default class Node {
         this.row = row;
         this.column = col;
         this.weight = 1;
-        this.heuristic = 0;
         this.isStart = start;
         this.isFinish = finish;
         this.isVisited = false;
         this.isWall = false;
-        this.distance = Infinity;
+        this.distanceFromStart = Infinity;
+        this.heuristicDistance = Infinity;
+        this.totalDistance = Infinity;
         this.prevNode = null;
     }
 }

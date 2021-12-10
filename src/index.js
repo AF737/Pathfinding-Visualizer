@@ -4,7 +4,7 @@ import Node from './node.js';
 import Board from './board.js';
 import {dijkstra} from './algorithms/dijkstra.js';
 import {astar} from './algorithms/astar.js';
-import {astar2} from './algorithms/astar2.js';
+import {greedyBFS} from './algorithms/greedyBFS.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     var dijkstraButton = document.getElementById('dijkstra');
@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const NODE_WEIGHT_NORMAL = 30;
     const NODE_WEIGHT_HEAVY = 45;
     var aStarButton = document.getElementById('astar');
+    var greedyBFSButton = document.getElementById('greedyBFS');
 
     /* TODO:
        - Clean up code
@@ -44,9 +45,17 @@ document.addEventListener('DOMContentLoaded', function() {
         let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
 
-        const [visitedNodes, shortestPath] = astar2(gridBoard, startNode, finishNode);
+        const [visitedNodes, shortestPath] = astar(gridBoard, startNode, finishNode);
         animateAlgorithm(visitedNodes, shortestPath);
     });
+
+    greedyBFSButton.addEventListener('click', function() {
+        let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
+        let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
+
+        const [visitedNodes, shortestPath] = greedyBFS(gridBoard, startNode, finishNode);
+        animateAlgorithm(visitedNodes, shortestPath);
+    })
 
     function animateAlgorithm(visitedNodes, shortestPath) {
         for (let i = 0; i < visitedNodes.length; i++) {
