@@ -16,5 +16,6 @@ export default class Node {
         this.heuristicDistance = Infinity;
         this.totalDistance = Infinity;
         this.prevNode = null;
+        this.prevNodeFromFinish = null;
     }
 }

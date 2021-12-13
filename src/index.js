@@ -3,10 +3,11 @@
 import Node from './node.js';
 import Board from './board.js';
 import {dijkstra} from './algorithms/dijkstra.js';
-import {astar} from './algorithms/astar.js';
+import {aStar} from './algorithms/aStar.js';
 import {greedyBFS} from './algorithms/greedyBFS.js';
 import {breadthFirstSearch} from './algorithms/breadthFirstSearch.js';
 import {bidirectionalDijkstra} from './algorithms/bidirectionalDijkstra.js';
+import {bidirectionalAStar} from './algorithms/bidirectionalAStar.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     var dijkstraButton = document.getElementById('dijkstra');
@@ -21,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var greedyBFSButton = document.getElementById('greedyBFS');
     var breadthFirstSearchButton = document.getElementById('breadthFirstSearch');
     var bidirectionalDijkstraButton = document.getElementById('bidirectionalDijkstra');
+    var bidirectionalAStarButton = document.getElementById('bidirectionalAStar');
 
     /* TODO:
        - Clean up code
@@ -49,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
 
-        const [visitedNodes, shortestPath] = astar(gridBoard, startNode, finishNode);
+        const [visitedNodes, shortestPath] = aStar(gridBoard, startNode, finishNode);
         animateAlgorithm(visitedNodes, null, shortestPath);
     });
 
@@ -88,6 +90,16 @@ document.addEventListener('DOMContentLoaded', function() {
             animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortestPath);
     });
 
+    bidirectionalAStarButton.addEventListener('click', function() {
+        let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
+        let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
+
+        const [visitedNodesFromStart, visitedNodesFromFinish, shortestPath] =
+            bidirectionalAStar(gridBoard, startNode, finishNode);
+
+            animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortestPath);
+    });
+
     function animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortestPath) {
         for (let i = 0; i < visitedNodesFromStart.length; i++) {
             setTimeout(function() {
@@ -115,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const currentNode = shortestPath[i];
                     document.getElementById(`node-${currentNode.row}-${currentNode.column}`)
                         .className = 'shortestPath';
-                }, (visitedNodes.length + i) * ANIMATION_SPEED);
+                }, (visitedNodesFromStart.length + i) * ANIMATION_SPEED);
             }
         }
     }

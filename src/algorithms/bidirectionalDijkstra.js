@@ -3,7 +3,11 @@
 export {bidirectionalDijkstra};
 
 function bidirectionalDijkstra(grid, startNode, finishNode) {
+    /* Contains all the nodes that have been visited starting with the
+        start node */
     const visitedNodesFromStart = [];
+    /* Contains all the nodes that have been visited starting with the
+        finish node */
     const visitedNodesFromFinish = [];
     startNode.distanceFromStart = 0;
     finishNode.distanceFromFinish = 0;
@@ -17,14 +21,20 @@ function bidirectionalDijkstra(grid, startNode, finishNode) {
         let closestNodeFromStart = unvisitedNodesFromStart.shift();
         let closestNodeFromFinish = unvisitedNodesFromFinish.shift();
         
-        while (closestNodeFromStart.isWall === true) {
+        /* We can't use continue because then we would lose the value of
+            closestNodeFromFinish as it's removed from the array */
+        while (closestNodeFromStart.isWall === true
+                && unvisitedNodesFromStart.length > 0) {
             closestNodeFromStart = unvisitedNodesFromStart.shift();
         }
 
-        while (closestNodeFromFinish.isWall === true) {
+        while (closestNodeFromFinish.isWall === true
+                && unvisitedNodesFromFinish.length > 0) {
             closestNodeFromFinish = unvisitedNodesFromFinish.shift();
         }
 
+        /* If either the start or finish node is unreachable then there's no
+            point in continuing the algorithm */
         if (closestNodeFromStart.distanceFromStart === Infinity
             || closestNodeFromFinish.distanceFromFinish === Infinity) {
                 return [visitedNodesFromStart, visitedNodesFromFinish, null];
@@ -35,29 +45,25 @@ function bidirectionalDijkstra(grid, startNode, finishNode) {
         closestNodeFromFinish.isVisited = true;
         visitedNodesFromFinish.push(closestNodeFromFinish);
 
-        for (const elem of visitedNodesFromStart) {
-            if (elem === closestNodeFromFinish) {
-                let currentNode = closestNodeFromStart;
-                const shortestPath = [];
+        /* If the node that's being visited from the finish node has already 
+            been visited by the dijkstra algorithm from the start node then
+            there's a way from this node to both the start and finish node */
+        if (visitedNodesFromStart.includes(closestNodeFromFinish)) {
+            const shortestPath = getShortestPath(closestNodeFromFinish);
 
-                while (currentNode !== null) {
-                    shortestPath.unshift(closestNodeFromStart);
-                    currentNode = currentNode.prevNode;
-                }
-
-                currentNode = closestNodeFromFinish;
-
-                while (currentNode !== null) {
-                    shortestPath.push(currentNode);
-                    currentNode = currentNode.prevNode;
-                }
-
-                return [visitedNodesFromStart, visitedNodesFromFinish, shortestPath];
-            }
+            return [visitedNodesFromStart, visitedNodesFromFinish, shortestPath];
         }
 
-        updateUnvisitedNeighbors(grid, closestNodeFromStart);
-        updateUnvisitedNeighbors(grid, closestNodeFromFinish);
+        /* Same as above, but this time the node has already been visited by the
+            dijkstra algorithm starting from the finish node */
+        else if (visitedNodesFromFinish.includes(closestNodeFromStart)) {
+            const shortestPath = getShortestPath(closestNodeFromStart)
+
+            return [visitedNodesFromStart, visitedNodesFromFinish, shortestPath];
+        }
+
+        updateUnvisitedNeighbors(grid, closestNodeFromStart, 'start');
+        updateUnvisitedNeighbors(grid, closestNodeFromFinish, 'finish');
     }
 }
 
@@ -73,28 +79,36 @@ function getUnvisitedNodes(grid) {
     return unvisitedNodes;
 }
 
+/* Return the node closest to the start node */
 function sortNodesByDistanceFromStart(unvisitedNodesFromStart) {
     unvisitedNodesFromStart.sort((firstNode, secondNode) =>
         firstNode.distanceFromStart - secondNode.distanceFromStart);
 }
 
+/* Return the node closest to the finish node */
 function sortNodesByDistanceFromFinish(unvisitedNodesFromFinish) {
     unvisitedNodesFromFinish.sort((firstNode, secondNode) =>
         firstNode.distanceFromFinish - secondNode.distanceFromFinish);
 }
 
-function updateUnvisitedNeighbors(grid, node) {
+/* initNode describes the node that the current dijkstra algorithm originated 
+    from */
+function updateUnvisitedNeighbors(grid, node, initNode) {
     const neighbors = getUnvisitedNeighbors(grid, node);
 
     for (const neighbor of neighbors) {
-        if (node.distanceFromStart !== Infinity) {
+        if (initNode === 'start') {
             neighbor.distanceFromStart = node.distanceFromStart + neighbor.weight;
             neighbor.prevNode = node;
         }
 
-        else if (node.distanceFromFinish !== Infinity) {
+        /* A second prev node is needed because one of the two dijkstra's algorithms
+            would overwrite the prevNode parameter and we would therefore lose the
+            chain of nodes leading to the other initial node (i.e. either start node
+            or finish node would be unreachable) */
+        else if (initNode === 'finish') {
             neighbor.distanceFromFinish = node.distanceFromFinish + neighbor.weight;
-            neighbor.prevNode = node;
+            neighbor.prevNodeFromFinish = node;
         }
     }
 }
@@ -120,9 +134,35 @@ function getUnvisitedNeighbors(grid, node) {
         neighbors.push(grid.nodesMatrix[row][col + 1]);
     }
 
+    /* Only return the neighbors that haven't been visited yet */
     return neighbors.filter(checkUnvisited);
 }
 
 function checkUnvisited(neighbor) {
     return neighbor.isVisited === false;
+}
+
+function getShortestPath(startingNode) {
+    let currentNode = startingNode;
+    const shortestPath = [];
+
+    /* Backtrack from the node that both algorithms have in common to
+        the start node */
+    while (currentNode !== null) {
+        shortestPath.unshift(currentNode);
+        currentNode = currentNode.prevNode;
+    }
+
+    /* Start from the node previous to the connecting one or the connecting
+        node would be in the array twice */
+    currentNode = startingNode.prevNodeFromFinish;
+
+    /* Now start to backtrack from the node that connects both algorithms
+        to the finish node */
+    while (currentNode !== null) {
+        shortestPath.push(currentNode);
+        currentNode = currentNode.prevNodeFromFinish;
+    }
+
+    return shortestPath;
 }
