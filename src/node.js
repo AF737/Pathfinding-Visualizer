@@ -12,6 +12,7 @@ export default class Node {
         this.isVisited = false;
         this.isWall = false;
         this.distanceFromStart = Infinity;
+        this.distanceFromFinish = Infinity;
         this.heuristicDistance = Infinity;
         this.totalDistance = Infinity;
         this.prevNode = null;

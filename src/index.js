@@ -5,6 +5,8 @@ import Board from './board.js';
 import {dijkstra} from './algorithms/dijkstra.js';
 import {astar} from './algorithms/astar.js';
 import {greedyBFS} from './algorithms/greedyBFS.js';
+import {breadthFirstSearch} from './algorithms/breadthFirstSearch.js';
+import {bidirectionalDijkstra} from './algorithms/bidirectionalDijkstra.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     var dijkstraButton = document.getElementById('dijkstra');
@@ -17,6 +19,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const NODE_WEIGHT_HEAVY = 45;
     var aStarButton = document.getElementById('astar');
     var greedyBFSButton = document.getElementById('greedyBFS');
+    var breadthFirstSearchButton = document.getElementById('breadthFirstSearch');
+    var bidirectionalDijkstraButton = document.getElementById('bidirectionalDijkstra');
 
     /* TODO:
        - Clean up code
@@ -38,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const [visitedNodes, shortestPath] = dijkstra(gridBoard, startNode, finishNode);
         //const shortestP = shortestPath(finishNode);
         //console.log(visitedNodes);
-        animateAlgorithm(visitedNodes, shortestPath);
+        animateAlgorithm(visitedNodes, null, shortestPath);
     });
 
     aStarButton.addEventListener('click', function() {
@@ -46,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
 
         const [visitedNodes, shortestPath] = astar(gridBoard, startNode, finishNode);
-        animateAlgorithm(visitedNodes, shortestPath);
+        animateAlgorithm(visitedNodes, null, shortestPath);
     });
 
     greedyBFSButton.addEventListener('click', function() {
@@ -54,17 +58,55 @@ document.addEventListener('DOMContentLoaded', function() {
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
 
         const [visitedNodes, shortestPath] = greedyBFS(gridBoard, startNode, finishNode);
-        animateAlgorithm(visitedNodes, shortestPath);
-    })
+        animateAlgorithm(visitedNodes, null, shortestPath);
+    });
 
-    function animateAlgorithm(visitedNodes, shortestPath) {
-        for (let i = 0; i < visitedNodes.length; i++) {
+    breadthFirstSearchButton.addEventListener('click', function() {
+        let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
+        let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
+
+        for (let row = 0; row < gridBoard.rows; row++) {
+            for (let col = 0; col < gridBoard.columns; col++) {
+                if(gridBoard.nodesMatrix[row][col].weight !== NODE_WEIGHT_NONE) {
+                    changeWeightOfNode(`node-${row}-${col}`, NODE_WEIGHT_NONE);
+                    document.getElementById(`node-${row}-${col}`).className = 'unvisited';
+                }
+            }
+        }
+
+        const [visitedNodes, shortestPath] = breadthFirstSearch(gridBoard, startNode, finishNode);
+        animateAlgorithm(visitedNodes, null, shortestPath);
+    });
+
+    bidirectionalDijkstraButton.addEventListener('click', function() {
+        let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
+        let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
+
+        const [visitedNodesFromStart, visitedNodesFromFinish, shortestPath] =
+            bidirectionalDijkstra(gridBoard, startNode, finishNode);
+            
+            animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortestPath);
+    });
+
+    function animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortestPath) {
+        for (let i = 0; i < visitedNodesFromStart.length; i++) {
             setTimeout(function() {
-                const currentNode = visitedNodes[i];
+                const currentNode = visitedNodesFromStart[i];
                 //console.log(currentNode);
                 document.getElementById(`node-${currentNode.row}-${currentNode.column}`)
                     .className = 'visited';
             }, i * ANIMATION_SPEED);
+        }
+
+        if (visitedNodesFromFinish !== null) {
+            for (let i = 0; i < visitedNodesFromFinish.length; i++) {
+                setTimeout(function() {
+                    const currentNode = visitedNodesFromFinish[i];
+                    //console.log(currentNode);
+                    document.getElementById(`node-${currentNode.row}-${currentNode.column}`)
+                        .className = 'visited';
+                }, i * ANIMATION_SPEED);
+            }
         }
 
         if (shortestPath !== null) {
