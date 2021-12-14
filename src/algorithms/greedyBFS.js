@@ -16,27 +16,28 @@ function greedyBFS(grid, startNode, finishNode) {
             continue;
         }
 
-        if (closestNode.heuristicDistance === Infinity) {
-            return [visitedNodes, null];
-        }
-
         closestNode.isVisited = true;
         visitedNodes.push(closestNode);
 
         if (closestNode === finishNode) {
             let currentNode = finishNode;
-            const shortestPath = [];
+            const path = [];
 
             while (currentNode !== null) {
-                shortestPath.unshift(currentNode);
+                path.unshift(currentNode);
                 currentNode = currentNode.prevNode;
             }
 
-            return [visitedNodes, shortestPath];
+            return [visitedNodes, path];
         }
 
         updateUnvisitedNeighbors(grid, closestNode, finishNode, nodesToCheck);
     }
+
+    /* If we exited the while loop then the start and/or finish node is completely
+        surrounded by walls and thereby unreachable. Then there's no path to connect both
+        nodes so return null */
+    return [visitedNodes, null];
 }
 
 function sortNodesByDistance(nodesToCheck) {

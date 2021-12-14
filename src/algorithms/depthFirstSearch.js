@@ -5,6 +5,7 @@ export {depthFirstSearch};
 function depthFirstSearch(grid, startNode, finishNode) {
     const visitedNodes = [];
     const nodesToCheck = [];
+    startNode.distanceFromStart = 0;
     startNode.isVisited = true;
     visitedNodes.push(startNode);
     nodesToCheck.push(startNode);
@@ -21,15 +22,16 @@ function depthFirstSearch(grid, startNode, finishNode) {
         visitedNodes.push(currentNode);
 
         if (currentNode === finishNode) {
-            let currentNode = finishNode;
+            console.log('x');
+            let pathNode = finishNode;
             /* Just called path, because this algorithm doesn't
                 necessarily produce the shortest path from start
                 to finish */
             const path = [];
 
-            while (currentNode !== null) {
-                path.unshift(currentNode);
-                currentNode = currentNode.prevNode;
+            while (pathNode !== null) {
+                path.unshift(pathNode);
+                pathNode = pathNode.prevNode;
             }
 
             return [visitedNodes, path];
@@ -38,6 +40,11 @@ function depthFirstSearch(grid, startNode, finishNode) {
         /* Add the unvisited neighbors to the array */
         nodesToCheck.push.apply(nodesToCheck, updateUnvisitedNeighbors(grid, currentNode));
     }
+
+    /* If we exited the while loop then the start and/or finish node is completely
+        surrounded by walls and thereby unreachable. Then there's no path to connect both
+        nodes so return null */
+    return [visitedNodes, null];
 }
 
 function updateUnvisitedNeighbors(grid, node) {
@@ -47,6 +54,7 @@ function updateUnvisitedNeighbors(grid, node) {
         we found them from so that we can backtrack from the
         finish node to the start node for the path */
     for (const neighbor of unvisitedNeighbors) {
+        neighbor.distanceFromStart = node.distanceFromStart + neighbor.weight;
         neighbor.prevNode = node;
     }
 

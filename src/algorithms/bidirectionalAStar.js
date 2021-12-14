@@ -31,26 +31,19 @@ function bidirectionalAStar(grid, startNode, finishNode) {
             closestNodeFromFinish = openListFromFinish.shift();
         }
 
-        /* Terminate the algorithm if either the start or finish node
-            is completely surrounded by walls */
-        if (closestNodeFromStart.distanceFromStart === Infinity
-            || closestNodeFromFinish.distanceFromFinish === Infinity) {
-            return [closedListFromStart, closedListFromFinish, null];
-        }
-
         /* If the a node from both a-star algorithms is the same then
             both algorithms have crossed paths and we can calculate the
             shortest path from start to finish through this node */
         if (closedListFromStart.includes(closestNodeFromFinish)) {
-            const shortestPath = getShortestPath(closestNodeFromFinish);
+            const path = getPath(closestNodeFromFinish);
 
-            return [closedListFromStart, closedListFromFinish, shortestPath];
+            return [closedListFromStart, closedListFromFinish, path];
         }
 
         else if (closedListFromFinish.includes(closestNodeFromStart)) {
-            const shortestPath = getShortestPath(closestNodeFromStart);
+            const path = getPath(closestNodeFromStart);
 
-            return [closedListFromStart, closedListFromFinish, shortestPath];
+            return [closedListFromStart, closedListFromFinish, path];
         }
 
         updateNeighbors(grid, closestNodeFromStart, finishNode, openListFromStart,
@@ -58,6 +51,11 @@ function bidirectionalAStar(grid, startNode, finishNode) {
         updateNeighbors(grid, closestNodeFromFinish, startNode, openListFromFinish,
             closedListFromFinish, 'finish');
     }
+
+    /* If we exited the while loop then the start and/or finish node is completely
+        surrounded by walls and thereby unreachable. Then there's no path to connect both
+        nodes so return null */
+    return [closedListFromStart, closedListFromFinish, null];
 }
 
 function sortNodesByDistance(openList) {
@@ -150,14 +148,18 @@ function getHeuristicDistance(node, goalNode) {
     return (Math.abs(node.row - goalNode.row) + Math.abs(node.column - goalNode.column));
 }
 
-function getShortestPath(startingNode) {
+function getPath(startingNode) {
     let currentNode = startingNode;
-    const shortestPath = [];
+    /* It's called path instead of shortest path, because the path
+        that connects the start node with the common one and the
+        common one to the finish node doesn't have to be the
+        shortest path */
+    const path = [];
 
     /* Backtrack from the node that both algorithms have in common to
         the start node */
     while (currentNode !== null) {
-        shortestPath.unshift(currentNode);
+        path.unshift(currentNode);
         currentNode = currentNode.prevNode;
     }
     
@@ -168,9 +170,9 @@ function getShortestPath(startingNode) {
     /* Now start to backtrack from the node that connects both algorithms
         to the finish node */
     while (currentNode !== null) {
-        shortestPath.push(currentNode);
+        path.push(currentNode);
         currentNode = currentNode.prevNodeFromFinish;
     }
 
-    return shortestPath;
+    return path;
 }

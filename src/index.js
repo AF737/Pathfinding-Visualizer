@@ -61,8 +61,8 @@ document.addEventListener('DOMContentLoaded', function() {
         let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
 
-        const [visitedNodes, shortestPath] = greedyBFS(gridBoard, startNode, finishNode);
-        animateAlgorithm(visitedNodes, null, shortestPath);
+        const [visitedNodes, path] = greedyBFS(gridBoard, startNode, finishNode);
+        animateAlgorithm(visitedNodes, null, path);
     });
 
     breadthFirstSearchButton.addEventListener('click', function() {
@@ -86,25 +86,34 @@ document.addEventListener('DOMContentLoaded', function() {
         let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
 
-        const [visitedNodesFromStart, visitedNodesFromFinish, shortestPath] =
+        const [visitedNodesFromStart, visitedNodesFromFinish, path] =
             bidirectionalDijkstra(gridBoard, startNode, finishNode);
             
-            animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortestPath);
+            animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, path);
     });
 
     bidirectionalAStarButton.addEventListener('click', function() {
         let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
 
-        const [visitedNodesFromStart, visitedNodesFromFinish, shortestPath] =
+        const [visitedNodesFromStart, visitedNodesFromFinish, path] =
             bidirectionalAStar(gridBoard, startNode, finishNode);
 
-            animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortestPath);
+            animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, path);
     });
 
     depthFirstSearchButton.addEventListener('click', function() {
         let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
+
+        for (let row = 0; row < gridBoard.rows; row++) {
+            for (let col = 0; col < gridBoard.columns; col++) {
+                if(gridBoard.nodesMatrix[row][col].weight !== NODE_WEIGHT_NONE) {
+                    changeWeightOfNode(`node-${row}-${col}`, NODE_WEIGHT_NONE);
+                    document.getElementById(`node-${row}-${col}`).className = 'unvisited';
+                }
+            }
+        }
 
         const [visitedNodesFromStart, path] = depthFirstSearch(gridBoard, startNode, finishNode);
 

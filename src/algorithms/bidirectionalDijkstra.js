@@ -49,17 +49,17 @@ function bidirectionalDijkstra(grid, startNode, finishNode) {
             been visited by the dijkstra algorithm from the start node then
             there's a way from this node to both the start and finish node */
         if (visitedNodesFromStart.includes(closestNodeFromFinish)) {
-            const shortestPath = getShortestPath(closestNodeFromFinish);
+            const path = getPath(closestNodeFromFinish);
 
-            return [visitedNodesFromStart, visitedNodesFromFinish, shortestPath];
+            return [visitedNodesFromStart, visitedNodesFromFinish, path];
         }
 
         /* Same as above, but this time the node has already been visited by the
             dijkstra algorithm starting from the finish node */
         else if (visitedNodesFromFinish.includes(closestNodeFromStart)) {
-            const shortestPath = getShortestPath(closestNodeFromStart)
+            const path = getPath(closestNodeFromStart)
 
-            return [visitedNodesFromStart, visitedNodesFromFinish, shortestPath];
+            return [visitedNodesFromStart, visitedNodesFromFinish, path];
         }
 
         updateUnvisitedNeighbors(grid, closestNodeFromStart, 'start');
@@ -142,14 +142,18 @@ function checkUnvisited(neighbor) {
     return neighbor.isVisited === false;
 }
 
-function getShortestPath(startingNode) {
+function getPath(startingNode) {
     let currentNode = startingNode;
-    const shortestPath = [];
+    /* It's called path instead of shortest path, because the path
+        that connects the start node with the common one and the
+        common one to the finish node doesn't have to be the
+        shortest path */
+    const path = [];
 
     /* Backtrack from the node that both algorithms have in common to
         the start node */
     while (currentNode !== null) {
-        shortestPath.unshift(currentNode);
+        path.unshift(currentNode);
         currentNode = currentNode.prevNode;
     }
 
@@ -160,9 +164,9 @@ function getShortestPath(startingNode) {
     /* Now start to backtrack from the node that connects both algorithms
         to the finish node */
     while (currentNode !== null) {
-        shortestPath.push(currentNode);
+        path.push(currentNode);
         currentNode = currentNode.prevNodeFromFinish;
     }
 
-    return shortestPath;
+    return path;
 }
