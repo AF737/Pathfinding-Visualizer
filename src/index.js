@@ -106,9 +106,9 @@ document.addEventListener('DOMContentLoaded', function() {
         let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
 
-        const [visitedNodesFromStart, shortestPath] = depthFirstSearch(gridBoard, startNode, finishNode);
+        const [visitedNodesFromStart, path] = depthFirstSearch(gridBoard, startNode, finishNode);
 
-        animateAlgorithm(visitedNodesFromStart, null, shortestPath);
+        animateAlgorithm(visitedNodesFromStart, null, path);
     });
 
     function animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortestPath) {

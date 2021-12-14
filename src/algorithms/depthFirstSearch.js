@@ -10,29 +10,47 @@ function depthFirstSearch(grid, startNode, finishNode) {
     nodesToCheck.push(startNode);
 
     while (nodesToCheck.length > 0) {
-        const closestNode = nodesToCheck.pop();
+        /* Always check the last of the node the array */
+        const currentNode = nodesToCheck.pop();
 
-        if (closestNode.isWall === true) {
+        if (currentNode.isWall === true) {
             continue;
         }
         
-        closestNode.isVisited = true;
-        visitedNodes.push(closestNode);
+        currentNode.isVisited = true;
+        visitedNodes.push(currentNode);
 
-        if (closestNode === finishNode) {
+        if (currentNode === finishNode) {
             let currentNode = finishNode;
-            const shortestPath = [];
+            /* Just called path, because this algorithm doesn't
+                necessarily produce the shortest path from start
+                to finish */
+            const path = [];
 
             while (currentNode !== null) {
-                shortestPath.unshift(currentNode);
+                path.unshift(currentNode);
                 currentNode = currentNode.prevNode;
             }
 
-            return [visitedNodes, shortestPath];
+            return [visitedNodes, path];
         }
 
-        nodesToCheck.push(getUnvisitedNeighbors(grid, closestNode));
+        /* Add the unvisited neighbors to the array */
+        nodesToCheck.push.apply(nodesToCheck, updateUnvisitedNeighbors(grid, currentNode));
     }
+}
+
+function updateUnvisitedNeighbors(grid, node) {
+    const unvisitedNeighbors = getUnvisitedNeighbors(grid, node);
+
+    /* Set the previous node of all neighbors to the node that
+        we found them from so that we can backtrack from the
+        finish node to the start node for the path */
+    for (const neighbor of unvisitedNeighbors) {
+        neighbor.prevNode = node;
+    }
+
+    return unvisitedNeighbors;
 }
 
 function getUnvisitedNeighbors(grid, node) {
@@ -56,6 +74,7 @@ function getUnvisitedNeighbors(grid, node) {
         neighbors.push(grid.nodesMatrix[row][col + 1]);
     }
 
+    /* Only return the neighbors that haven't been visited yet */
     return neighbors.filter(checkUnvisited);
 }
 
