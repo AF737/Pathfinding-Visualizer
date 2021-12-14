@@ -8,6 +8,7 @@ import {greedyBFS} from './algorithms/greedyBFS.js';
 import {breadthFirstSearch} from './algorithms/breadthFirstSearch.js';
 import {bidirectionalDijkstra} from './algorithms/bidirectionalDijkstra.js';
 import {bidirectionalAStar} from './algorithms/bidirectionalAStar.js';
+import {depthFirstSearch} from './algorithms/depthFirstSearch.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     var dijkstraButton = document.getElementById('dijkstra');
@@ -23,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var breadthFirstSearchButton = document.getElementById('breadthFirstSearch');
     var bidirectionalDijkstraButton = document.getElementById('bidirectionalDijkstra');
     var bidirectionalAStarButton = document.getElementById('bidirectionalAStar');
+    var depthFirstSearchButton = document.getElementById('depthFirstSearch');
 
     /* TODO:
        - Clean up code
@@ -98,6 +100,15 @@ document.addEventListener('DOMContentLoaded', function() {
             bidirectionalAStar(gridBoard, startNode, finishNode);
 
             animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortestPath);
+    });
+
+    depthFirstSearchButton.addEventListener('click', function() {
+        let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
+        let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
+
+        const [visitedNodesFromStart, shortestPath] = depthFirstSearch(gridBoard, startNode, finishNode);
+
+        animateAlgorithm(visitedNodesFromStart, null, shortestPath);
     });
 
     function animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortestPath) {
