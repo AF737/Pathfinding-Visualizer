@@ -17,5 +17,6 @@ export default class Node {
         this.totalDistance = Infinity;
         this.prevNode = null;
         this.prevNodeFromFinish = null;
+        this.direction = null;
     }
 }

@@ -3,7 +3,9 @@
 /* https://web.archive.org/web/20140310022652/https://zerowidth.com/2013/05/05/jump-point-search-explained.html 
     http://users.cecs.anu.edu.au/~dharabor/data/papers/harabor-grastien-aaai11.pdf 
     https://www.gamedev.net/tutorials/programming/artificial-intelligence/jump-point-search-fast-a-pathfinding-for-uniform-cost-grids-r4220/ */
-function jumpPointSearch(grid, startNode, finishNode) {
+
+/* No weights */
+    function jumpPointSearch(grid, startNode, finishNode) {
     const closedList = [];
     startNode.distanceFromStart = 0;
     const openList = [];
@@ -42,6 +44,124 @@ function jumpPointSearch(grid, startNode, finishNode) {
 function sortNodesByDistance(openList) {
     openList.sort((firstNode, secondNode) =>
         firstNode.totalDistance - secondNode.totalDistance);
+}
+
+function horizontalSearch(grid, node, finishNode, direction) {
+    let currentNode = grid.nodesMatrix[node.row][node.column];
+    let currentRow = currentNode.row;
+    let currentCol = currentNode.column;
+
+    while (currentCol > 0 && currentCol < grid.columns) {
+        currentCol += direction;
+        currentNode = grid.nodesMatrix[currentRow][currentCol];
+        currentNode.distance += currentNode.weight;
+        currentNode.heuristicDistance = getHeuristicDistance(currentNode, finishNode);
+        currentNode.totalDistance = currentNode.distance +
+            currentNode.heuristicDistance;
+        currentNode.prevNode = node;
+
+        if (direction === 1) {
+            currentNode.direction = 'right';
+        }
+
+        else if (direction === -1){
+            currentNode.direction = 'left';
+        }
+
+        grid.nodesMatrix[currentRow][currentCol] = currentNode;
+
+        if (currentNode === finishNode) {
+            return finishNode;
+        }
+
+        let predecessorNode = grid.nodesMatrix[currentRow][currentCol + direction];
+        let predecessorRow = predecessorNode.row;
+        let predecessorCol = predecessorNode.column;
+        let nodesToCheck = [];
+
+        if (predecessorCol < 0 || predecessorCol > grid.columns) {
+            return null;
+        }
+
+        /* Above the current node is a wall */
+        if (grid.nodesMatrix[currentRow - 1][currentCol].isWall === true &&
+            grid.nodesMatrix[predecessorRow - 1][predecessorCol].isWall === false) {
+                nodesToCheck.push(currentNode);
+        }
+
+        /* Below the current node is a wall */
+        if (grid.nodesMatrix[currentRow + 1][currentCol].isWall === true &&
+            grid.nodesMatrix[predecessorRow + 1][predecessorCol].isWall === false) {
+                nodesToCheck.push(currentNode);
+        }
+
+        if (nodesToCheck.length > 0) {
+            return nodesToCheck;
+        }
+
+        else {
+            return null;
+        }
+    }
+}
+
+function verticalSearch(grid, node, finishNode, direction) {
+    let currentNode = node;
+    let currentRow = currentNode.row;
+    let currentCol = currentNode.column;
+
+    while (currentRow > 0 && currentRow < grid.rows) {
+        currentRow += direction;
+        currentNode = grid.nodesMatrix[currentRow][currentCol];
+        currentNode.distance += currentNode.weight;
+        currentNode.heuristicDistance = getHeuristicDistance(currentNode, finishNode);
+        currentNode.totalDistance = currentNode.distance + 
+            currentNode.heuristicDistance;
+        currentNode.prevNode = node;
+        
+        if (direction === 1) {
+            currentNode.direction = 'down';
+        }
+
+        else if (direction === -1) {
+            currentNode.direction = 'up';
+        }
+
+        grid.nodesMatrix[currentRow][currentCol] = currentNode;
+
+        if (currentNode === finishNode) {
+            return finishNode;
+        }
+
+        let predecessorNode = grid.nodesMatrix[currentRow + direction][currentCol];
+        let predecessorRow = predecessorNode.row;
+        let predecessorCol = predecessorNode.column;
+        let nodesToCheck = [];
+
+        if (grid.nodesMatrix[currentRow][currentCol - 1].isWall === true &&
+            grid.nodesMatrix[predecessorRow][predecessorCol - 1].isWall === false) {
+                nodesToCheck.push(currentNode);
+        }
+
+        if (grid.nodesMatrix[currentRow][currentCol + 1].isWall === true &&
+            grid.nodesMatrix[predecessorRow][predecessorCol + 1].isWall === false) {
+                nodesToCheck.push(currentNode);
+        }
+
+        if (nodesToCheck.length > 0) {
+            return nodesToCheck;
+        }
+
+        else {
+            return null;
+        }
+    }
+}
+
+/* Euclidean distance because we can move in eight directions */
+function getHeuristicDistance(node, finishNode) {
+    return Math.sqrt(Math.pow((node.row - finishNode.row), 2) +
+                    (Math.pow((node.column - finishNode.column), 2)));
 }
 
 function calculateJump(grid, node, finishNode, openList, closedList) {

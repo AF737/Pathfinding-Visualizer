@@ -22,7 +22,6 @@ function depthFirstSearch(grid, startNode, finishNode) {
         visitedNodes.push(currentNode);
 
         if (currentNode === finishNode) {
-            console.log('x');
             let pathNode = finishNode;
             /* Just called path, because this algorithm doesn't
                 necessarily produce the shortest path from start
