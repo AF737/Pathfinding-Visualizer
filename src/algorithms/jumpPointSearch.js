@@ -37,7 +37,8 @@
         }
 
         //updateNeighbors(grid, closestNode, finishNode, openList, closedList);
-        calculateJump(grid, closestNode, finishNode, openList, closedList);
+        //calculateJump(grid, closestNode, finishNode, openList, closedList);
+        identifySuccessors(grid, closestNode, startNode);
     }
 }
 
@@ -48,12 +49,10 @@ function sortNodesByDistance(openList) {
 
 /* Return an array with the successors instead */
 function identifySuccessors(grid, node, startNode) {
-    const successors = [];
+    const neighbors = [];
 
     if (node === startNode) {
-        successors = getNeighbors(grid, node);
-
-        return successors;
+        neighbors = getNeighbors(grid, node);
     }
 
     if (node.prevNode !== null) {
@@ -61,50 +60,172 @@ function identifySuccessors(grid, node, startNode) {
 
         /* Vertical movement */
         if (rowChange !== 0 && colChange === 0) {
-            successors = verticalMovement(grid, node);
-                
-            return successors;
+            neighbors = verticalJump(grid, node);
         }
 
         /* Horizontal movement */
         if (rowChange === 0 && colChange !== 0) {
-            successors = horizontalMovement(grid, node);
-
-            return successors;
+            neighbors = horizontalJump(grid, node);
         }
 
         /* Diagonal movement (i.e. up and left, up and right, down and left, down and right) */
         else if (rowChange !== 0 && colChange !== 0) {
             let tempArr = null;
-            tempArr = horizontalMovement(grid, node);
+            tempArr = horizontalJump(grid, node);
 
             if (tempArr !== null) {
-                successors = successors.concat(tempArr);
+                neighbors = neighbors.concat(tempArr);
             }
 
-            tempArr = verticalMovement(grid, node);
+            tempArr = null;
+            tempArr = verticalJump(grid, node);
 
             if (tempArr !== null) {
-                successors = successors.concat(tempArr);
+                neighbors = neighbors.concat(tempArr);
             }
 
             /* Node two diagonal moves from the initial node */
             const secondSuccessor = grid.nodesMatrix[node.row + (2 * rowChange)][node.column + (2 * colChange)];
            
             if (secondSuccessor.isWall === false) {
-                successors.push(secondSuccessor);
+                neighbors.push(secondSuccessor);
             }
-
-            return successors;
         }
     }
+}
+
+function identifySuccessors2(grid, node, startNode, finishNode) {
+    const successors = [];
+    const neighbors = getNeighbors(grid, node);
+    neighbors = pruneNeighbors(grid, node, neighbors);
+
+    for (const neighbor of neighbors) {
+        const newSuccessor = jump(grid, node, neighbor, startNode, finishNode);
+        successors.push(newSuccessor);
+    }
+
+    return successors;
+}
+
+function pruneNeighbors(grid, node, neighbors) {
+    const prunedNeighbors = [];
+
+    for (const neighbor of neighbors) {
+        if (neighbor.isWall === true) {
+            continue;
+        }
+
+        const [rowChange, colChange] = getDirection(neighbor, node);
+
+        /* We move either straight up or down */
+        if (rowChange !== 0 && colChange === 0) {
+            const handledNeighbors = handleVerticalNeighbors(grid, neighbor);
+            prunedNeighbors = prunedNeighbors.concat(handledNeighbors);
+        }
+
+        /* We move either straight left or right */
+        else if (rowChange === 0 && colChange !== 0) {
+            const handledNeighbors = handleHorizontalNeighbors(grid, neighbor);
+            prunedNeighbors = prunedNeighbors.concat(handledNeighbors);
+        }
+
+        /* We move diagonally */
+        else if (rowChange !== 0 && colChange !== 0) {
+            /* This variable prevents the node that's one step further in the current direction
+                to be added twice, because if there's a wall to the left or right of our current
+                node then we will add the node either above or below it, which can be the diagonal
+                node */
+            let diagonalNodeAdded = false;
+
+            /* If there's a wall directly right of the currently inspected neighbor */
+            if (grid.nodesMatrix[neighbor.row][neighbor.column + 1].isWall === true) {
+                /* Add node that's directly above or below the wall depending on wether we move
+                    diagonally up or down */
+                diagonalNodeAdded = true;
+                prunedNeighbors.push(grid.nodesMatrix[neighbor.row + rowChange][neighbor.column + 1]);
+            }
+
+            /* If there's a wall directly left of the currently inspected neighbor */
+            if (grid.nodesMatrix[neighbor.row][neighbor.column - 1].isWall === true) {
+                diagonalNodeAdded = true;
+                prunedNeighbors.push(grid.nodesMatrix[neighbor.row + rowChange][neighbor.column - 1]);
+            }
+            
+            /* Only add the node directly right of our current visited node if we are moving to the
+                right and if it isn't a wall */
+            if (grid.nodesMatrix[neighbor.row][neighbor.column + colChange].isWall === false) {
+                prunedNeighbors.push(grid.nodesMatrix[neighbor.row][neighbor.column + colChange]);
+            }
+
+            /* Only add the node directly above our current visited node if we are moving up
+                and if isn't a wall */
+            if (grid.nodesMatrix[neighbor.row + rowChange][neighbor.column].isWall === false) {
+                prunedNeighbors.push(grid.nodesMatix[neighbor.row + rowChange][neighbor.column]);
+            }
+
+            /* Add the node that's the next node if we take another step in the same direction that we
+                already did to get from the initial node to the neighbor, but only if it hasn't been added
+                before because there were no walls directly left or right of our current node */
+            if (diagonalNodeAdded === false) {
+                if (grid.nodesMatrix[neighbor.row + rowChange][neighbor.column + colChange].isWall === false) {
+                    prunedNeighbors.push(grid.nodesMatrix[neighbor.row + rowChange][neighbor.column + colChange]);
+                }
+            }
+        }
+    }
+
+    return prunedNeighbors;
+}
+
+function handleVerticalNeighbors(grid, neighbor) {
+    const handledNeighbors = [];
+
+    /* If there's a wall directly right to our currently inspected neighbor */
+    if (grid.nodesMatrix[neighbor.row][neighbor.column + 1].isWall === true) {
+        /* Add the element that's directly above (if we are moving up) or below
+            (if we are moving down) the wall */
+        handledNeighbors.push(grid.nodesMatrix[neighbor.row + rowChange][neighbor.column + 1]);
+    }
+
+    /* If there's a wall directly left to our currently inspected neighbor */
+    if (grid.nodesMatrix[neighbor.row][neighbor.column - 1].isWall === true) {
+        handledNeighbors.push(grid.nodesMatrix[neighbor.row + rowChange][neighbor.column - 1]);
+    }
+
+    /* Add the neighbor itself to the pruned neighbors for further inspection */
+    handledNeighbors.push(grid.nodesMatrix[neighbor.row][neighbor.column]);
+
+    return handledNeighbors;
+}
+
+function handleHorizontalNeighbors(grid, neighbor) {
+    const handledNeighbors = [];
+
+    /* If there's a wall directly above our currently inspected neighbor */
+    if (grid.nodesMatrix[neighbor.row - 1][neighbor.column].isWall === true) {
+        handledNeighbors.push(grid.nodesMatrix[neighbor.row - 1][neighbor.column + colChange]);
+    }
+
+    /* If there's a wall directly below our currently inspected neighbor */
+    if (grid.nodesMatrix[neighbor.row + 1][neighbor.column].isWall === true) {
+        handledNeighbors.push(grid.nodesMatrix[neighbor.row + 1][neighbor.column + colChange]);
+    }
+
+    handledNeighbors.push(grid.nodesMatrix[neighbor.row][neighbor.column]);
+
+    return handledNeighbors;
+}
+
+function getDistance(node, neighbor) {
+    return Math.sqrt(Math.pow((node.row - neighbor.row), 2) + Math.pow((node.column - neighbor.column), 2));
 }
 
 function getDirection(node, prevNode) {
     return [node.row - prevNode.row, node.column - prevNode.column];
 }
 
-function verticalMovement(grid, node) {
+function verticalJump(grid, node) {
+    const successors = [];
     const successorNode = grid.nodesMatrix[node.row + rowChange][node.column];
     const sucRow = successorNode.row;
     const sucCol = successorNode.column;
@@ -117,16 +238,19 @@ function verticalMovement(grid, node) {
         the node a row higher, because through our current node is the fastest way to reach
         that node starting from our parent */
     if (grid.nodesMatrix[sucRow][sucCol + 1].isWall === true) {
-        node.succesors.push(grid.nodesMatrix[sucRow + rowChange][sucCol + 1]);
+        successors.push(grid.nodesMatrix[sucRow + rowChange][sucCol + 1]);
     }
 
     /* Node directly left of the successor */
     if (grid.nodesMatrix[sucRow][sucCol - 1].isWall === true) {
-        node.succesors.push(grid.nodesMatrix[sucRow + rowChange][sucCol - 1]);
+        successors.push(grid.nodesMatrix[sucRow + rowChange][sucCol - 1]);
     }
+
+    return successors;
 }
 
-function horizontalMovement(grid, node) {
+function horizontalJump(grid, node) {
+    const successors = [];
     const successorNode = grid.nodesMatrix[node.row][node.column + colChange];
     const sucRow = successorNode.row;
     const sucCol = successorNode.column;
@@ -137,15 +261,17 @@ function horizontalMovement(grid, node) {
 
     /* Node directly above the successor */
     if (grid.nodesMatrix[sucRow + 1][sucCol].isWall === true) {
-        node.successors.push(grid.nodesMatrix[sucRow + 1][sucCol + colChange]);
+        successors.push(grid.nodesMatrix[sucRow + 1][sucCol + colChange]);
     }
     
     /* If the node directly below the successor is a wall then the node diagonal down
         is a successor (either down and left in the case of movement to the left (colChange
         is negative) or down and right in the case of movement to the right (colChange is positive)) */
     if (grid.nodesMatrix[sucRow - 1][sucCol].isWall === true) {
-        node.successors.push(grid.nodesMatrix[sucRow - 1][sucCol + colChange]);
+        successors.push(grid.nodesMatrix[sucRow - 1][sucCol + colChange]);
     }
+
+    return successors;
 }
 
 function horizontalSearch(grid, node, finishNode, direction) {
