@@ -9,6 +9,7 @@ import {breadthFirstSearch} from './algorithms/breadthFirstSearch.js';
 import {bidirectionalDijkstra} from './algorithms/bidirectionalDijkstra.js';
 import {bidirectionalAStar} from './algorithms/bidirectionalAStar.js';
 import {depthFirstSearch} from './algorithms/depthFirstSearch.js';
+import {jumpPointSearch2} from './algorithms/jumpPointSearch2.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     var dijkstraButton = document.getElementById('dijkstra');
@@ -25,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var bidirectionalDijkstraButton = document.getElementById('bidirectionalDijkstra');
     var bidirectionalAStarButton = document.getElementById('bidirectionalAStar');
     var depthFirstSearchButton = document.getElementById('depthFirstSearch');
+    var jumpPointSearchButton = document.getElementById('jumpPointSearch');
 
     /* TODO:
        - Clean up code
@@ -118,6 +120,24 @@ document.addEventListener('DOMContentLoaded', function() {
         const [visitedNodesFromStart, path] = depthFirstSearch(gridBoard, startNode, finishNode);
 
         animateAlgorithm(visitedNodesFromStart, null, path);
+    });
+
+    jumpPointSearchButton.addEventListener('click', function() {
+        let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
+        let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
+
+        for (let row = 0; row < gridBoard.rows; row++) {
+            for (let col = 0; col < gridBoard.columns; col++) {
+                if(gridBoard.nodesMatrix[row][col].weight !== NODE_WEIGHT_NONE) {
+                    changeWeightOfNode(`node-${row}-${col}`, NODE_WEIGHT_NONE);
+                    document.getElementById(`node-${row}-${col}`).className = 'unvisited';
+                }
+            }
+        }
+
+        const [visitedNodesFromStart, shortestPath] = jumpPointSearch2(gridBoard, startNode, finishNode);
+
+        animateAlgorithm(visitedNodesFromStart, null, shortestPath);
     });
 
     function animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortestPath) {
