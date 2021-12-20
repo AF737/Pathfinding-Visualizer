@@ -69,8 +69,8 @@ function updateNeighbors(grid, node, startNode, finishNode, openList, closedList
         neighbors = node;
     }
 
-    for (const neighbor of neighbors) {
-        if (neighbor.isWall === true) {
+    for (let i = 0; i < neighbors.length; i++) {
+        if (neighbors[i].isWall === true) {
             continue;
         }
 
@@ -80,22 +80,22 @@ function updateNeighbors(grid, node, startNode, finishNode, openList, closedList
         let rowChange, colChange;
 
         if (node === startNode) {
-            neighbor.isVisited = true;
-            openList.push(neighbor);
-            [rowChange, colChange] = getDirection(node, neighbor);
+            neighbors[i].isVisited = true;
+            openList.push(neighbors[i]);
+            [rowChange, colChange] = getDirection(node, neighbors[i]);
         }
 
         else {
-            [rowChange, colChange] = neighbor.direction;
+            [rowChange, colChange] = neighbors[i].direction;
         }
         //console.log(`${rowChange}, ${colChange}`);
 
         if (rowChange === 0 && colChange !== 0) {
             let newJumpNodes = [];
 
-            while (neighbor.column > 1 && neighbor.column < (grid.columns - 2)) {
+            while (neighbors[i].column > 1 && neighbors[i].column < (grid.columns - 2)) {
                 //console.log(newJumpNodes.length);
-                newJumpNodes = horizontalSearch(grid, neighbor, finishNode, colChange, openList);
+                newJumpNodes = horizontalSearch(grid, neighbors[i], finishNode, colChange, openList);
 
                 if (newJumpNodes === null) {
                     break;
@@ -104,7 +104,7 @@ function updateNeighbors(grid, node, startNode, finishNode, openList, closedList
                 jumpNodes = jumpNodes.concat(newJumpNodes);
                 //successors = successors.concat(newJumpNodes);
                 //console.log(`openList: ${openList.length}`);
-                neighbor.column += colChange;
+                neighbors[i].column += colChange;
                 //closedList.push(neighbor);
             }
 
@@ -114,8 +114,8 @@ function updateNeighbors(grid, node, startNode, finishNode, openList, closedList
         else if (rowChange !== 0 && colChange === 0) {
             let newJumpNodes = [];
 
-            while(neighbor.row > 1 && neighbor.row < (grid.rows - 2)) {
-                newJumpNodes = verticalSearch(grid, neighbor, finishNode, rowChange, openList);
+            while(neighbors[i].row > 1 && neighbors[i].row < (grid.rows - 2)) {
+                newJumpNodes = verticalSearch(grid, neighbors[i], finishNode, rowChange, openList);
                 
                 if (newJumpNodes === null) {
                     break;
@@ -123,16 +123,16 @@ function updateNeighbors(grid, node, startNode, finishNode, openList, closedList
                 
                 jumpNodes = jumpNodes.concat(newJumpNodes);
                 //successors = successors.concat(newJumpNodes);
-                neighbor.row += rowChange;
+                neighbors[i].row += rowChange;
             }
         }
 
         else if (rowChange !== 0 && colChange !== 0) {
             let newJumpNodes = [];
 
-            while(newJumpNodes.length === 0 && neighbor.row > 1 && neighbor.row < (grid.rows - 2) && neighbor.column > 1 &&
-                    neighbor.column < (grid.columns - 2)) {
-                newJumpNodes = diagonalSearch(grid, neighbor, finishNode, rowChange, colChange, openList);
+            while(neighbors[i].row > 1 && neighbors[i].row < (grid.rows - 2) && neighbors[i].column > 1 &&
+                    neighbors[i].column < (grid.columns - 2)) {
+                newJumpNodes = diagonalSearch(grid, neighbors[i], finishNode, rowChange, colChange, openList);
                 
                 if (newJumpNodes === null) {
                     break;
@@ -140,8 +140,8 @@ function updateNeighbors(grid, node, startNode, finishNode, openList, closedList
 
                 jumpNodes = jumpNodes.concat(newJumpNodes);
                 //successors = successors.concat(newJumpNodes);
-                neighbor.row += rowChange;
-                neighbor.column += colChange;
+                neighbors[i].row += rowChange;
+                neighbors[i].column += colChange;
             }
         }
 
