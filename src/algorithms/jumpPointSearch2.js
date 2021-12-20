@@ -5,16 +5,18 @@ export {jumpPointSearch2};
 function jumpPointSearch2(grid, startNode, finishNode) {
     const closedList = [];
     const openList = [];
-    const jumpNodes = [];
+    let jumpNodes = [];
     startNode.distanceFromStart = 0;
     openList.push(startNode);
     jumpNodes.push(startNode);
+    //console.log(jumpNodes.length);
 
     /*while (openList.length > 0) {
         sortNodesByDistance(openList);
         const closestNode = openList.shift();*/
     while (jumpNodes.length > 0) {
         sortNodesByDistance(jumpNodes);
+        //console.log(jumpNodes.length);
         const closestNode = jumpNodes.shift();
         closedList.push(closestNode);
 
@@ -38,7 +40,8 @@ function jumpPointSearch2(grid, startNode, finishNode) {
             return [openList, shortestPath];
         }
 
-        updateNeighbors(grid, closestNode, startNode, finishNode, openList, closedList, jumpNodes);
+        jumpNodes = jumpNodes.concat(updateNeighbors(grid, closestNode, startNode, finishNode, openList, closedList, jumpNodes));
+        //console.log(jumpNodes);
     }
 
     /* Just for testing purposes */
@@ -59,23 +62,26 @@ function sortNodesByDistance(openList) {
     Backtrack by returning the array of inverting the directions of the nodes until you reach
     the start node
     Done */
-function updateNeighbors(grid, node, startNode, finishNode, openList, closedList, jumpNodes) {
-    let neighbors = null;
+function updateNeighbors(grid, node, startNode, finishNode, openList, closedList) {
+    //console.log(node.distanceFromStart);
+    let startingPoints = [];
     let newJumpNodes = [];
 
     /* If we are at the start node then we don't prune any neighbors and explore all of
         them to find new jump nodes */
     if (node === startNode) {
-        neighbors = getNeighbors(grid, node);
+        startingPoints = startingPoints.concat(getNeighbors(grid, node));
     }
 
     /* If we are at a jump node then we only explore in the direction of that node */
     else {
-        neighbors = node;
+        startingPoints.push(node);
     }
 
-    for (let i = 0; i < neighbors.length; i++) {
-        if (neighbors[i].isWall === true) {
+    /* Endlosschleife!!! */
+    for (let i = 0; i < startingPoints.length; i++) {
+        console.log(startingPoints[i]);
+        if (startingPoints[i].isWall === true) {
             continue;
         }
 
@@ -85,29 +91,29 @@ function updateNeighbors(grid, node, startNode, finishNode, openList, closedList
         let rowChange, colChange;
 
         if (node === startNode) {
-            neighbors[i].isVisited = true;
-            neighbors[i].distanceFromStart = getDistance(startNode, neighbors[i]);
+            startingPoints[i].isVisited = true;
+            startingPoints[i].distanceFromStart = getDistance(startNode, startingPoints[i]);
             //jumpNodes.push(neighbors[i]);
-            [rowChange, colChange] = getDirection(node, neighbors[i]);
+            [rowChange, colChange] = getDirection(node, startingPoints[i]);
         }
 
         else {
-            [rowChange, colChange] = neighbors[i].direction;
+            [rowChange, colChange] = startingPoints[i].direction;
         }
         //console.log(`${rowChange}, ${colChange}`);
 
         if (rowChange === 0 && colChange !== 0) {
-            let newJumpNodes = [];
+            //let newJumpNodes = [];
 
             //while (neighbors[i].column > 1 && neighbors[i].column < (grid.columns - 2)) {
                 //console.log(newJumpNodes.length);
-                horizontalSearch(grid, neighbors[i], finishNode, colChange, openList, newJumpNodes);
+                newJumpNodes = newJumpNodes.concat(horizontalSearch(grid, startingPoints[i], finishNode, colChange, openList));
 
                 /*if (newJumpNodes === null) {
                     break;
                 }*/
-                console.log(newJumpNodes);
-                jumpNodes = jumpNodes.concat(newJumpNodes);
+                //console.log(newJumpNodes);
+                //jumpNodes = jumpNodes.concat(newJumpNodes);
                 //successors = successors.concat(newJumpNodes);
                 //console.log(`openList: ${openList.length}`);
                 //neighbors[i].column += colChange;
@@ -118,33 +124,33 @@ function updateNeighbors(grid, node, startNode, finishNode, openList, closedList
         }
 
         else if (rowChange !== 0 && colChange === 0) {
-            let newJumpNodes = [];
+            //let newJumpNodes = [];
 
             //while(neighbors[i].row > 1 && neighbors[i].row < (grid.rows - 2)) {
-                verticalSearch(grid, neighbors[i], finishNode, rowChange, openList, newJumpNodes);
+                newJumpNodes = newJumpNodes.concat(verticalSearch(grid, startingPoints[i], finishNode, rowChange, openList));
                 
                 /*if (newJumpNodes === null) {
                     break;
                 }*/
                 
-                jumpNodes = jumpNodes.concat(newJumpNodes);
+                //jumpNodes = jumpNodes.concat(newJumpNodes);
                 //successors = successors.concat(newJumpNodes);
                 //neighbors[i].row += rowChange;
             //}
         }
 
         else if (rowChange !== 0 && colChange !== 0) {
-            let newJumpNodes = [];
+            //let newJumpNodes = [];
 
             /*while(neighbors[i].row > 1 && neighbors[i].row < (grid.rows - 2) && neighbors[i].column > 1 &&
                     neighbors[i].column < (grid.columns - 2)) {*/
-                diagonalSearch(grid, neighbors[i], finishNode, rowChange, colChange, newJumpNodes);
+                newJumpNodes = newJumpNodes.concat(diagonalSearch(grid, startingPoints[i], finishNode, rowChange, colChange, openList));
                 
                 /*if (newJumpNodes === null) {
                     break;
                 }*/
 
-                jumpNodes = jumpNodes.concat(newJumpNodes);
+                //jumpNodes = jumpNodes.concat(newJumpNodes);
                 //successors = successors.concat(newJumpNodes);
                 /*neighbors[i].row += rowChange;
                 neighbors[i].column += colChange;
@@ -157,8 +163,9 @@ function updateNeighbors(grid, node, startNode, finishNode, openList, closedList
         
         console.log(successors);*/
     }
-    console.log(jumpNodes);
+    //console.log(newJumpNodes);
     //console.log(openList);
+    return newJumpNodes;
 }
 
 function getNeighbors(grid, node) {
@@ -210,8 +217,8 @@ function getDirection(prevNode, node) {
     return [node.row - prevNode.row, node.column - prevNode.column];
 }
 
-function horizontalSearch(grid, parentNode, finishNode, colChange, openList, newJumpNodes) {
-    //const newJumpNodes = [];
+function horizontalSearch(grid, parentNode, finishNode, colChange, openList) {
+    let newJumpNodes = [];
 
     if (openList.includes(parentNode) === false) {
         openList.push(parentNode);
@@ -220,13 +227,13 @@ function horizontalSearch(grid, parentNode, finishNode, colChange, openList, new
     /* If we are at the left or right edge of the grid */
     if (parentNode.column + colChange < 1 || 
         parentNode.column + colChange > (grid.columns - 2)) {
-        return;
+        return newJumpNodes;
     }
 
     const childNode = grid.nodesMatrix[parentNode.row][parentNode.column + colChange];
     
     if (childNode.isWall === true) {
-        return;
+        return newJumpNodes;
     }
 
     if (openList.includes(childNode) === false) {
@@ -236,11 +243,11 @@ function horizontalSearch(grid, parentNode, finishNode, colChange, openList, new
     childNode.isVisited = true;
     childNode.prevNode = parentNode;
     childNode.distanceFromStart = parentNode.distanceFromStart + getDistance(parentNode, childNode);
-    
+
     if (childNode === finishNode) {
         newJumpNodes.push(childNode);
 
-        return;
+        return newJumpNodes;
     }
 
     const childRow = childNode.row;
@@ -248,7 +255,7 @@ function horizontalSearch(grid, parentNode, finishNode, colChange, openList, new
 
     /* Check if the first node that we visited was the left or right edge of the grid */
     if ((childCol + colChange) < 0 || (childCol + colChange) > (grid.columns - 1)) {
-        return;
+        return newJumpNodes;
     }
 
     /* The second node from the parent node if we move in the same direction as we did
@@ -256,7 +263,7 @@ function horizontalSearch(grid, parentNode, finishNode, colChange, openList, new
     const nextNode = grid.nodesMatrix[childRow][childCol + colChange];
 
     if (nextNode.isWall === true) {
-        return;
+        return newJumpNodes;
     }
 
     nextNode.isVisited = true;
@@ -312,14 +319,14 @@ function horizontalSearch(grid, parentNode, finishNode, colChange, openList, new
     
     //return horizontalSearch(grid, childNode, finishNode, colChange);
     //return newJumpNodes;
-    horizontalSearch(grid, childNode, finishNode, colChange, openList, newJumpNodes);
+    return newJumpNodes = newJumpNodes.concat(horizontalSearch(grid, childNode, finishNode, colChange, openList));
 }
 
 function verticalSearch(grid, parentNode, finishNode, rowChange, openList) {
-    //const newJumpNodes = [];
+    let newJumpNodes = [];
 
     if ((parentNode.row + rowChange) < 1 || (parentNode.row + rowChange) > (grid.rows - 2)) {
-        return;
+        return newJumpNodes;
     }
 
     if (openList.includes(parentNode) === false) {
@@ -329,7 +336,7 @@ function verticalSearch(grid, parentNode, finishNode, rowChange, openList) {
     const childNode = grid.nodesMatrix[parentNode.row + rowChange][parentNode.column];
 
     if (childNode.isWall === true) {
-        return;
+        return newJumpNodes;
     }
 
     if (openList.includes(childNode) === false) {
@@ -343,20 +350,20 @@ function verticalSearch(grid, parentNode, finishNode, rowChange, openList) {
     if (childNode === finishNode) {
         newJumpNodes.push(childNode);
 
-        return;
+        return newJumpNodes;
     }
 
     const childRow = childNode.row;
     const childCol = childNode.column;
 
     if ((childRow + rowChange) < 0 || (childRow + rowChange) > (grid.rows - 1)) {
-        return;
+        return newJumpNodes;
     }
 
     const nextNode = grid.nodesMatrix[childRow + rowChange][childCol];
 
     if (nextNode.isWall === true) {
-        return;
+        return newJumpNodes;
     }
 
     nextNode.isVisited = true;
@@ -393,11 +400,11 @@ function verticalSearch(grid, parentNode, finishNode, rowChange, openList) {
 
     //return verticalSearch(grid, childNode, finishNode, rowChange);
     //return newJumpNodes;
-    verticalSearch(grid, childNode, finishNode, rowChange, openList, newJumpNodes);
+    return newJumpNodes = newJumpNodes.concat(verticalSearch(grid, childNode, finishNode, rowChange, openList));
 }
 
-function diagonalSearch(grid, parentNode, finishNode, rowChange, colChange, openList, newJumpNodes) {
-    //const newJumpNodes = [];
+function diagonalSearch(grid, parentNode, finishNode, rowChange, colChange, openList) {
+    let newJumpNodes = [];
     const parentRow = parentNode.row;
     const parentCol = parentNode.column;
 
@@ -407,13 +414,13 @@ function diagonalSearch(grid, parentNode, finishNode, rowChange, colChange, open
 
     if ((parentRow + rowChange) < 1 || (parentRow + rowChange) > (grid.rows - 2) ||
         (parentCol + colChange) < 1 || (parentCol + colChange) > (grid.columns - 2)) {
-        return;
+        return newJumpNodes;
     }
 
     const childNode = grid.nodesMatrix[parentRow + rowChange][parentCol + colChange];
 
     if (childNode.isWall === true) {
-        return;
+        return newJumpNodes;
     }
 
     if (openList.includes(childNode) === false) {
@@ -427,7 +434,7 @@ function diagonalSearch(grid, parentNode, finishNode, rowChange, colChange, open
     if (childNode === finishNode) {
         newJumpNodes.push(childNode);
         
-        return;
+        return newJumpNodes;
     }
 
     const childRow = childNode.row;
@@ -435,13 +442,13 @@ function diagonalSearch(grid, parentNode, finishNode, rowChange, colChange, open
 
     if ((childRow + rowChange) < 0 || (childRow + rowChange) > (grid.rows - 1) ||
         (childCol + colChange) < 0 || (childCol + colChange) > (grid.columns - 1)) {
-        return;
+        return newJumpNodes;
     }
 
     const nextNode = grid.nodesMatrix[childRow + rowChange][childCol + colChange];
 
     if (nextNode.isWall === true) {
-        return;
+        return newJumpNodes;
     }
 
     nextNode.isVisited = true;
@@ -538,7 +545,7 @@ function diagonalSearch(grid, parentNode, finishNode, rowChange, colChange, open
 
     //return diagonalSearch(grid, childNode, finishNode, rowChange, colChange);
     //return newJumpNodes;
-    diagonalSearch(grid, childNode, finishNode, rowChange, colChange, openList, newJumpNodes);
+    return newJumpNodes = newJumpNodes.concat(diagonalSearch(grid, childNode, finishNode, rowChange, colChange, openList));
 }
 
 function getDistance(parentNode, childNode) {
