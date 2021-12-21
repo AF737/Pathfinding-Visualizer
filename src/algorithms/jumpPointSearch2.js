@@ -14,7 +14,8 @@ function jumpPointSearch2(grid, startNode, finishNode) {
     /*while (openList.length > 0) {
         sortNodesByDistance(openList);
         const closestNode = openList.shift();*/
-    while (jumpNodes.length > 0) {
+    //while (jumpNodes.length > 0) {
+    for (let i = 0; i < 5; i++) {
         sortNodesByDistance(jumpNodes);
         //console.log(jumpNodes.length);
         const closestNode = jumpNodes.shift();
@@ -41,11 +42,11 @@ function jumpPointSearch2(grid, startNode, finishNode) {
         }
 
         jumpNodes = jumpNodes.concat(updateNeighbors(grid, closestNode, startNode, finishNode, openList, closedList, jumpNodes));
-        //console.log(jumpNodes);
+        console.log(jumpNodes);
     }
 
     /* Just for testing purposes */
-    return [closedList, null];
+    return [openList, null];
 }
 
 function sortNodesByDistance(openList) {
@@ -80,11 +81,11 @@ function updateNeighbors(grid, node, startNode, finishNode, openList, closedList
 
     /* Endlosschleife!!! */
     for (let i = 0; i < startingPoints.length; i++) {
-        console.log(startingPoints[i]);
         if (startingPoints[i].isWall === true) {
             continue;
         }
 
+        console.log(startingPoints[i]);
         //let successors = [];
 
         //neighbor.prevNode = node;
@@ -108,7 +109,7 @@ function updateNeighbors(grid, node, startNode, finishNode, openList, closedList
             //while (neighbors[i].column > 1 && neighbors[i].column < (grid.columns - 2)) {
                 //console.log(newJumpNodes.length);
                 newJumpNodes = newJumpNodes.concat(horizontalSearch(grid, startingPoints[i], finishNode, colChange, openList));
-
+                
                 /*if (newJumpNodes === null) {
                     break;
                 }*/
@@ -225,8 +226,8 @@ function horizontalSearch(grid, parentNode, finishNode, colChange, openList) {
     }
 
     /* If we are at the left or right edge of the grid */
-    if (parentNode.column + colChange < 1 || 
-        parentNode.column + colChange > (grid.columns - 2)) {
+    if ((parentNode.column + colChange) < 1 || 
+        (parentNode.column + colChange) > (grid.columns - 2)) {
         return newJumpNodes;
     }
 
@@ -319,6 +320,7 @@ function horizontalSearch(grid, parentNode, finishNode, colChange, openList) {
     
     //return horizontalSearch(grid, childNode, finishNode, colChange);
     //return newJumpNodes;
+    //console.log(newJumpNodes);
     return newJumpNodes = newJumpNodes.concat(horizontalSearch(grid, childNode, finishNode, colChange, openList));
 }
 
@@ -471,7 +473,7 @@ function diagonalSearch(grid, parentNode, finishNode, rowChange, colChange, open
     }
 
     if (grid.nodesMatrix[childRow][parentCol].isWall === true &&
-        grid.nodesMatrix[nextNode.column][parentCol].isWall === false) {
+        grid.nodesMatrix[nextNode.row][parentCol].isWall === false) {
         //childNode.direction = [-rowChange, colChange];
         let node = JSON.parse(JSON.stringify(childNode));
 
