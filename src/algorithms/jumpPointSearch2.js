@@ -14,12 +14,14 @@ function jumpPointSearch2(grid, startNode, finishNode) {
     /*while (openList.length > 0) {
         sortNodesByDistance(openList);
         const closestNode = openList.shift();*/
-    //while (jumpNodes.length > 0) {
-    for (let i = 0; i < 5; i++) {
+    while (jumpNodes.length > 0) {
+    //for (let i = 0; i < 15; i++) {
         sortNodesByDistance(jumpNodes);
         //console.log(jumpNodes.length);
         const closestNode = jumpNodes.shift();
         closedList.push(closestNode);
+        //console.log(closestNode);
+        //console.log(finishNode);
 
         if (closestNode.isWall === true) {
             continue;
@@ -29,20 +31,22 @@ function jumpPointSearch2(grid, startNode, finishNode) {
             return [openList, null];
         }
 
-        if (closestNode === finishNode) {
+        if (closestNode.id === finishNode.id) {
+            //console.log('x');
             let currentNode = finishNode;
             const shortestPath = [];
+            //console.log(finishNode);
 
             while (currentNode !== null) {
                 shortestPath.unshift(currentNode);
-                currentNode = currentNode.prevnode;
+                currentNode = currentNode.prevNode;
             }
 
             return [openList, shortestPath];
         }
 
         jumpNodes = jumpNodes.concat(updateNeighbors(grid, closestNode, startNode, finishNode, openList, closedList, jumpNodes));
-        console.log(jumpNodes);
+        //console.log(jumpNodes);
     }
 
     /* Just for testing purposes */
@@ -85,7 +89,7 @@ function updateNeighbors(grid, node, startNode, finishNode, openList, closedList
             continue;
         }
 
-        console.log(startingPoints[i]);
+        //console.log(startingPoints[i]);
         //let successors = [];
 
         //neighbor.prevNode = node;
@@ -220,7 +224,7 @@ function getDirection(prevNode, node) {
 
 function horizontalSearch(grid, parentNode, finishNode, colChange, openList) {
     let newJumpNodes = [];
-
+    
     if (openList.includes(parentNode) === false) {
         openList.push(parentNode);
     }
@@ -246,7 +250,8 @@ function horizontalSearch(grid, parentNode, finishNode, colChange, openList) {
     childNode.distanceFromStart = parentNode.distanceFromStart + getDistance(parentNode, childNode);
 
     if (childNode === finishNode) {
-        newJumpNodes.push(childNode);
+        const node = JSON.parse(JSON.stringify(childNode));
+        newJumpNodes.push(node);
 
         return newJumpNodes;
     }
@@ -268,6 +273,8 @@ function horizontalSearch(grid, parentNode, finishNode, colChange, openList) {
     }
 
     nextNode.isVisited = true;
+    nextNode.prevNode = childNode;
+    nextNode.distanceFromStart = parentNode.distanceFromStart + getDistance(childNode, nextNode);
 
     if (openList.includes(nextNode) === false) {
         openList.push(nextNode);
@@ -350,7 +357,8 @@ function verticalSearch(grid, parentNode, finishNode, rowChange, openList) {
     childNode.distanceFromStart = parentNode.distanceFromStart + getDistance(parentNode, childNode);
 
     if (childNode === finishNode) {
-        newJumpNodes.push(childNode);
+        const node = JSON.parse(JSON.stringify(childNode));
+        newJumpNodes.push(node);
 
         return newJumpNodes;
     }
@@ -369,6 +377,8 @@ function verticalSearch(grid, parentNode, finishNode, rowChange, openList) {
     }
 
     nextNode.isVisited = true;
+    nextNode.prevNode = childNode;
+    nextNode.distanceFromStart = parentNode.distanceFromStart + getDistance(childNode, nextNode);
 
     if (openList.includes(nextNode) === false) {
         openList.push(nextNode);
@@ -434,7 +444,8 @@ function diagonalSearch(grid, parentNode, finishNode, rowChange, colChange, open
     childNode.distanceFromStart = parentNode.distanceFromStart + getDistance(parentNode, childNode);
 
     if (childNode === finishNode) {
-        newJumpNodes.push(childNode);
+        const node = JSON.parse(JSON.stringify(childNode));
+        newJumpNodes.push(node);
         
         return newJumpNodes;
     }
@@ -454,10 +465,14 @@ function diagonalSearch(grid, parentNode, finishNode, rowChange, colChange, open
     }
 
     nextNode.isVisited = true;
+    nextNode.prevNode = childNode;
+    nextNode.distanceFromStart = parentNode.distanceFromStart + getDistance(childNode, nextNode);
 
-    if (openList.includes(nextNode) === false) {
+    //nextNode.isVisited = true;
+
+    /*if (openList.includes(nextNode) === false) {
         openList.push(nextNode);
-    }
+    }*/
 
     /* If there's a wall right directly left or right of our currently visited node, then
         check if the node above or below it is a wall. If it isn't then create a new jump
@@ -489,11 +504,12 @@ function diagonalSearch(grid, parentNode, finishNode, rowChange, colChange, open
             to the copy have no effect on childNode */
         let node = JSON.parse(JSON.stringify(childNode));
 
-        while (node.column + colChange > 1 && node.column + colChange < (grid.columns - 2)) {
-            const horizontalJumpNodes = horizontalSearch(grid, childNode, finishNode, colChange, openList);
+        //while (node.column + colChange > 1 && node.column + colChange < (grid.columns - 2)) {
+            const horizontalJumpNodes = horizontalSearch(grid, node, finishNode, colChange, openList);
             horDone = true;
-            
-            if (horizontalJumpNodes !== null && horizontalJumpNodes.length > 0) {
+            //console.log(horizontalJumpNodes);
+            // THIS HERE IS PROBABLY WRONG
+            if (horizontalJumpNodes.length > 0) {
                 const jumpNode = getNodeFromArray(horizontalJumpNodes, node, [0, colChange]);
         
                 for (let i = 0; i < horizontalJumpNodes.length; i++) {
@@ -502,16 +518,17 @@ function diagonalSearch(grid, parentNode, finishNode, rowChange, colChange, open
         
                 newJumpNodes.push(jumpNode);
             }
-            node.column += colChange;
-        }
+            //node.column += colChange;
+        //}
     }
     //console.log(`before verticalSearch: ${JSON.stringify(newJumpNodes)}`);
     if (newJumpNodes.length === 0) {
-        const verticalJumpNodes = verticalSearch(grid, childNode, finishNode, rowChange, openList);
+        let node = JSON.parse(JSON.stringify(childNode));
+        const verticalJumpNodes = verticalSearch(grid, node, finishNode, rowChange, openList);
         vertDone = true;
 
-        if (verticalJumpNodes !== null) {
-            const jumpNode = getNodeFromArray(verticalJumpNodes, childNode, [rowChange, 0]);
+        if (verticalJumpNodes.length > 0) {
+            const jumpNode = getNodeFromArray(verticalJumpNodes, node, [rowChange, 0]);
     
             for (const vertNode in verticalJumpNodes) {
                 vertNode.prevNode = jumpNode;
