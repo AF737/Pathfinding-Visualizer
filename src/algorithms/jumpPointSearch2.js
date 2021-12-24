@@ -249,7 +249,7 @@ function horizontalSearch(grid, parentNode, finishNode, colChange, openList) {
     childNode.prevNode = parentNode;
     childNode.distanceFromStart = parentNode.distanceFromStart + getDistance(parentNode, childNode);
 
-    if (childNode === finishNode) {
+    if (childNode === finishNode) { 
         const node = JSON.parse(JSON.stringify(childNode));
         newJumpNodes.push(node);
 

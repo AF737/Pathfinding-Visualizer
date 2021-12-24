@@ -3,7 +3,8 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Sorting Algorithms</title>
+        <title>Pathfinding Visualizer</title>
+        <link rel="icon" type="image/x-icon"  href="images/favicon.ico">
         <link rel="stylesheet" href="style.css">
     </head>
 
@@ -14,126 +15,35 @@
 
         <main>
             <div class="menuBar">
-                <div id="menuStyle">
-                    <div class="numFieldContainer">
-                        <label for="minBarValue" class="numFieldLabel">
-                            Lower Limit
-                        </label>
-                        <input type="number" id="minBarValue" class="numField" 
-                            name="minBarValue" min="10" max="795" value="150" required="required">
-                        <label for="minBarValue" id="minBarLimitsLabel" class="numFieldLabel">
-                            10 ... 795
-                        </label>
+                <div class="dropDownWrapper">
+                    <button id="algorithmDropDown" class="dropDownButton">Pick An Algorithm</button>
+                    <div class="dropDownMenu">
+                        <a href="#">Dijkstra</a>
+                        <a href="#">A*</a>
+                        <a href="#">Greedy Best-First Search</a>
+                        <a href="#">Breadth-First Search</a>
+                        <a href="#">Bidirectional Dijkstra</a>
+                        <a href="#">Bidirectional A*</a>
+                        <a href="#">Depth-First Search</a>
+                        <a href="#">Jump Point Search</a>
                     </div>
-                    <div class="numFieldContainer">
-                        <label for="maxBarValue" class="numFieldLabel">
-                            Upper Limit
-                        </label>
-                        <input type="number" id="maxBarValue" class="numField" 
-                            name="maxBarValue" min="15" max="800" value="650" required="required">
-                        <label for="maxBarValue" id="maxBarLimitsLabel" class="numFieldLabel">
-                            15 ... 800
-                        </label>
-                    </div>
-                    <div class="numFieldContainer">
-                        <label for="numOfBars" class="numFieldLabel">
-                            # Of Bars
-                        </label>
-                        <input type="number" id="numOfBars" class="numField" 
-                            name="numOfBars" min="5" max="450" value="450" required="required">
-                        <label for="numOfBars" id="numOfBarLimits" class="numFieldLabel">
-                            5 ... 450
-                        </label>
-                    </div>
-                    <div class="radioButtonContainer">
-                        <div class="radioButtonWrapper">
-                            <input type="radio" id="selectionSortRadio" name="algorithmOption" 
-                                class="algorithmRadioButtons" value="selectionSort" checked>
-                            <label for="selectionSortRadio">
-                                Selection Sort
-                            </label>
-                        </div>
-                        <div class="radioButtonWrapper">
-                            <input type="radio" id="insertionSortRadio" name="algorithmOption" 
-                                class="algorithmRadioButtons" value="insertionSort">
-                            <label for="insertionSortRadio">
-                                Insertion Sort
-                            </label>
-                        </div>
-                        <div class="radioButtonWrapper">
-                            <input type="radio" id="bubbleSortRadio" name="algorithmOption" 
-                                class="algorithmRadioButtons" value="bubbleSort">
-                            <label for="bubbleSortRadio">
-                                Bubble Sort
-                            </label>
-                        </div>
-                        <div class="radioButtonWrapper">
-                            <input type="radio" id="shellSortRadio" name="algorithmOption" 
-                                class="algorithmRadioButtons" value="shellSort">
-                            <label for="shellSortRadio">
-                                Shell Sort
-                            </label>
-                        </div>
-                        <div class="radioButtonWrapper">
-                            <input type="radio" id="bucketSortRadio" name="algorithmOption" 
-                                class="algorithmRadioButtons" value="bucketSort">
-                            <label for="bucketSortRadio">
-                                Bucket Sort
-                            </label>
-                        </div>
-                        <div class="radioButtonWrapper">
-                            <input type="radio" id="mergeSortRadio" name="algorithmOption" 
-                                class="algorithmRadioButtons" value="mergeSort">
-                            <label for="mergeSortRadio">
-                                Merge Sort
-                            </label>
-                        </div>
-                        <div class="radioButtonWrapper">
-                            <input type="radio" id="quickSortRadio" name="algorithmOption" 
-                                class="algorithmRadioButtons" value="quickSort">
-                            <label for="quickSortRadio">
-                                Quick Sort
-                            </label>
-                        </div>
-                        <div class="radioButtonWrapper">
-                            <input type="radio" id="heapSortRadio" name="algorithmOption" 
-                                class="algorithmRadioButtons" value="heapSort">
-                            <label for="heapSortRadio">
-                                Heap Sort
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <button id="createArray" name="createArray" class="upperBarButtons">
-                    Create Array
-                </button>
-                <button id="sortArray" name="sortArray" class="upperBarButtons">
-                    Sort
-                </button>
-                <div id="mobileMenuButton">
-                    <span class="bar"></span>
-                    <span class="bar"></span>
-                    <span class="bar"></span>
                 </div>
             </div>
-            <div id="arrayContainer"></div>
+            <button id="dijkstra">Dijkstra</button>
+            <button id="astar">A-Star</button>
+            <button id="greedyBFS">Greedy BFS</button>
+            <button id="breadthFirstSearch">BFS</button>
+            <button id="bidirectionalDijkstra">Bi Dijkstra</button>
+            <button id="bidirectionalAStar">Bi A-Star</button>
+            <button id="depthFirstSearch">DFS</button>
+            <button id="jumpPointSearch">JPS</button>
+            <div id="board"></div>
         </main>
 
         <footer>
 
         </footer>
-
-        <script src="src/userInput.js"></script>
-        <script src="src/sortingAlgorithms/selectionSort.js"></script>
-        <script src="src/sortingAlgorithms/insertionSort.js"></script>
-        <script src="src/sortingAlgorithms/bubbleSort.js"></script>
-        <script src="src/sortingAlgorithms/shellSort.js"></script>
-        <script src="src/sortingAlgorithms/bucketSort.js"></script>
-        <script src="src/sortingAlgorithms/mergeSort.js"></script>
-        <script src="src/sortingAlgorithms/quickSort.js"></script>
-        <script src="src/sortingAlgorithms/heapSort.js"></script>
-        <!-- Import display.js last so that it has access to all the functions from
-            the scripts that are loaded before it -->
-        <script src="src/display.js"></script>
     </body>
+
+    <script type="module" src="src/index.js"></script>
 </html>
