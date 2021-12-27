@@ -18,25 +18,71 @@
                 <div class="dropDownWrapper">
                     <button id="algorithmDropDown" class="dropDownButton">Pick An Algorithm</button>
                     <div class="dropDownMenu">
-                        <a href="#">Dijkstra</a>
+                        <div class="radioButtonWrapper">
+                            <input type="radio" id="dijkstraRadio" name="algorithmOption"
+                                class="algorithmRadioButtons" value="dijkstra">
+                            <label for="dijkstraRadio">Dijkstra's algorithm</label>
+                        </div>
+                        <div class="radioButtonWrapper">
+                            <input type="radio" id="aStarRadio" name="algorithmOption"
+                                class="algorithmRadioButtons" value="aStar">
+                            <label for="aStarRadio">A* algorithm</label>
+                        </div>
+                        <div class="radioButtonWrapper">
+                            <input type="radio" id="greedyBFSRadio" name="algorithmOption"
+                                class="algorithmRadioButtons" value="greedyBFS">
+                            <label for="greedyBFSRadio">Greedy best-first search</label>
+                        </div>
+                        <div class="radioButtonWrapper">
+                            <input type="radio" id="breadthFirstSearchRadio" name="algorithmOption"
+                                class="algorithmRadioButtons" value="breadthFirstSearch">
+                            <label for="breadthFirstSearchRadio">Breadth-first search</label>
+                        </div>
+                        <div class="radioButtonWrapper">
+                            <input type="radio" id="bidirectionalDijkstraRadio" name="algorithmOption"
+                                class="algorithmRadioButtons" value="bidirectionalDijkstra">
+                                <label for="bidirectionalDijkstraRadio">
+                                    Bidirectional Dijkstra's algorithm
+                                </label>
+                        </div>
+                        <div class="radioButtonWrapper">
+                            <input type="radio" id="bidirectionalAStarRadio" name="algorithmOption"
+                                class="algorithmRadioButtons" value="bidirectionalAStar">
+                            <label for="bidirectionalAStarRadio">Bidirectional A* algorithm</label>
+                        </div>
+                        <div class="radioButtonWrapper">
+                            <input type="radio" id="depthFirstSearchRadio" name="algorithmOption"
+                                class="algorithmRadioButtons" value="depthFirstSearch">
+                            <label for="depthFirstSearchRadio">Depth-first search</label>
+                        </div>
+                        <div class="radioButtonWrapper">
+                            <input type="radio" id="jumpPointSearchRadio" name="algorithmOption"
+                                class="algorithmRadioButtons" value="jumpPointSearch">
+                            <label for="jumpPointSearchRadio">Jump point search</label>
+                        </div>
+                        <!--<a href="#">Dijkstra</a>
                         <a href="#">A*</a>
                         <a href="#">Greedy Best-First Search</a>
                         <a href="#">Breadth-First Search</a>
                         <a href="#">Bidirectional Dijkstra</a>
                         <a href="#">Bidirectional A*</a>
                         <a href="#">Depth-First Search</a>
-                        <a href="#">Jump Point Search</a>
+                        <a href="#">Jump Point Search</a>-->
                     </div>
                 </div>
+                <div class="dropDownWrapper">
+                    <button id="weightDropDown" class="dropDownButton">Adjust Weights</button>
+                </div>
+                <button id="animateAlgorithm" class="dropDownButton">Animate</button>
             </div>
-            <button id="dijkstra">Dijkstra</button>
+            <!--<button id="dijkstra">Dijkstra</button>
             <button id="astar">A-Star</button>
             <button id="greedyBFS">Greedy BFS</button>
             <button id="breadthFirstSearch">BFS</button>
             <button id="bidirectionalDijkstra">Bi Dijkstra</button>
             <button id="bidirectionalAStar">Bi A-Star</button>
             <button id="depthFirstSearch">DFS</button>
-            <button id="jumpPointSearch">JPS</button>
+            <button id="jumpPointSearch">JPS</button>-->
             <div id="board"></div>
         </main>
 

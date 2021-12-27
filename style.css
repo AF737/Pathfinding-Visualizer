@@ -4,6 +4,7 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    font-family: "Roboto", sans-serif;
 }
 
 div.menuBar {
@@ -16,36 +17,86 @@ div.menuBar {
 
 div.dropDownWrapper {
     display: inline-block;
-    border: 1px solid black;
-    margin-left: 2.5vw;
+    /* border: 1px solid black; */
+    /* Top and bottom margin of 25px are necessary so that the wrapper has the same
+        size as the button so that the hover pseudo class only triggers if the cursor
+        is actually above the button */
+    margin: 25px 0 25px 2.5vw;
     width: 10vw;
     z-index: 1;
 }
 
+/* Display the contents of the drop down menu if the user hovers of the button, but a
+    button has no :hover pseudo class so the wrapper div is used */
+div.dropDownWrapper:hover div.dropDownMenu {
+    display: block;
+}
+
 button.dropDownButton {
-    /* width: 10vw; */
+    width: inherit;
     height: 50px;
     /* margin-left: 2.5vw; */
-    margin-top: 25px;
+    /* margin-top: 25px; */
     background-color: #79e082;
     color: white;
     font-size: 1.2rem;
     border: 1px solid white;
     border-radius: 5px;
     padding: 0 1vw 0 1vw;
-    cursor: pointer;
+    /* cursor: pointer; */
 }
 
 div.dropDownMenu {
-    /* display: none; */
+    display: none;
+    width: inherit;
     background-color: #1db82a;
     /* width: 10vw; */
 }
 
-div.dropDownMenu a {
+div.radioButtonWrapper {
+    width: inherit;
+    -webkit-display: inline-flex;
+    display: inline-flex;
+    align-items: center;
+    text-align: center;
+    /* border: 1px solid white; */
+    padding: 0.5vw 0;
+    /* cursor: pointer; */
+}
+
+div.radioButtonWrapper:hover {
+    background-color: #3b423c;
+}
+
+div.radioButtonWrapper input {
+    width: 0;
+    visibility: hidden;
+}
+
+div.radioButtonWrapper input:checked + label {
+    font-weight: bold;
+}
+
+div.radioButtonWrapper label {
+    /* Label is an inline element so it's only as big as the text that it contains
+        so by setting it to be the parent's width text-align can take effect */
+    width: inherit;
+    color: white;
+    font-size: 1.2rem;
+    /* text-align: center; */
+    cursor: pointer;
+}
+
+/*div.dropDownMenu a {
     color: white;
     padding: 10px;
     display: block;
+}*/
+
+button#animateAlgorithm {
+    width: 10vw;
+    margin: 25px 0 25px 2.5vw;
+    cursor: pointer;
 }
 
 div#board {

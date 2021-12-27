@@ -27,6 +27,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var bidirectionalAStarButton = document.getElementById('bidirectionalAStar');
     var depthFirstSearchButton = document.getElementById('depthFirstSearch');
     var jumpPointSearchButton = document.getElementById('jumpPointSearch');
+    
+    var animateAlgorithmButton = document.getElementById('animateAlgorithm');
 
     /* TODO:
        - Clean up code
@@ -41,7 +43,45 @@ document.addEventListener('DOMContentLoaded', function() {
         gridBoard.pressedKey = null;
     });
 
-    dijkstraButton.addEventListener('click', function() {
+    animateAlgorithmButton.addEventListener('click', function() {
+        let selectedAlgorihtm = document.querySelector('input[name="algorithmOption"]:checked');
+        
+        /* If no algorithm has been selected */
+        if (selectedAlgorihtm === null) {
+            animateAlgorithmButton.innerHTML = 'Select An Algorithm';
+        }
+
+        else {
+            switch (selectedAlgorihtm.value) {
+                case 'dijkstra':
+                    animateDijkstra();
+                    break;
+                case 'aStar':
+                    animateAStar();
+                    break;
+                case 'greedyBFS':
+                    animateGreedyBFS();
+                    break;
+                case 'breadthFirstSearch':
+                    animateBreadthFirstSearch();
+                    break;
+                case 'bidirectionalDijkstra':
+                    animateBidirectionalDijkstra();
+                    break;
+                case 'bidirectionalAStar':
+                    animateBidirectionalAStar();
+                    break;
+                case 'depthFirstSearch':
+                    animateDepthFirstSearch();
+                    break;
+                case 'jumpPointSearch':
+                    animateJumpPointSearch();
+                    break;
+            }
+        }
+    });
+
+    function animateDijkstra() {
         let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
 
@@ -49,25 +89,25 @@ document.addEventListener('DOMContentLoaded', function() {
         //const shortestP = shortestPath(finishNode);
         //console.log(visitedNodes);
         animateAlgorithm(visitedNodes, null, shortestPath);
-    });
+    }
 
-    aStarButton.addEventListener('click', function() {
+    function animateAStar() {
         let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
 
         const [visitedNodes, shortestPath] = aStar(gridBoard, startNode, finishNode);
         animateAlgorithm(visitedNodes, null, shortestPath);
-    });
+    }
 
-    greedyBFSButton.addEventListener('click', function() {
+    function animateGreedyBFS() {
         let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
 
         const [visitedNodes, path] = greedyBFS(gridBoard, startNode, finishNode);
         animateAlgorithm(visitedNodes, null, path);
-    });
+    }
 
-    breadthFirstSearchButton.addEventListener('click', function() {
+    function animateBreadthFirstSearch() {
         let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
 
@@ -82,9 +122,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const [visitedNodes, shortestPath] = breadthFirstSearch(gridBoard, startNode, finishNode);
         animateAlgorithm(visitedNodes, null, shortestPath);
-    });
+    }
 
-    bidirectionalDijkstraButton.addEventListener('click', function() {
+    function animateBidirectionalDijkstra() {
         let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
 
@@ -92,9 +132,9 @@ document.addEventListener('DOMContentLoaded', function() {
             bidirectionalDijkstra(gridBoard, startNode, finishNode);
             
             animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, path);
-    });
+    }
 
-    bidirectionalAStarButton.addEventListener('click', function() {
+    function animateBidirectionalAStar() {
         let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
 
@@ -102,9 +142,9 @@ document.addEventListener('DOMContentLoaded', function() {
             bidirectionalAStar(gridBoard, startNode, finishNode);
 
             animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, path);
-    });
+    }
 
-    depthFirstSearchButton.addEventListener('click', function() {
+    function animateDepthFirstSearch() {
         let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
 
@@ -120,9 +160,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const [visitedNodesFromStart, path] = depthFirstSearch(gridBoard, startNode, finishNode);
 
         animateAlgorithm(visitedNodesFromStart, null, path);
-    });
+    }
 
-    jumpPointSearchButton.addEventListener('click', function() {
+    function animateJumpPointSearch() {
         let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
 
@@ -138,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const [visitedNodesFromStart, shortestPath] = jumpPointSearch2(gridBoard, startNode, finishNode);
 
         animateAlgorithm(visitedNodesFromStart, null, shortestPath);
-    });
+    }
 
     function animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortestPath) {
         for (let i = 0; i < visitedNodesFromStart.length; i++) {
