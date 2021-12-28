@@ -93,6 +93,53 @@ div.radioButtonWrapper label {
     display: block;
 }*/
 
+div.weightWrapper {
+    width: 15vw;
+    height: 5vh;
+    background-color: inherit;
+    display: inline-flex;
+    /* border: 1px solid black; */
+}
+
+div.nodeColorSquare {
+    width: 2vw;
+    height: 4vh;
+    content: "";
+    border: 1px solid white;
+    margin-top: 0.5vh;
+    margin-left: 0.5vw;
+}
+
+input.weightSlider {
+    width: 8vw;
+}
+
+div#lightWeightSquare {
+    background-color: #32ccb2;
+}
+
+div#normalWeightSquare {
+    background-color: #e8dd19;
+}
+
+div#heavyWeightSquare {
+    background-color: #06d314;
+}
+
+input.weightSlider {
+    margin-left: 1.5vw;
+}
+
+div.weightWrapper label {
+    width: 3vw;
+    height: inherit;
+    color: white;
+    font-size: 1.2rem;
+    /* border: 1px solid black; */
+    text-align: center;
+    padding-top: 1.5vh;
+}
+
 button#animateAlgorithm {
     width: 10vw;
     margin: 25px 0 25px 2.5vw;

@@ -72,6 +72,26 @@
                 </div>
                 <div class="dropDownWrapper">
                     <button id="weightDropDown" class="dropDownButton">Adjust Weights</button>
+                    <div class="dropDownMenu">
+                        <div class="weightWrapper">
+                            <div id="lightWeightSquare" class="nodeColorSquare"></div>
+                            <input type="range" id="lightWeightSlider" class="weightSlider"
+                                name="lightWeightSlider" min="1" max="100" step="1" value="15">
+                            <label for="lightWeightSlider" id="lightWeightLabel">15</label>
+                        </div>
+                        <div class="weightWrapper">
+                            <div id="normalWeightSquare" class="nodeColorSquare"></div>
+                            <input type="range" id="normalWeightSlider" class="weightSlider"
+                                name="normalWeightSlider" min="1" max="100" step="1" value="30">
+                            <label for="normalWeightSlider" id="normalWeightLabel">30</label>    
+                        </div>
+                        <div class="weightWrapper">
+                            <div id="heavyWeightSquare" class="nodeColorSquare"></div>
+                            <input type="range" id="heavyWeightSlider" class="weightSlider"
+                                name="heavyWeightSlider" min="1" max="100" step="1" value="45">
+                            <label for="heavyWeightSlider" id="heavyWeightLabel">45</label>
+                        </div>
+                    </div>
                 </div>
                 <button id="animateAlgorithm" class="dropDownButton">Animate</button>
             </div>

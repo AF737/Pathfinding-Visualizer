@@ -17,9 +17,9 @@ document.addEventListener('DOMContentLoaded', function() {
     var START_COL, START_ROW, FINISH_COL, FINISH_ROW;
     const ANIMATION_SPEED = 10;
     const NODE_WEIGHT_NONE = 1;
-    const NODE_WEIGHT_LIGHT = 15;
-    const NODE_WEIGHT_NORMAL = 30;
-    const NODE_WEIGHT_HEAVY = 45;
+    var NODE_WEIGHT_LIGHT = 15;
+    var NODE_WEIGHT_NORMAL = 30;
+    var NODE_WEIGHT_HEAVY = 45;
     var aStarButton = document.getElementById('astar');
     var greedyBFSButton = document.getElementById('greedyBFS');
     var breadthFirstSearchButton = document.getElementById('breadthFirstSearch');
@@ -28,6 +28,9 @@ document.addEventListener('DOMContentLoaded', function() {
     var depthFirstSearchButton = document.getElementById('depthFirstSearch');
     var jumpPointSearchButton = document.getElementById('jumpPointSearch');
     
+    var lightWeightSlider = document.getElementById('lightWeightSlider');
+    var normalWeightSlider = document.getElementById('normalWeightSlider');
+    var heavyWeightSlider = document.getElementById('heavyWeightSlider');
     var animateAlgorithmButton = document.getElementById('animateAlgorithm');
 
     /* TODO:
@@ -41,6 +44,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.addEventListener('keyup', function(ev) {
         gridBoard.pressedKey = null;
+    });
+
+    lightWeightSlider.addEventListener('input', function() {
+        NODE_WEIGHT_LIGHT = parseInt(lightWeightSlider.value, 10);
+        document.getElementById('lightWeightLabel').innerHTML = lightWeightSlider.value;
+    });
+
+    normalWeightSlider.addEventListener('input', function() {
+        NODE_WEIGHT_NORMAL = parseInt(normalWeightSlider.value, 10);
+        document.getElementById('normalWeightLabel').innerHTML = normalWeightSlider.value;
+    });
+
+    heavyWeightSlider.addEventListener('input', function() {
+        NODE_WEIGHT_HEAVY = parseInt(heavyWeightSlider.value, 10);
+        document.getElementById('heavyWeightLabel').innerHTML = heavyWeightSlider.value;
     });
 
     animateAlgorithmButton.addEventListener('click', function() {
