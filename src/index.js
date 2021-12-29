@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var dijkstraButton = document.getElementById('dijkstra');
     var gridBoard = new Board();
     var START_COL, START_ROW, FINISH_COL, FINISH_ROW;
+    var ORIG_START_COL, ORIG_START_ROW, ORIG_FINISH_COL, ORIG_FINISH_ROW;
     const ANIMATION_SPEED = 10;
     const NODE_WEIGHT_NONE = 1;
     var NODE_WEIGHT_LIGHT = 15;
@@ -32,6 +33,9 @@ document.addEventListener('DOMContentLoaded', function() {
     var normalWeightSlider = document.getElementById('normalWeightSlider');
     var heavyWeightSlider = document.getElementById('heavyWeightSlider');
     var animateAlgorithmButton = document.getElementById('animateAlgorithm');
+    var clearWallsButton = document.getElementById('clearWalls');
+    var clearWeightsButton = document.getElementById('clearWeights');
+    var resetBoardButton = document.getElementById('resetBoard');
 
     /* TODO:
        - Clean up code
@@ -61,6 +65,20 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('heavyWeightLabel').innerHTML = heavyWeightSlider.value;
     });
 
+    clearWallsButton.addEventListener('click', function() {
+        removeWalls();
+    });
+
+    clearWeightsButton.addEventListener('click', function() {
+        removeWeights();
+    });
+
+    resetBoardButton.addEventListener('click', function() {
+        removeWalls();
+        removeWeights();
+        resetStartAndFinish();
+    });
+
     animateAlgorithmButton.addEventListener('click', function() {
         let selectedAlgorihtm = document.querySelector('input[name="algorithmOption"]:checked');
         
@@ -70,6 +88,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         else {
+            removePreviousAlgorithm();
+
             switch (selectedAlgorihtm.value) {
                 case 'dijkstra':
                     animateDijkstra();
@@ -129,14 +149,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
 
-        for (let row = 0; row < gridBoard.rows; row++) {
-            for (let col = 0; col < gridBoard.columns; col++) {
-                if(gridBoard.nodesMatrix[row][col].weight !== NODE_WEIGHT_NONE) {
-                    changeWeightOfNode(`node-${row}-${col}`, NODE_WEIGHT_NONE);
-                    document.getElementById(`node-${row}-${col}`).className = 'unvisited';
-                }
-            }
-        }
+        removeWeights();
 
         const [visitedNodes, shortestPath] = breadthFirstSearch(gridBoard, startNode, finishNode);
         animateAlgorithm(visitedNodes, null, shortestPath);
@@ -166,14 +179,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
 
-        for (let row = 0; row < gridBoard.rows; row++) {
-            for (let col = 0; col < gridBoard.columns; col++) {
-                if(gridBoard.nodesMatrix[row][col].weight !== NODE_WEIGHT_NONE) {
-                    changeWeightOfNode(`node-${row}-${col}`, NODE_WEIGHT_NONE);
-                    document.getElementById(`node-${row}-${col}`).className = 'unvisited';
-                }
-            }
-        }
+        removeWeights();
 
         const [visitedNodesFromStart, path] = depthFirstSearch(gridBoard, startNode, finishNode);
 
@@ -184,14 +190,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
 
-        for (let row = 0; row < gridBoard.rows; row++) {
-            for (let col = 0; col < gridBoard.columns; col++) {
-                if(gridBoard.nodesMatrix[row][col].weight !== NODE_WEIGHT_NONE) {
-                    changeWeightOfNode(`node-${row}-${col}`, NODE_WEIGHT_NONE);
-                    document.getElementById(`node-${row}-${col}`).className = 'unvisited';
-                }
-            }
-        }
+        removeWeights();
 
         const [visitedNodesFromStart, shortestPath] = jumpPointSearch2(gridBoard, startNode, finishNode);
 
@@ -263,10 +262,10 @@ document.addEventListener('DOMContentLoaded', function() {
         gridBoard.rows = numOfRows;
         gridBoard.columns = numOfCols;
 
-        START_ROW = Math.floor(numOfRows / 2);
-        START_COL = Math.floor(numOfCols / 4);
-        FINISH_ROW = Math.floor(numOfRows / 2);
-        FINISH_COL = Math.floor((numOfCols / 4) * 3);
+        START_ROW = ORIG_START_ROW = Math.floor(numOfRows / 2);
+        START_COL = ORIG_START_COL = Math.floor(numOfCols / 4);
+        FINISH_ROW = ORIG_FINISH_ROW = Math.floor(numOfRows / 2);
+        FINISH_COL = ORIG_FINISH_COL = Math.floor((numOfCols / 4) * 3);
 
         console.log(`${boardWidth}, ${boardHeight}`);
         for (let row = 0; row < numOfRows; row++) {
@@ -277,11 +276,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 let isFinish = false;
 
                 if (row === START_ROW && col === START_COL) {
+                    gridBoard.startIsPlaced = true;
                     newNodeClass = 'start';
                     isStart = true;
                 }
 
                 else if (row === FINISH_ROW && col === FINISH_COL) {
+                    gridBoard.finishIsPlaced = true;
                     newNodeClass = 'finish';
                     isFinish = true;
                 }
@@ -341,22 +342,60 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (gridBoard.pressedKey === null) {
-            switch(actualThis.className) {
-                case 'unvisited':
-                case 'lightWeight':
-                case 'normalWeight':
-                case 'heavyWeight':
-                    actualThis.className = 'wall';
-                    changeWallStatus(actualThis.id, true);
-                    changeWeightOfNode(actualThis.id, NODE_WEIGHT_NONE);
+            if (gridBoard.startIsPlaced === false) {
+                if (actualThis.className === 'finish') {
+                    gridBoard.finishIsPlaced = false;
+                }
+                
+                const [descriptor, row, col] = actualThis.id.split('-');
+                START_ROW = row;
+                START_COL = col;
+                actualThis.className = 'start';
+                gridBoard.startIsPlaced = true;
+            }
 
-                    break;
+            else if (gridBoard.finishIsPlaced === false) {
+                if (actualThis.className === 'start') {
+                    gridBoard.startIsPlaced = false;
+                }
 
-                case 'wall':
-                    actualThis.className = 'unvisited';
-                    changeWallStatus(actualThis.id, false);
+                const [descriptor, row, col] = actualThis.id.split('-');
+                FINISH_ROW = row;
+                FINISH_COL = col;
+                actualThis.className = 'finish';
+                gridBoard.finishIsPlaced = true;
+            }
 
-                    break;
+            else {
+                switch(actualThis.className) {
+                    case 'unvisited':
+                    case 'lightWeight':
+                    case 'normalWeight':
+                    case 'heavyWeight':
+                        actualThis.className = 'wall';
+                        changeWallStatus(actualThis.id, true);
+                        changeWeightOfNode(actualThis.id, NODE_WEIGHT_NONE);
+
+                        break;
+
+                    case 'wall':
+                        actualThis.className = 'unvisited';
+                        changeWallStatus(actualThis.id, false);
+
+                        break;
+
+                    case 'start':
+                        actualThis.className = 'unvisited';
+                        gridBoard.startIsPlaced = false;
+
+                        break;
+
+                    case 'finish':
+                        actualThis.className = 'unvisited';
+                        gridBoard.finishIsPlaced = false;
+
+                        break;
+                }
             }
         }
 
@@ -424,9 +463,65 @@ document.addEventListener('DOMContentLoaded', function() {
         gridBoard.nodesMatrix[row][col].weight = newWeight;
     }
 
+    function removeWeights() {
+        for (let row = 0; row < gridBoard.rows; row++) {
+            for (let col = 0; col < gridBoard.columns; col++) {
+                if (gridBoard.nodesMatrix[row][col].weight !== NODE_WEIGHT_NONE) {
+                    changeWeightOfNode(`node-${row}-${col}`, NODE_WEIGHT_NONE);
+                    document.getElementById(`node-${row}-${col}`).className = 'unvisited';
+                }
+            }
+        }
+    }
+
     function changeWallStatus(id, newWallStatus) {
         const [descriptor, row, col] = id.split('-');
-
+        
         gridBoard.nodesMatrix[row][col].isWall = newWallStatus;
+    }
+
+    function removeWalls() {
+        for (let row = 0; row < gridBoard.rows; row++) {
+            for (let col = 0; col < gridBoard.columns; col++) {
+                if (gridBoard.nodesMatrix[row][col].isWall === true) {
+                    gridBoard.nodesMatrix[row][col].isWall = false;
+                    document.getElementById(`node-${row}-${col}`).className = 'unvisited';
+                } 
+            }
+        }
+    }
+
+    function removePreviousAlgorithm() {
+        for (let row = 0; row < gridBoard.rows; row++) {
+            for (let col = 0; col < gridBoard.columns; col++) {
+                let node = document.getElementById(`node-${row}-${col}`);
+
+                if (row === START_ROW && col === START_COL) {
+                    gridBoard.nodesMatrix[row][col].isVisited = false;
+                    node.className = 'start';
+                }
+
+                else if (row === FINISH_ROW && col === FINISH_COL) {
+                    gridBoard.nodesMatrix[row][col].isVisited = false;
+                    node.className = 'finish';
+                }
+
+                else if (node.className === 'visited' || node.className === 'shortestPath') {
+                    gridBoard.nodesMatrix[row][col].isVisited = false;
+                    node.className = 'unvisited';
+                }
+            }
+        }
+    }
+
+    function resetStartAndFinish() {
+        document.getElementById(`node-${START_ROW}-${START_COL}`).className = 'unvisited';
+        document.getElementById(`node-${FINISH_ROW}-${FINISH_COL}`).className = 'unvisited';
+        START_ROW = ORIG_START_ROW;
+        START_COL = ORIG_START_COL;
+        FINISH_ROW = ORIG_FINISH_ROW;
+        FINISH_COL = ORIG_FINISH_COL;
+        document.getElementById(`node-${START_ROW}-${START_COL}`).className = 'start';
+        document.getElementById(`node-${FINISH_ROW}-${FINISH_COL}`).className = 'finish';
     }
 }); 

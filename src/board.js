@@ -9,5 +9,7 @@ export default class Board {
         this.shortestPath = [];
         this.mouseIsPressed = false;
         this.pressedKey = null;
+        this.startIsPlaced = false;
+        this.finishIsPlaced = false;
     }
 }

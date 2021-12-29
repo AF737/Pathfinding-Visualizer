@@ -140,7 +140,10 @@ div.weightWrapper label {
     padding-top: 1.5vh;
 }
 
-button#animateAlgorithm {
+button#animateAlgorithm,
+button#clearWalls,
+button#clearWeights,
+button#resetBoard {
     width: 10vw;
     margin: 25px 0 25px 2.5vw;
     cursor: pointer;
