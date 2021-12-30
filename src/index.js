@@ -32,6 +32,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var lightWeightSlider = document.getElementById('lightWeightSlider');
     var normalWeightSlider = document.getElementById('normalWeightSlider');
     var heavyWeightSlider = document.getElementById('heavyWeightSlider');
+    var directionsToggleButton = document.getElementById('directionsToggleButton');
+    var eightDirections = false;
     var animateAlgorithmButton = document.getElementById('animateAlgorithm');
     var clearWallsButton = document.getElementById('clearWalls');
     var clearWeightsButton = document.getElementById('clearWeights');
@@ -88,6 +90,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         else {
+            if (directionsToggleButton.checked === true) {
+                eightDirections = true;
+            }
+
+            else {
+                eightDirections = false;
+            }
+
             removePreviousAlgorithm();
 
             switch (selectedAlgorihtm.value) {
@@ -122,8 +132,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function animateDijkstra() {
         let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
-
-        const [visitedNodes, shortestPath] = dijkstra(gridBoard, startNode, finishNode);
+        console.log(eightDirections);
+        const [visitedNodes, shortestPath] = 
+            dijkstra(gridBoard, startNode, finishNode);
         //const shortestP = shortestPath(finishNode);
         //console.log(visitedNodes);
         animateAlgorithm(visitedNodes, null, shortestPath);
@@ -132,8 +143,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function animateAStar() {
         let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
-
-        const [visitedNodes, shortestPath] = aStar(gridBoard, startNode, finishNode);
+        
+        const [visitedNodes, shortestPath] = 
+            aStar(gridBoard, startNode, finishNode, eightDirections);
         animateAlgorithm(visitedNodes, null, shortestPath);
     }
 
@@ -141,7 +153,8 @@ document.addEventListener('DOMContentLoaded', function() {
         let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
 
-        const [visitedNodes, path] = greedyBFS(gridBoard, startNode, finishNode);
+        const [visitedNodes, path] = 
+            greedyBFS(gridBoard, startNode, finishNode);
         animateAlgorithm(visitedNodes, null, path);
     }
 
@@ -151,7 +164,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         removeWeights();
 
-        const [visitedNodes, shortestPath] = breadthFirstSearch(gridBoard, startNode, finishNode);
+        const [visitedNodes, shortestPath] = 
+            breadthFirstSearch(gridBoard, startNode, finishNode);
         animateAlgorithm(visitedNodes, null, shortestPath);
     }
 
@@ -181,7 +195,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         removeWeights();
 
-        const [visitedNodesFromStart, path] = depthFirstSearch(gridBoard, startNode, finishNode);
+        const [visitedNodesFromStart, path] = 
+            depthFirstSearch(gridBoard, startNode, finishNode);
 
         animateAlgorithm(visitedNodesFromStart, null, path);
     }
@@ -192,7 +207,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         removeWeights();
 
-        const [visitedNodesFromStart, shortestPath] = jumpPointSearch2(gridBoard, startNode, finishNode);
+        const [visitedNodesFromStart, shortestPath] = 
+        jumpPointSearch2(gridBoard, startNode, finishNode);
 
         animateAlgorithm(visitedNodesFromStart, null, shortestPath);
     }

@@ -140,6 +140,47 @@ div.weightWrapper label {
     padding-top: 1.5vh;
 }
 
+label.switch {
+    width: 10vw;
+    height: 50px;
+    display: inline-block;
+    margin: 25px 0 25px 2.5vw;
+    background-color: #79e082;
+    color: white;
+    font-size: 1.2rem;
+    border: 1px solid white;
+    border-radius: 5px;
+    padding: 0 1vw 0 1vw;
+    cursor: pointer;
+    text-align: center;
+}
+
+/* Hide default checkbox */
+label.switch input {
+    /*width: 0;
+    height: 0;
+    opacity: 0;
+    visibility: hidden;*/
+    display: none;
+}
+
+span.toggleButtonSlider {
+    /* border: 1px solid blue; */
+    cursor: pointer;
+    /* Centers the text of the switch vertically */
+    position: relative;
+    top: calc((50px - 1.2rem) / 2);
+}
+
+span.toggleButtonSlider:after {
+    content: "Four Directions";
+    font-size: 1.2rem;
+}
+
+label.switch input:checked + span.toggleButtonSlider:after {
+    content: "Eight Directions";
+}
+
 button#animateAlgorithm,
 button#clearWalls,
 button#clearWeights,

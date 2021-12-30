@@ -118,4 +118,5 @@ function getNeighbors(grid, node) {
     four directions (up, down, left and right) */
 function getHeuristicDistance(node, finishNode) {
     return (Math.abs(node.row - finishNode.row) + Math.abs(node.column - finishNode.column));
+
 }

@@ -60,8 +60,8 @@ function sortNodesByDistanceFromStart(unvisitedNodes) {
         firstNode.distanceFromStart - secondNode.distanceFromStart);
 }
 
-function updateUnvisitedNeighbors(grid, node) {
-    const unvisitedNeighbors = getUnvisitedNeighbors(grid, node);
+function updateUnvisitedNeighbors(grid, node, eightDirections) {
+    const unvisitedNeighbors = getUnvisitedNeighbors(grid, node, eightDirections);
 
     for (const neighbor of unvisitedNeighbors) {
         neighbor.distanceFromStart = node.distanceFromStart + neighbor.weight;

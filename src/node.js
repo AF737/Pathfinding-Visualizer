@@ -6,7 +6,7 @@ export default class Node {
         this.class = currClass;
         this.row = row;
         this.column = col;
-        this.weight = 1;
+        this.weight = 0;
         this.isStart = start;
         this.isFinish = finish;
         this.isVisited = false;
