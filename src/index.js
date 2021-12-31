@@ -258,8 +258,9 @@ document.addEventListener('DOMContentLoaded', function() {
         board.style.height = `${boardHeight}px`;
         board.style.marginLeft = `${(windowWidth - 
             boardWidth) / 2}px`;
-        board.style.marginTop = `${(windowHeight - 
-            boardHeight) / 2}px`;
+        /* board.style.marginTop = `${(windowHeight - 
+            boardHeight) / 2}px`; */
+        board.style.marginTop = `50px`;
         board.style.gridTemplateColumns = `${Math.floor(boardWidth / 20)}`;
         board.style.gridTemplateRows = `${Math.floor(boardHeight / 20)}`;
     }

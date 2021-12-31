@@ -97,6 +97,7 @@ div.weightWrapper {
     width: 15vw;
     height: 5vh;
     background-color: inherit;
+    -webkit-display: inline-flex;
     display: inline-flex;
     /* border: 1px solid black; */
 }
@@ -188,6 +189,75 @@ button#resetBoard {
     width: 10vw;
     margin: 25px 0 25px 2.5vw;
     cursor: pointer;
+}
+
+div.descriptionBar {
+    width: 100vw;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    /* border: 1px solid black; */
+    /* Create a black border at the bottom */
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: black;
+}
+
+div.nodeExplainationWrapper {
+    /* width: 7vw; */
+    height: inherit;
+    background-color: inherit;
+    -webkit-display: inline-flex;
+    display: inline-flex;
+    /* border: 1px solid black; */
+    align-items: center;
+    text-align: center;
+    margin-left: 1vw;
+}
+
+div.nodeExplainationWrapper label {
+    margin-left: 0.5vw;
+    font-size: 1.2rem;
+}
+
+div.nodeColor {
+    width: 2vw;
+    height: 4vh;
+    content: "";
+    /* border: 1px solid black; */
+    margin-left: 0.5vw;
+}
+
+div#startNode {
+    background-color: red;
+}
+
+div#finishNode {
+    background-color: green;
+}
+
+div#visitedNode {
+    background-color: blue;
+}
+
+div#shortestPathNode {
+    background-color: #c611c0;
+}
+
+div#wallNode {
+    background-color: #fca62d;
+}
+
+div#lightWeightNode {
+    background-color: #32ccb2;
+}
+
+div#normalWeightNode {
+    background-color: #e8dd19;
+}
+
+div#heavyWeightNode {
+    background-color: #06d314;
 }
 
 div#board {
