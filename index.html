@@ -14,10 +14,13 @@
         </header>
 
         <main>
+            <div class="overlay">
             <div class="menuBar">
                 <div class="dropDownWrapper">
-                    <button id="algorithmDropDown" class="dropDownButton">Pick An Algorithm</button>
-                    <div class="dropDownMenu">
+                    <button id="algorithmDropDownButton" class="dropDownButton" disabled="true">
+                        Pick An Algorithm
+                    </button>
+                    <div id="algorithmDropDownMenu" class="dropDownMenu">
                         <div class="radioButtonWrapper">
                             <input type="radio" id="dijkstraRadio" name="algorithmOption"
                                 class="algorithmRadioButtons" value="dijkstra">
@@ -71,8 +74,10 @@
                     </div>
                 </div>
                 <div class="dropDownWrapper">
-                    <button id="weightDropDown" class="dropDownButton">Adjust Weights</button>
-                    <div class="dropDownMenu">
+                    <button id="weightDropDownButton" class="dropDownButton" disabled="true">
+                        Adjust Weights
+                    </button>
+                    <div id="weightDropDownMenu" class="dropDownMenu">
                         <div class="weightWrapper">
                             <div id="lightWeightSquare" class="nodeColorSquare"></div>
                             <input type="range" id="lightWeightSlider" class="weightSlider"
@@ -114,10 +119,21 @@
                     <input type="checkbox" id="directionsToggleButton">
                     <span class="toggleButtonSlider"></span>
                 </label>
-                <button id="animateAlgorithm" class="dropDownButton">Animate</button>
-                <button id="clearWalls" class="dropDownButton">Clear Walls</button>
-                <button id="clearWeights" class="dropDownButton">Clear Weights</button>
-                <button id="resetBoard" class="dropDownButton">Reset Board</button>
+                <button id="animateAlgorithm" class="menuButton" disabled="true">
+                    Animate
+                </button>
+                <button id="clearAlgorithm" class="menuButton" disabled="true">
+                    Clear Algorithm
+                </button>
+                <button id="clearWalls" class="menuButton" disabled="true">
+                    Clear Walls
+                </button>
+                <button id="clearWeights" class="menuButton" disabled="true">
+                    Clear Weights
+                </button>
+                <button id="resetBoard" class="menuButton" disabled="true">
+                    Reset Board
+                </button>
             </div>
             <div class="descriptionBar">
                 <div class="nodeExplainationWrapper">
@@ -147,6 +163,7 @@
                     <label for="heavyWeightNode">Weights</label>
                 </div>
             </div>
+            </div>
             <div id="infoBox">
                 <div id="infoBoxText">
                     <h2 class="h2InfoBox">Welcome to my Pathfinding Visualizer</h2>
@@ -159,14 +176,16 @@
                         pathfinding algorithms, but what is a that? These kinds of 
                         algorithms are used to find the shortest path between to points 
                         (here nodes on a 2d-grid). <br/>Please note that not all algorithms 
-                        that are listed here <span style="font-weight: bold">guarantee</span> the 
+                        that are listed here <strong>guarantee</strong> the 
                         shortest path. <br/>You can skip this introductory tutorial at any 
                         point by clicking the "Skip"-button. Otherwise press "Next" for more 
                         info about this project.
                     </p>
                 </div>
                 <button id="skipInfoBoxButton" class="infoBoxButton">Skip</button>
-                <button id="prevInfoBoxButton" class="infoBoxButton">Prev</button>
+                <button id="prevInfoBoxButton" class="infoBoxButton" disabled="true">
+                    Prev
+                </button>
                 <button id="nextInfoBoxButton" class="infoBoxButton">Next</button>
             </div>
             <!--<button id="dijkstra">Dijkstra</button>
@@ -177,7 +196,9 @@
             <button id="bidirectionalAStar">Bi A-Star</button>
             <button id="depthFirstSearch">DFS</button>
             <button id="jumpPointSearch">JPS</button>-->
-            <div id="board"></div>
+            <div class="overlay">
+                <div id="board"></div>
+            </div>
         </main>
 
         <footer>

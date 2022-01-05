@@ -11,5 +11,6 @@ export default class Board {
         this.pressedKey = null;
         this.startIsPlaced = false;
         this.finishIsPlaced = false;
+        this.algoIsRunning = false;
     }
 }

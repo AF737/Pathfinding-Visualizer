@@ -41,7 +41,9 @@ function aStar(grid, startNode, finishNode) {
         }
 
         updateNeighbors(grid, closestNode, finishNode, openList, closedList);
-    }   
+    }
+    
+    return [closedList, null];
 }
 
 function sortNodesByDistance(openList) {

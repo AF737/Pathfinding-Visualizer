@@ -29,12 +29,17 @@ document.addEventListener('DOMContentLoaded', function() {
     var depthFirstSearchButton = document.getElementById('depthFirstSearch');
     var jumpPointSearchButton = document.getElementById('jumpPointSearch');
     
+    var algorithmDropDownButton = document.getElementById('algorithmDropDownButton');
+    var algorithmDropDownMenu = document.getElementById('algorithmDropDownMenu');
+    var weightDropDownButton = document.getElementById('weightDropDownButton');
+    var weightDropDownMenu = document.getElementById('weightDropDownMenu');
     var lightWeightSlider = document.getElementById('lightWeightSlider');
     var normalWeightSlider = document.getElementById('normalWeightSlider');
     var heavyWeightSlider = document.getElementById('heavyWeightSlider');
     var directionsToggleButton = document.getElementById('directionsToggleButton');
     var eightDirections = false;
     var animateAlgorithmButton = document.getElementById('animateAlgorithm');
+    var clearAlgorithmButton = document.getElementById('clearAlgorithm');
     var clearWallsButton = document.getElementById('clearWalls');
     var clearWeightsButton = document.getElementById('clearWeights');
     var resetBoardButton = document.getElementById('resetBoard');
@@ -43,6 +48,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var prevInfoBoxButton = document.getElementById('prevInfoBoxButton');
     var nextInfoButton = document.getElementById('nextInfoBoxButton');
     var infoBoxPage = 0;
+    var infoBoxVisible = true;
+    var board = document.getElementById('board');
 
     /* TODO:
        - Clean up code
@@ -53,23 +60,117 @@ document.addEventListener('DOMContentLoaded', function() {
         gridBoard.pressedKey = ev.key;
     });
 
-    document.addEventListener('keyup', function(ev) {
+    document.addEventListener('keyup', function() {
         gridBoard.pressedKey = null;
+    });
+
+    algorithmDropDownButton.addEventListener('click', function() {
+        /* The first time clicking the button no inline style will be set (it's an empty
+            string) */
+        if (algorithmDropDownMenu.style.display === '' || 
+                algorithmDropDownMenu.style.display === 'none') {
+            algorithmDropDownMenu.style.display = 'block';
+        }
+
+        else {
+            algorithmDropDownMenu.style.display = 'none';
+        }
+    });
+
+    algorithmDropDownMenu.addEventListener('mouseleave', function() {
+        algorithmDropDownMenu.style.display = 'none';
+        
+        let selectedAlgorihth = document.querySelector('input[name="algorithmOption"]:checked');
+        let buttonText = '';
+        /* If no algorithm has been selected */
+        if (selectedAlgorihth === null) {
+            animateAlgorithmButton.innerHTML = 'Select An Algorithm';
+        }
+
+        else {
+            switch (selectedAlgorihth.value) {
+                case 'dijkstra':
+                    buttonText = 'Dijkstra\'s algorithm';
+                    break;
+                case 'aStar':
+                    buttonText = 'A* algorithm';
+                    break;
+                case 'greedyBFS':
+                    buttonText = 'Greedy best-first search';
+                    break;
+                case 'breadthFirstSearch':
+                    buttonText = 'Breadth-first search';
+                    break;
+                case 'bidirectionalDijkstra':
+                    buttonText = 'Bidirectional Dijkstra';
+                    break;
+                case 'bidirectionalAStar':
+                    buttonText = 'Bidirectional A* algorithm';
+                    break;
+                case 'depthFirstSearch':
+                    buttonText = 'Depth-first search';
+                    break;
+                case 'jumpPointSearch':
+                    buttonText = 'Jump point search';
+                    break;
+            }
+
+            algorithmDropDownButton.innerHTML = buttonText;
+        }
+    });
+
+    weightDropDownButton.addEventListener('click', function() {
+        if (weightDropDownMenu.style.display === '' || 
+                weightDropDownMenu.style.display === 'none') {
+            weightDropDownMenu.style.display = 'block';
+        }
+
+        else {
+            weightDropDownMenu.style.display = 'none';
+        }
+    });
+
+    weightDropDownMenu.addEventListener('mouseleave', function() {
+        algorithmDropDownMenu.style.display = 'none';
     });
 
     lightWeightSlider.addEventListener('input', function() {
         NODE_WEIGHT_LIGHT = parseInt(lightWeightSlider.value, 10);
         document.getElementById('lightWeightLabel').innerHTML = lightWeightSlider.value;
+        
+        /* Change the weight value of all lightweight nodes that are already placed on
+            the grid */
+        let leightWeights = document.getElementsByClassName('lightWeight');
+
+        for (let i = 0; i < leightWeights.length; i++) {
+            changeWeightOfNode(leightWeights[i].id, NODE_WEIGHT_LIGHT);
+        }
     });
 
     normalWeightSlider.addEventListener('input', function() {
         NODE_WEIGHT_NORMAL = parseInt(normalWeightSlider.value, 10);
         document.getElementById('normalWeightLabel').innerHTML = normalWeightSlider.value;
+    
+        let normalWeights = document.getElementsByClassName('lightWeight');
+
+        for (let i = 0; i < normalWeights.length; i++) {
+            changeWeightOfNode(normalWeights[i].id, NODE_WEIGHT_NORMAL);
+        }
     });
 
     heavyWeightSlider.addEventListener('input', function() {
         NODE_WEIGHT_HEAVY = parseInt(heavyWeightSlider.value, 10);
         document.getElementById('heavyWeightLabel').innerHTML = heavyWeightSlider.value;
+    
+        let heavyWeights = document.getElementsByClassName('heavyWeight');
+
+        for (let i = 0; i < heavyWeights.length; i++) {
+            changeWeightOfNode(heavyWeights[i].id, NODE_WEIGHT_HEAVY);
+        }
+    });
+
+    clearAlgorithmButton.addEventListener('click', function() {
+        removePreviousAlgorithm();
     });
 
     clearWallsButton.addEventListener('click', function() {
@@ -84,9 +185,20 @@ document.addEventListener('DOMContentLoaded', function() {
         removeWalls();
         removeWeights();
         resetStartAndFinish();
+        removePreviousAlgorithm();
     });
 
     skipInfoBoxButton.addEventListener('click', function() {
+        let overlays = document.getElementsByClassName('overlay');
+        
+        for (let i = 0; i < overlays.length; i++) {
+            overlays[i].style.opacity = '1';
+        }
+
+        enableButtons();
+
+        infoBoxVisible = false;
+
         document.getElementById('infoBox').style.display = 'none';
     });
 
@@ -95,12 +207,20 @@ document.addEventListener('DOMContentLoaded', function() {
             infoBoxPage--;
         }
 
+        if (infoBoxPage === 0) {
+            prevInfoBoxButton.disabled = true;
+        }
+
         displayInfoBoxText(infoBoxPage);
     });
 
     nextInfoButton.addEventListener('click', function() {
         if (infoBoxPage < 5) {
             infoBoxPage++;
+        }
+
+        if (infoBoxPage > 0) {
+            prevInfoBoxButton.disabled = false;
         }
 
         displayInfoBoxText(infoBoxPage);
@@ -120,7 +240,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     pathfinding algorithms, but what is a that? These kinds of algorithms 
                     are used to find the shortest path between to points (here nodes 
                     on a 2d-grid). <br/>Please note that not all algorithms that are
-                    listed here <span style="font-weight: bold">guarantee</span> the shortest path. 
+                    listed here <strong>guarantee</strong> the shortest path. 
                     <br/>You can skip this introductory tutorial at any point by clicking 
                     the "Skip"-button. Otherwise press "Next" for more info about this project.
                 </p>`
@@ -132,10 +252,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     titled "Pick An Algorithm"
                 </h3>
                 <p class="pInfoBox">Please note that some of these algorithms are weighted 
-                    while others are unweighed. <br/> <span style="font-weight: bold">Weighted</span> 
+                    while others are unweighed. <br/> <strong>Weighted</strong> 
                     algorithms allow for weights to be placed on the 2d-grid, which are harder 
                     to traverse than an empty field, but not impossible like walls. <br/> 
-                    <span style="font-weight: bold">Unweighted</span> algorithms do not allow for the 
+                    <strong>Unweighted</strong> algorithms do not allow for the 
                     placement of weights.</p>`;
 
                 break;
@@ -152,7 +272,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     distance from the start to the current node into account. It is faster than
                     A*, but does not guarantee the shortest path. <br/>Breadth-first search
                     (unweighted): Like Dijkstra, but it does not take weights into account.
-                </p>`
+                </p>`;
                 
                 break;
             case 3:
@@ -171,7 +291,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     checking each individual neighbor the algorithm jumps into these directions
                     to see if there are any "jump points" (i.e. points next to walls) and then 
                     starts jumping from there. This algorithm also guarantees the shortest path.
-                </p>`
+                </p>`;
 
                 break;
             case 4:
@@ -179,22 +299,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 <p class="pInfoBox">Walls can be easily added by left-clicking on a tile and
                     removed by once again left-clicking on that tile. <br/>There are three
                     different weights which can be placed by left-clicking while pressing either of
-                    these buttons: <span style="color: #32ccb2">q</span>, <span style="color: #e8dd19">
-                    w</span>, <span style="color: #06d314">e</span>. Their values can be adjusted 
-                    individually by using the "Adjust Weights" menu. <br/>The start and finish node 
+                    these buttons: <span style="color: #32ccb2">Q</span>, <span style="color: #e8dd19">
+                    W</span>, <span style="color: #06d314">E</span>. Their values can be adjusted 
+                    individually by using the "Adjust Weights" menu and they can be removed by pressing
+                    the same key and left-clicking. <br/>The start and finish node 
                     can be moved by simply left-clicking on them and then clicking the tile where you 
-                    want to place them. <br/> <br/>
+                    want to place them. <br/>
                 </p>
-                <img src="images/walls_weights_movement.gif"/>`;    
+                <img src="images/walls_weights_movement.gif"/>`;
+                    
                 break;
         }
     }
 
     animateAlgorithmButton.addEventListener('click', function() {
-        let selectedAlgorihtm = document.querySelector('input[name="algorithmOption"]:checked');
-        
+        let selectedAlgorithm = document.querySelector('input[name="algorithmOption"]:checked');
+        // console.log(selectedAlgorithm.value);
         /* If no algorithm has been selected */
-        if (selectedAlgorihtm === null) {
+        if (selectedAlgorithm === null) {
             animateAlgorithmButton.innerHTML = 'Select An Algorithm';
         }
 
@@ -208,8 +330,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             removePreviousAlgorithm();
+            disableButtons();
+            gridBoard.algoIsRunning = true;
 
-            switch (selectedAlgorihtm.value) {
+            switch (selectedAlgorithm.value) {
                 case 'dijkstra':
                     animateDijkstra();
                     break;
@@ -241,7 +365,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function animateDijkstra() {
         let startNode = gridBoard.nodesMatrix[START_ROW][START_COL];
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
-        console.log(eightDirections);
+        // console.log(eightDirections);
         const [visitedNodes, shortestPath] = 
             dijkstra(gridBoard, startNode, finishNode);
         //const shortestP = shortestPath(finishNode);
@@ -255,6 +379,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const [visitedNodes, shortestPath] = 
             aStar(gridBoard, startNode, finishNode, eightDirections);
+        
         animateAlgorithm(visitedNodes, null, shortestPath);
     }
 
@@ -264,6 +389,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const [visitedNodes, path] = 
             greedyBFS(gridBoard, startNode, finishNode);
+
         animateAlgorithm(visitedNodes, null, path);
     }
 
@@ -275,6 +401,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const [visitedNodes, shortestPath] = 
             breadthFirstSearch(gridBoard, startNode, finishNode);
+
         animateAlgorithm(visitedNodes, null, shortestPath);
     }
 
@@ -284,8 +411,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const [visitedNodesFromStart, visitedNodesFromFinish, path] =
             bidirectionalDijkstra(gridBoard, startNode, finishNode);
-            
-            animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, path);
+
+        animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, path);
     }
 
     function animateBidirectionalAStar() {
@@ -295,7 +422,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const [visitedNodesFromStart, visitedNodesFromFinish, path] =
             bidirectionalAStar(gridBoard, startNode, finishNode);
 
-            animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, path);
+        animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, path);
     }
 
     function animateDepthFirstSearch() {
@@ -326,9 +453,16 @@ document.addEventListener('DOMContentLoaded', function() {
         for (let i = 0; i < visitedNodesFromStart.length; i++) {
             setTimeout(function() {
                 const currentNode = visitedNodesFromStart[i];
-                //console.log(currentNode);
-                document.getElementById(`node-${currentNode.row}-${currentNode.column}`)
-                    .className = 'visited';
+
+                if (i === 0) {
+                    document.getElementById(`node-${currentNode.row}-${currentNode.column}`)
+                        .className = 'startVisited';
+                }
+
+                else {
+                    document.getElementById(`node-${currentNode.row}-${currentNode.column}`)
+                        .className = 'visited';
+                }
             }, i * ANIMATION_SPEED);
         }
 
@@ -336,9 +470,16 @@ document.addEventListener('DOMContentLoaded', function() {
             for (let i = 0; i < visitedNodesFromFinish.length; i++) {
                 setTimeout(function() {
                     const currentNode = visitedNodesFromFinish[i];
-                    //console.log(currentNode);
-                    document.getElementById(`node-${currentNode.row}-${currentNode.column}`)
-                        .className = 'visited';
+                    
+                    if (i === 0) {
+                        document.getElementById(`node-${currentNode.row}-${currentNode.column}`)
+                            .className = 'finishVisited';
+                    }
+
+                    else {
+                        document.getElementById(`node-${currentNode.row}-${currentNode.column}`)
+                            .className = 'visited';
+                    }
                 }, i * ANIMATION_SPEED);
             }
         }
@@ -347,15 +488,46 @@ document.addEventListener('DOMContentLoaded', function() {
             for (let i = 0; i < shortestPath.length; i++) {
                 setTimeout(function() {
                     const currentNode = shortestPath[i];
-                    document.getElementById(`node-${currentNode.row}-${currentNode.column}`)
-                        .className = 'shortestPath';
+
+                    if (i === 0) {
+                        document.getElementById(`node-${currentNode.row}-${currentNode.column}`)
+                            .className = 'startShortestPath';
+                    }
+
+                    else if (i === shortestPath.length - 1) {
+                        document.getElementById(`node-${currentNode.row}-${currentNode.column}`)
+                            .className = 'finishShortestPath';
+                    }
+
+                    else {
+                        document.getElementById(`node-${currentNode.row}-${currentNode.column}`)
+                            .className = 'shortestPath';
+                    }
                 }, (visitedNodesFromStart.length + i) * ANIMATION_SPEED);
             }
+        }
+
+        /* Allow the user to edit the board and use the buttons once the algorithm is done.
+            The arrays visitedNodesFromStart/...Finish both always have the same length so
+            they both take the same time to animate, so it's enough to use the length of
+            visitedNodesFromStart which is never null */
+        if (shortestPath !== null) {
+            setTimeout(function() {
+                gridBoard.algoIsRunning = false;
+                enableButtons();
+            }, (visitedNodesFromStart.length  + shortestPath.length) * ANIMATION_SPEED);
+        }
+
+        else {
+            setTimeout(function() {
+                gridBoard.algoIsRunning = false;
+                enableButtons();
+            }, visitedNodesFromStart.length * ANIMATION_SPEED);
         }
     }
 
     function adjustGridDimensions() {
-        let board = document.getElementById('board');
+        //let board = document.getElementById('board');
         let windowWidth = window.innerWidth;
         let windowHeight = window.innerHeight;
         let boardWidth = windowWidth - 100 - 
@@ -378,7 +550,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function createGrid() {
         console.log('x');
-        let board = document.getElementById('board');
+        //let board = document.getElementById('board');
         console.log(board.style.width);
         let boardWidth = parseInt(board.style.width, 10);
         let boardHeight = parseInt(board.style.height, 10);
@@ -398,26 +570,22 @@ document.addEventListener('DOMContentLoaded', function() {
             const newGridArr = [];
             for (let col = 0; col < numOfCols; col++) {
                 let newNodeIndex = `${row}-${col}`, newNodeClass, newNode;
-                let isStart = false;
-                let isFinish = false;
 
                 if (row === START_ROW && col === START_COL) {
                     gridBoard.startIsPlaced = true;
                     newNodeClass = 'start';
-                    isStart = true;
                 }
 
                 else if (row === FINISH_ROW && col === FINISH_COL) {
                     gridBoard.finishIsPlaced = true;
                     newNodeClass = 'finish';
-                    isFinish = true;
                 }
 
                 else {
                     newNodeClass = 'unvisited';
                 }
 
-                newNode = new Node(newNodeIndex, row, col, newNodeClass, isStart, isFinish);
+                newNode = new Node(newNodeIndex, row, col, newNodeClass);
                 // gridBoard.nodesMatrix.push(newNode);
                 newGridArr.push(newNode);
 
@@ -433,14 +601,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 newNodeDiv.addEventListener('mousedown', function(ev) {
                     handleMouseDownAndEnter(ev, this, 'mouseDown');
                 });
-
+    
                 newNodeDiv.addEventListener('mouseenter', function(ev) {
                     handleMouseDownAndEnter(ev, this, 'mouseEnter');
                 });
-
+    
                 newNodeDiv.addEventListener('mouseup', function(ev) {
                     ev.preventDefault();
-
+    
                     gridBoard.mouseIsPressed = false;
                 });
 
@@ -448,15 +616,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 board.appendChild(newNodeDiv);
                 
             }
+
             gridBoard.nodesMatrix.push(newGridArr);
         }
-        //console.log(gridBoard);
     }
 
     createGrid();
 
     function handleMouseDownAndEnter(ev, actualThis, mouseEvent) {
         ev.preventDefault();
+
+        if (gridBoard.algoIsRunning === true || infoBoxVisible === true) {
+            return;
+        }
 
         if (mouseEvent === 'mouseDown') {
             gridBoard.mouseIsPressed = true;
@@ -469,25 +641,36 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (gridBoard.pressedKey === null) {
             if (gridBoard.startIsPlaced === false) {
-                if (actualThis.className === 'finish') {
+                if (actualThis.className === 'finish' || 
+                    actualThis.className === 'finishVisited' ||
+                    actualThis.className === 'finishShortestPath') {
                     gridBoard.finishIsPlaced = false;
                 }
                 
+                gridBoard.nodesMatrix[START_ROW][START_COL].class = 'unvisited';
                 const [descriptor, row, col] = actualThis.id.split('-');
+                // console.log(`${actualThis.id}`);
+                // console.log(board);
+                // console.log(gridBoard);
                 START_ROW = row;
                 START_COL = col;
+                gridBoard.nodesMatrix[START_ROW][START_COL].class = 'start';
                 actualThis.className = 'start';
                 gridBoard.startIsPlaced = true;
             }
 
             else if (gridBoard.finishIsPlaced === false) {
-                if (actualThis.className === 'start') {
+                if (actualThis.className === 'start' ||
+                    actualThis.className === 'startVisited' ||
+                    actualThis.className === 'startShortestPath') {
                     gridBoard.startIsPlaced = false;
                 }
 
+                gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL].class = 'unvisited';
                 const [descriptor, row, col] = actualThis.id.split('-');
                 FINISH_ROW = row;
                 FINISH_COL = col;
+                gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL].class = 'finish';
                 actualThis.className = 'finish';
                 gridBoard.finishIsPlaced = true;
             }
@@ -498,6 +681,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     case 'lightWeight':
                     case 'normalWeight':
                     case 'heavyWeight':
+                    case 'visited':
+                    case 'shortestPath':
                         actualThis.className = 'wall';
                         changeWallStatus(actualThis.id, true);
                         changeWeightOfNode(actualThis.id, NODE_WEIGHT_NONE);
@@ -511,12 +696,16 @@ document.addEventListener('DOMContentLoaded', function() {
                         break;
 
                     case 'start':
+                    case 'startVisited':
+                    case 'startShortestPath':
                         actualThis.className = 'unvisited';
                         gridBoard.startIsPlaced = false;
 
                         break;
 
                     case 'finish':
+                    case 'finishVisited':
+                    case 'finishShortestPath':
                         actualThis.className = 'unvisited';
                         gridBoard.finishIsPlaced = false;
 
@@ -531,6 +720,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 case 'wall':
                 case 'normalWeight':
                 case 'heavyWeight':
+                case 'visited':
+                case 'shortestPath':
                     actualThis.className = 'lightWeight';
                     changeWeightOfNode(actualThis.id, NODE_WEIGHT_LIGHT);
 
@@ -550,6 +741,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 case 'wall':
                 case 'lightWeight':
                 case 'heavyWeight':
+                case 'visited':
+                case 'shortestPath':
                     actualThis.className = 'normalWeight';
                     changeWeightOfNode(actualThis.id, NODE_WEIGHT_NORMAL);
 
@@ -569,6 +762,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 case 'wall':
                 case 'lightWeight':
                 case 'normalWeight':
+                case 'visited':
+                case 'shortestPath':
                     actualThis.className = 'heavyWeight';
                     changeWeightOfNode(actualThis.id, NODE_WEIGHT_HEAVY);
 
@@ -622,21 +817,62 @@ document.addEventListener('DOMContentLoaded', function() {
             for (let col = 0; col < gridBoard.columns; col++) {
                 let node = document.getElementById(`node-${row}-${col}`);
 
-                if (row === START_ROW && col === START_COL) {
-                    gridBoard.nodesMatrix[row][col].isVisited = false;
-                    node.className = 'start';
-                }
-
-                else if (row === FINISH_ROW && col === FINISH_COL) {
-                    gridBoard.nodesMatrix[row][col].isVisited = false;
-                    node.className = 'finish';
-                }
-
-                else if (node.className === 'visited' || node.className === 'shortestPath') {
+                if (node.className === 'visited' || node.className === 'shortestPath') {
                     gridBoard.nodesMatrix[row][col].isVisited = false;
                     node.className = 'unvisited';
                 }
+
+                gridBoard.nodesMatrix[row][col].distanceFromStart = Infinity;
+                gridBoard.nodesMatrix[row][col].distanceFromFinish = Infinity;
+                gridBoard.nodesMatrix[row][col].heuristicDistance = Infinity;
+                gridBoard.nodesMatrix[row][col].totalDistance = Infinity;
+                gridBoard.nodesMatrix[row][col].prevNode = null;
+                gridBoard.nodesMatrix[row][col].prevNodeFromFinish = null;
+                gridBoard.nodesMatrix[row][col].direction = null;
             }
+        }
+
+        gridBoard.nodesMatrix[START_ROW][START_COL].isVisited = false;
+        document.getElementById(`node-${START_ROW}-${START_COL}`).className = 'start';
+        gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL].isVisited = false;
+        document.getElementById(`node-${FINISH_ROW}-${FINISH_COL}`).className = 'finish';
+        // console.log(board);
+        // if (row === START_ROW && col === START_COL) {
+        //     gridBoard.nodesMatrix[row][col].isVisited = false;
+        //     node.className = 'start';
+        // }
+
+        // else if (row === FINISH_ROW && col === FINISH_COL) {
+        //     gridBoard.nodesMatrix[row][col].isVisited = false;
+        //     node.className = 'finish';
+        // }
+    }
+
+    function enableButtons() {
+        let dropDownButtons = document.getElementsByClassName('dropDownButton');
+
+        for (let i = 0; i < dropDownButtons.length; i++) {
+            dropDownButtons[i].disabled = false;
+        }
+
+        let menuButtons = document.getElementsByClassName('menuButton');
+
+        for (let i = 0; i < menuButtons.length; i++) {
+            menuButtons[i].disabled = false;
+        }
+    }
+
+    function disableButtons() {
+        let dropDownButtons = document.getElementsByClassName('dropDownButton');
+
+        for (let i = 0; i < dropDownButtons.length; i++) {
+            dropDownButtons[i].disabled = true;
+        }
+
+        let menuButtons = document.getElementsByClassName('menuButton');
+
+        for (let i = 0; i < menuButtons.length; i++) {
+            menuButtons[i].disabled = true;
         }
     }
 
