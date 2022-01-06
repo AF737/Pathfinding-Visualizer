@@ -17,51 +17,52 @@
             <div class="overlay">
             <div class="menuBar">
                 <div class="dropDownWrapper">
-                    <button id="algorithmDropDownButton" class="dropDownButton" disabled="true">
+                    <button id="algorithmDropDownButton" class="dropDownButton" disabled="true"
+                    data-translate="button" data-lang="en">
                         Pick An Algorithm
                     </button>
                     <div id="algorithmDropDownMenu" class="dropDownMenu">
                         <div class="radioButtonWrapper">
                             <input type="radio" id="dijkstraRadio" name="algorithmOption"
                                 class="algorithmRadioButtons" value="dijkstra">
-                            <label for="dijkstraRadio">Dijkstra's algorithm</label>
+                            <label for="dijkstraRadio">Dijkstra's Algorithm</label>
                         </div>
                         <div class="radioButtonWrapper">
                             <input type="radio" id="aStarRadio" name="algorithmOption"
                                 class="algorithmRadioButtons" value="aStar">
-                            <label for="aStarRadio">A* algorithm</label>
+                            <label for="aStarRadio">A* Algorithm</label>
                         </div>
                         <div class="radioButtonWrapper">
                             <input type="radio" id="greedyBFSRadio" name="algorithmOption"
                                 class="algorithmRadioButtons" value="greedyBFS">
-                            <label for="greedyBFSRadio">Greedy best-first search</label>
+                            <label for="greedyBFSRadio">Greedy Best-First Search</label>
                         </div>
                         <div class="radioButtonWrapper">
                             <input type="radio" id="breadthFirstSearchRadio" name="algorithmOption"
                                 class="algorithmRadioButtons" value="breadthFirstSearch">
-                            <label for="breadthFirstSearchRadio">Breadth-first search</label>
+                            <label for="breadthFirstSearchRadio">Breadth-First Search</label>
                         </div>
                         <div class="radioButtonWrapper">
                             <input type="radio" id="bidirectionalDijkstraRadio" name="algorithmOption"
                                 class="algorithmRadioButtons" value="bidirectionalDijkstra">
                                 <label for="bidirectionalDijkstraRadio">
-                                    Bidirectional Dijkstra's algorithm
+                                    Bidirectional Dijkstra's Algorithm
                                 </label>
                         </div>
                         <div class="radioButtonWrapper">
                             <input type="radio" id="bidirectionalAStarRadio" name="algorithmOption"
                                 class="algorithmRadioButtons" value="bidirectionalAStar">
-                            <label for="bidirectionalAStarRadio">Bidirectional A* algorithm</label>
+                            <label for="bidirectionalAStarRadio">Bidirectional A* Algorithm</label>
                         </div>
                         <div class="radioButtonWrapper">
                             <input type="radio" id="depthFirstSearchRadio" name="algorithmOption"
                                 class="algorithmRadioButtons" value="depthFirstSearch">
-                            <label for="depthFirstSearchRadio">Depth-first search</label>
+                            <label for="depthFirstSearchRadio">Depth-First Search</label>
                         </div>
                         <div class="radioButtonWrapper">
                             <input type="radio" id="jumpPointSearchRadio" name="algorithmOption"
                                 class="algorithmRadioButtons" value="jumpPointSearch">
-                            <label for="jumpPointSearchRadio">Jump point search</label>
+                            <label for="jumpPointSearchRadio">Jump Point Search</label>
                         </div>
                         <!--<a href="#">Dijkstra</a>
                         <a href="#">A*</a>
@@ -133,6 +134,9 @@
                 </button>
                 <button id="resetBoard" class="menuButton" disabled="true">
                     Reset Board
+                </button>
+                <button id="openInfoBox" class="menuButton" disabled="true">
+                    Open Infobox
                 </button>
             </div>
             <div class="descriptionBar">

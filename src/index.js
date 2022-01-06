@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var infoBoxPage = 0;
     var infoBoxVisible = true;
     var board = document.getElementById('board');
+    var openInfoBoxButton = document.getElementById('openInfoBox');
 
     /* TODO:
        - Clean up code
@@ -63,6 +64,48 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keyup', function() {
         gridBoard.pressedKey = null;
     });
+
+    function setupAlgorithmRadioButtons() {
+        let radioButtons = document.querySelectorAll('input[name="algorithmOption"]');
+
+        for (let i = 0; i < radioButtons.length; i++) {
+            radioButtons[i].addEventListener('change', function() {
+                let animateButtonText = 'Animate ';
+
+                switch(radioButtons[i].value) {
+                    case 'dijkstra':
+                    animateButtonText += 'Dijkstra\'s';
+                    break;
+                case 'aStar':
+                    animateButtonText += 'A*';
+                    break;
+                case 'greedyBFS':
+                    animateButtonText += 'Greedy Best-First';
+                    break;
+                case 'breadthFirstSearch':
+                    animateButtonText += 'Breadth-First';
+                    break;
+                case 'bidirectionalDijkstra':
+                    animateButtonText += 'Bidirect. Dijkstra\'s';
+                    break;
+                case 'bidirectionalAStar':
+                    animateButtonText += 'Bidirect. A*';
+                    break;
+                case 'depthFirstSearch':
+                    animateButtonText += 'DFS';
+                    break;
+                case 'jumpPointSearch':
+                    animateButtonText += 'JPS';
+                    break;
+                }
+
+                animateAlgorithmButton.innerHTML = animateButtonText;
+                algorithmDropDownButton.style.border = '1px solid white';
+            });
+        }
+    }
+
+    setupAlgorithmRadioButtons();
 
     algorithmDropDownButton.addEventListener('click', function() {
         /* The first time clicking the button no inline style will be set (it's an empty
@@ -79,44 +122,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     algorithmDropDownMenu.addEventListener('mouseleave', function() {
         algorithmDropDownMenu.style.display = 'none';
-        
-        let selectedAlgorihth = document.querySelector('input[name="algorithmOption"]:checked');
-        let buttonText = '';
-        /* If no algorithm has been selected */
-        if (selectedAlgorihth === null) {
-            animateAlgorithmButton.innerHTML = 'Select An Algorithm';
-        }
-
-        else {
-            switch (selectedAlgorihth.value) {
-                case 'dijkstra':
-                    buttonText = 'Dijkstra\'s algorithm';
-                    break;
-                case 'aStar':
-                    buttonText = 'A* algorithm';
-                    break;
-                case 'greedyBFS':
-                    buttonText = 'Greedy best-first search';
-                    break;
-                case 'breadthFirstSearch':
-                    buttonText = 'Breadth-first search';
-                    break;
-                case 'bidirectionalDijkstra':
-                    buttonText = 'Bidirectional Dijkstra';
-                    break;
-                case 'bidirectionalAStar':
-                    buttonText = 'Bidirectional A* algorithm';
-                    break;
-                case 'depthFirstSearch':
-                    buttonText = 'Depth-first search';
-                    break;
-                case 'jumpPointSearch':
-                    buttonText = 'Jump point search';
-                    break;
-            }
-
-            algorithmDropDownButton.innerHTML = buttonText;
-        }
     });
 
     weightDropDownButton.addEventListener('click', function() {
@@ -131,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     weightDropDownMenu.addEventListener('mouseleave', function() {
-        algorithmDropDownMenu.style.display = 'none';
+        weightDropDownMenu.style.display = 'none';
     });
 
     lightWeightSlider.addEventListener('input', function() {
@@ -312,12 +317,44 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    var dic = {
+        'button': {
+            'en': "Pick An Algorithm",
+            'de': "Wähle einen Algorithmus"
+        }
+    };
+
+    var langs = ['en', 'de'];
+    let ind = 0;
+
+    function translate(lang) {
+        let data = document.querySelectorAll('[data-translate]');
+        
+        for (let i = 0; i < data.length; i++) {
+            data[i].innerHTML = getTranslation(data[i].dataset.translate, lang);
+            data[i].dataset.lang = lang;
+        }
+    }
+
+    function getTranslation(data, lang) {
+        return dic[data][lang];
+    }
+
+    // https://stackoverflow.com/questions/42494867/i-want-to-translate-my-html-text
+    openInfoBoxButton.addEventListener('click', function() {
+        ind = 1 - ind;
+        let lang = langs[ind];
+        translate(lang);
+    });
+
     animateAlgorithmButton.addEventListener('click', function() {
         let selectedAlgorithm = document.querySelector('input[name="algorithmOption"]:checked');
         // console.log(selectedAlgorithm.value);
         /* If no algorithm has been selected */
         if (selectedAlgorithm === null) {
             animateAlgorithmButton.innerHTML = 'Select An Algorithm';
+
+            algorithmDropDownButton.style.border = '3px solid red';
         }
 
         else {
@@ -329,6 +366,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 eightDirections = false;
             }
 
+            algorithmDropDownMenu.style.display = 'none';
+            weightDropDownMenu.style.display = 'none';
             removePreviousAlgorithm();
             disableButtons();
             gridBoard.algoIsRunning = true;
@@ -649,9 +688,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 gridBoard.nodesMatrix[START_ROW][START_COL].class = 'unvisited';
                 const [descriptor, row, col] = actualThis.id.split('-');
-                // console.log(`${actualThis.id}`);
-                // console.log(board);
-                // console.log(gridBoard);
                 START_ROW = row;
                 START_COL = col;
                 gridBoard.nodesMatrix[START_ROW][START_COL].class = 'start';
@@ -696,17 +732,37 @@ document.addEventListener('DOMContentLoaded', function() {
                         break;
 
                     case 'start':
-                    case 'startVisited':
-                    case 'startShortestPath':
                         actualThis.className = 'unvisited';
                         gridBoard.startIsPlaced = false;
 
                         break;
 
+                    case 'startVisited':
+                        actualThis.className = 'visited';
+                        gridBoard.startIsPlaced = false;
+
+                        break;
+
+                    case 'startShortestPath':
+                        actualThis.className = 'shortestPath';
+                        gridBoard.startIsPlaced = false;
+
+                        break;
+
                     case 'finish':
-                    case 'finishVisited':
-                    case 'finishShortestPath':
                         actualThis.className = 'unvisited';
+                        gridBoard.finishIsPlaced = false;
+
+                        break;
+
+                    case 'finishVisited':
+                        actualThis.className = 'visited';
+                        gridBoard.finishIsPlaced = false;
+
+                        break;
+
+                    case 'finishShortestPath':
+                        actualThis.className = 'shortestPath';
                         gridBoard.finishIsPlaced = false;
 
                         break;

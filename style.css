@@ -68,7 +68,8 @@ div.radioButtonWrapper {
     align-items: center;
     text-align: center;
     /* border: 1px solid white; */
-    padding: 0.5vw 0;
+    padding: 0.5vh 0;
+    /* margin: 0.5vh 0; */
     /* cursor: pointer; */
 }
 
@@ -89,6 +90,8 @@ div.radioButtonWrapper label {
     /* Label is an inline element so it's only as big as the text that it contains
         so by setting it to be the parent's width text-align can take effect */
     width: inherit;
+    /* height: calc(1.2rem + 1vh); */
+    /* border: 1px solid red; */
     color: white;
     font-size: 1.2rem;
     /* text-align: center; */
@@ -266,7 +269,7 @@ div#visitedNode {
 }
 
 div#shortestPathNode {
-    background-color: #c611c0;
+    background-color: #f059eb;
 }
 
 div#wallNode {
@@ -376,7 +379,7 @@ div.startVisited {
         shows the start and the blue outline shows that it has been visited */
     /* outline: 5px solid darkblue;
     outline-offset: -6px; */
-    outline-offset: -6px;
+    outline-offset: -5px;
     animation-name: startVisitedAnimation;
     animation-duration: 1.5s;
     animation-fill-mode: forwards;
@@ -395,24 +398,24 @@ div.startVisited {
 
     25% {
         background-color: #c94b4b;
-        outline: 2px solid darkblue;
+        outline: 1px solid blue;
     }
 
     50% {
         background-color: #eb4949;
         transform: scale(1.20);
-        outline: 3px solid darkblue;
+        outline: 2px solid blue;
     }
 
     75% {
         background-color: #d43d3d;
-        outline: 4px solid darkblue;
+        outline: 3px solid blue;
     }
 
     100% {
         background-color: red;
         transform: scale(1.0);
-        outline: 5px solid darkblue;
+        outline: 4px solid blue;
     }
 }
 
@@ -420,7 +423,7 @@ div.startShortestPath {
     /* background-color: red; */
     border: 1px solid black;
     /* outline: 5px solid #c611c0; */
-    outline-offset: -6px;
+    outline-offset: -5px;
     animation-name: startShortestPathAnimation;
     animation-duration: 1.5s;
     animation-fill-mode: forwards;
@@ -439,24 +442,24 @@ div.startShortestPath {
 
     25% {
         background-color: #c94b4b;
-        outline: 2px solid #c611c0;
+        outline: 1px solid #f059eb;
     }
 
     50% {
         background-color: #eb4949;
         transform: scale(1.20);
-        outline: 3px solid #c611c0;
+        outline: 2px solid #f059eb;
     }
 
     75% {
         background-color: #d43d3d;
-        outline: 4px solid #c611c0;
+        outline: 3px solid #f059eb;
     }
 
     100% {
         background-color: red;
         transform: scale(1.0);
-        outline: 5px solid #c611c0;
+        outline: 4px solid #f059eb;
     }
 }
 
@@ -468,8 +471,8 @@ div.finish {
 div.finishVisited {
     background-color: green;
     border: 1px solid black;
-    outline: 5px solid darkblue;
-    outline-offset: -6px;
+    /* outline: 5px solid blue; */
+    outline-offset: -5px;
     animation-name: finishVisitedAnimation;
     animation-duration: 1.5s;
     animation-fill-mode: forwards;
@@ -488,32 +491,32 @@ div.finishVisited {
 
     25% {
         background-color: #87ed8e;
-        outline: 2px solid darkblue;
+        outline: 1px solid blue;
     }
 
     50% {
         background-color: #64f56e;
         transform: scale(1.20);
-        outline: 3px solid darkblue;
+        outline: 2px solid blue;
     }
 
     75% {
         background-color: #2ae836;
-        outline: 4px solid darkblue;
+        outline: 3px solid blue;
     }
 
     100% {
         background-color: green;
         transform: scale(1.0);
-        outline: 5px solid darkblue;
+        outline: 4px solid blue;
     }
 }
 
 div.finishShortestPath {
     background-color: green;
     border: 1px solid black;
-    outline: 5px solid #c611c0;
-    outline-offset: -6px;
+    /* outline: 5px solid #f059eb; */
+    outline-offset: -5px;
     animation-name: finishShortestPathAnimation;
     animation-duration: 1.5s;
     animation-fill-mode: forwards;
@@ -532,24 +535,24 @@ div.finishShortestPath {
 
     25% {
         background-color: #87ed8e;
-        outline: 2px solid #c611c0;
+        outline: 1px solid #f059eb;
     }
 
     50% {
         background-color: #64f56e;
         transform: scale(1.20);
-        outline: 3px solid #c611c0;
+        outline: 2px solid #f059eb;
     }
 
     75% {
         background-color: #2ae836;
-        outline: 4px solid #c611c0;
+        outline: 3px solid #f059eb;
     }
 
     100% {
         background-color: green;
         transform: scale(1.0);
-        outline: 5px solid #c611c0;
+        outline: 4px solid #f059eb;
     }
 }
 
@@ -582,11 +585,11 @@ div.visited {
     }
 
     75% {
-        background-color: blue;
+        background-color: royalblue;
     }
 
     100% {
-        background-color: darkblue;
+        background-color: blue;
         transform: scale(1.0);
     }
 }
@@ -624,7 +627,7 @@ div.shortestPath {
     }
 
     100% {
-        background-color: #c611c0;
+        background-color: #f059eb;
         transform: scale(1.0);
     }
 }
