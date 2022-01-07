@@ -302,6 +302,14 @@ div#infoBox {
     text-align: center;
 }
 
+div#currInfoBoxPage {
+    color: black;
+    font-size: 1.1rem;
+    top: 1vh;
+    right: 1vw;
+    position: fixed;
+}
+
 button.infoBoxButton {
     width: 6vw;
     height: 4vh;

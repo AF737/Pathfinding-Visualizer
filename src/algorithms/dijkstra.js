@@ -60,8 +60,8 @@ function sortNodesByDistanceFromStart(unvisitedNodes) {
         firstNode.distanceFromStart - secondNode.distanceFromStart);
 }
 
-function updateUnvisitedNeighbors(grid, node, eightDirections) {
-    const unvisitedNeighbors = getUnvisitedNeighbors(grid, node, eightDirections);
+function updateUnvisitedNeighbors(grid, node) {
+    const unvisitedNeighbors = getUnvisitedNeighbors(grid, node);
 
     for (const neighbor of unvisitedNeighbors) {
         neighbor.distanceFromStart = node.distanceFromStart + neighbor.weight;
@@ -73,21 +73,26 @@ function getUnvisitedNeighbors(grid, node) {
     const neighbors = [];
     const row = node.row;
     const col = node.column;
+    let up = false, down = false, left = false, right = false;
     
     if (row > 0) {
         neighbors.push(grid.nodesMatrix[row - 1][col]);
+        up = true;
     }
 
     if (row < (grid.rows - 1)) {
         neighbors.push(grid.nodesMatrix[row + 1][col]);
+        down = true;
     }
 
     if (col > 0) {
         neighbors.push(grid.nodesMatrix[row][col - 1]);
+        left = true;
     }
 
     if (col < (grid.columns - 1)) {
         neighbors.push(grid.nodesMatrix[row][col + 1]);
+        right = true;
     }
 
     /* Only return the neighbors that haven't been visited yet */

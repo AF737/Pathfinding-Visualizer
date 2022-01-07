@@ -18,8 +18,7 @@
             <div class="menuBar">
                 <div class="dropDownWrapper">
                     <button id="algorithmDropDownButton" class="dropDownButton" disabled="true"
-                    data-translate="button" data-lang="en">
-                        Pick An Algorithm
+                        data-translate="algorithmButton" data-lang="en">Algorithms&#9660;
                     </button>
                     <div id="algorithmDropDownMenu" class="dropDownMenu">
                         <div class="radioButtonWrapper">
@@ -45,9 +44,9 @@
                         <div class="radioButtonWrapper">
                             <input type="radio" id="bidirectionalDijkstraRadio" name="algorithmOption"
                                 class="algorithmRadioButtons" value="bidirectionalDijkstra">
-                                <label for="bidirectionalDijkstraRadio">
-                                    Bidirectional Dijkstra's Algorithm
-                                </label>
+                            <label for="bidirectionalDijkstraRadio">
+                                Bidirectional Dijkstra's Algorithm
+                            </label>
                         </div>
                         <div class="radioButtonWrapper">
                             <input type="radio" id="bidirectionalAStarRadio" name="algorithmOption"
@@ -75,8 +74,8 @@
                     </div>
                 </div>
                 <div class="dropDownWrapper">
-                    <button id="weightDropDownButton" class="dropDownButton" disabled="true">
-                        Adjust Weights
+                    <button id="weightDropDownButton" class="dropDownButton" disabled="true"
+                        data-translate="weightButton" data-lang="en">Adjust Weights&#9660;
                     </button>
                     <div id="weightDropDownMenu" class="dropDownMenu">
                         <div class="weightWrapper">
@@ -120,23 +119,23 @@
                     <input type="checkbox" id="directionsToggleButton">
                     <span class="toggleButtonSlider"></span>
                 </label>
-                <button id="animateAlgorithm" class="menuButton" disabled="true">
-                    Animate
+                <button id="animateAlgorithm" class="menuButton" disabled="true"
+                    data-translate="animateAlgoButton" data-lang="en">Animate
                 </button>
-                <button id="clearAlgorithm" class="menuButton" disabled="true">
-                    Clear Algorithm
+                <button id="clearAlgorithm" class="menuButton" disabled="true"
+                    data-translate="clearAlgoButton" data-lang="en">Clear Algorithm
                 </button>
-                <button id="clearWalls" class="menuButton" disabled="true">
-                    Clear Walls
+                <button id="clearWalls" class="menuButton" disabled="true"
+                    data-translate="clearWallsButton" data-lang="en">Clear Walls
                 </button>
-                <button id="clearWeights" class="menuButton" disabled="true">
-                    Clear Weights
+                <button id="clearWeights" class="menuButton" disabled="true"
+                    data-translate="clearWeightsButton" data-lang="en">Clear Weights
                 </button>
-                <button id="resetBoard" class="menuButton" disabled="true">
-                    Reset Board
+                <button id="resetBoard" class="menuButton" disabled="true"
+                    data-translate="resetBoardButton" data-lang="en">Reset Board
                 </button>
-                <button id="openInfoBox" class="menuButton" disabled="true">
-                    Open Infobox
+                <button id="openInfoBox" class="menuButton" disabled="true"
+                    data-translate="infoBoxButton" data-lang="en">Open Infobox
                 </button>
             </div>
             <div class="descriptionBar">
@@ -169,6 +168,7 @@
             </div>
             </div>
             <div id="infoBox">
+                <div id="currInfoBoxPage">1/6</div>
                 <div id="infoBoxText">
                     <h2 class="h2InfoBox">Welcome to my Pathfinding Visualizer</h2>
                     <h3 class="h3InfoBox">This project was inspired by Clément Mihailescu
@@ -208,7 +208,7 @@
         <footer>
 
         </footer>
-    </body>
 
-    <script type="module" src="src/index.js"></script>
+        <script type="module" src="src/index.js"></script>
+    </body>
 </html>

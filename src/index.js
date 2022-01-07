@@ -43,6 +43,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var clearWallsButton = document.getElementById('clearWalls');
     var clearWeightsButton = document.getElementById('clearWeights');
     var resetBoardButton = document.getElementById('resetBoard');
+    var infoBox = document.getElementById('infoBox');
+    var currInfoBoxPage = document.getElementById('currInfoBoxPage');
     var infoBoxText = document.getElementById('infoBoxText');
     var skipInfoBoxButton = document.getElementById('skipInfoBoxButton');
     var prevInfoBoxButton = document.getElementById('prevInfoBoxButton');
@@ -80,16 +82,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     animateButtonText += 'A*';
                     break;
                 case 'greedyBFS':
-                    animateButtonText += 'Greedy Best-First';
+                    animateButtonText += 'Greedy';
                     break;
                 case 'breadthFirstSearch':
                     animateButtonText += 'Breadth-First';
                     break;
                 case 'bidirectionalDijkstra':
-                    animateButtonText += 'Bidirect. Dijkstra\'s';
+                    animateButtonText += 'Bi. Dijkstra\'s';
                     break;
                 case 'bidirectionalAStar':
-                    animateButtonText += 'Bidirect. A*';
+                    animateButtonText += 'Bi. A*';
                     break;
                 case 'depthFirstSearch':
                     animateButtonText += 'DFS';
@@ -113,6 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (algorithmDropDownMenu.style.display === '' || 
                 algorithmDropDownMenu.style.display === 'none') {
             algorithmDropDownMenu.style.display = 'block';
+            algorithmDropDownButton.innerHTML = 'Algorithms&#9650;'
         }
 
         else {
@@ -122,12 +125,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     algorithmDropDownMenu.addEventListener('mouseleave', function() {
         algorithmDropDownMenu.style.display = 'none';
+        algorithmDropDownButton.innerHTML = 'Algorithms&#9660;'
     });
 
     weightDropDownButton.addEventListener('click', function() {
         if (weightDropDownMenu.style.display === '' || 
                 weightDropDownMenu.style.display === 'none') {
             weightDropDownMenu.style.display = 'block';
+            weightDropDownButton.innerHTML = 'Adjust Weights&#9650;';
         }
 
         else {
@@ -137,6 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     weightDropDownMenu.addEventListener('mouseleave', function() {
         weightDropDownMenu.style.display = 'none';
+        weightDropDownButton.innerHTML = 'Adjust Weights&#9660;';
     });
 
     lightWeightSlider.addEventListener('input', function() {
@@ -193,7 +199,7 @@ document.addEventListener('DOMContentLoaded', function() {
         removePreviousAlgorithm();
     });
 
-    skipInfoBoxButton.addEventListener('click', function() {
+    function closeInfoBox() {
         let overlays = document.getElementsByClassName('overlay');
         
         for (let i = 0; i < overlays.length; i++) {
@@ -204,24 +210,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
         infoBoxVisible = false;
 
-        document.getElementById('infoBox').style.display = 'none';
-    });
+        infoBox.style.display = 'none';
+    }
+
+    skipInfoBoxButton.addEventListener('click', closeInfoBox);
+
+    function updateCurrPage(currPage) {
+        currInfoBoxPage.innerHTML = `${currPage + 1}/6`;
+    }
 
     prevInfoBoxButton.addEventListener('click', function() {
         if (infoBoxPage > 0) {
             infoBoxPage--;
+            updateCurrPage(infoBoxPage);
         }
 
         if (infoBoxPage === 0) {
             prevInfoBoxButton.disabled = true;
         }
 
+        nextInfoButton.innerHTML = 'Next';
         displayInfoBoxText(infoBoxPage);
     });
 
-    nextInfoButton.addEventListener('click', function() {
+    function nextInfoBoxPage() {
         if (infoBoxPage < 5) {
             infoBoxPage++;
+            updateCurrPage(infoBoxPage);
         }
 
         if (infoBoxPage > 0) {
@@ -229,6 +244,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         displayInfoBoxText(infoBoxPage);
+    }
+
+    nextInfoButton.addEventListener('click', function() {
+        if (infoBoxPage === 4) {
+            nextInfoButton.innerHTML = 'Finish';
+            nextInfoBoxPage();
+        }
+
+        else if (infoBoxPage === 5) {
+            closeInfoBox();
+        }
+
+        else {
+            nextInfoButton.innerHTML = 'Next';
+            nextInfoBoxPage();
+        }
     });
 
     function displayInfoBoxText(currentPage) {
@@ -300,7 +331,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 break;
             case 4:
-                infoBoxText.innerHTML = `<h2 class="h2InfoBox">Overview of some features</h2>
+                infoBoxText.innerHTML = `<h2 class="h2InfoBox">Overview of features 1/2</h2>
                 <p class="pInfoBox">Walls can be easily added by left-clicking on a tile and
                     removed by once again left-clicking on that tile. <br/>There are three
                     different weights which can be placed by left-clicking while pressing either of
@@ -314,16 +345,35 @@ document.addEventListener('DOMContentLoaded', function() {
                 <img src="images/walls_weights_movement.gif"/>`;
                     
                 break;
+            case 5:
+                infoBoxText.innerHTML = `<h2 class="h2InfoBox">Overview of features 2/2</h2>
+                <p class="pInfoBox">Clear Algorithm: Removes the previous algorithm while leaving the
+                    walls and weights in their place. <br/>Clear Walls: Removes all walls. <br/>
+                    Clear Weights: Removes all weights. <br/>Reset Board: Returns the board to its
+                    original look so that all walls and weights are removed and the start and finish
+                    node are in their original places too.
+                </p>`;
+
+                break;
         }
     }
 
     var dic = {
-        'button': {
-            'en': "Pick An Algorithm",
-            'de': "Wähle einen Algorithmus"
+        'algorithmButton': {
+            'en': 'Algorithms&#9660;',
+            'de': 'Algorithmen&#9660;'
+        },
+        'weightButton': {
+            'en': 'Adjust Weights&#9660',
+            'de': 'Gewichte Anpassen&#9660'
+        },
+        'animateAlgoButton': {
+            'en': 'Animate',
+            'de': 'Animiere'
         }
     };
 
+    // https://stackoverflow.com/questions/42494867/i-want-to-translate-my-html-text
     var langs = ['en', 'de'];
     let ind = 0;
 
@@ -331,20 +381,22 @@ document.addEventListener('DOMContentLoaded', function() {
         let data = document.querySelectorAll('[data-translate]');
         
         for (let i = 0; i < data.length; i++) {
-            data[i].innerHTML = getTranslation(data[i].dataset.translate, lang);
+            data[i].innerHTML = dic[data[i].dataset.translate][lang];
             data[i].dataset.lang = lang;
         }
     }
 
-    function getTranslation(data, lang) {
-        return dic[data][lang];
-    }
-
-    // https://stackoverflow.com/questions/42494867/i-want-to-translate-my-html-text
-    openInfoBoxButton.addEventListener('click', function() {
+    function trans() {
         ind = 1 - ind;
         let lang = langs[ind];
         translate(lang);
+    }
+
+    openInfoBoxButton.addEventListener('click', function() {
+        disableButtons();
+        infoBoxVisible = true;
+
+        infoBox.style.display = 'inline';
     });
 
     animateAlgorithmButton.addEventListener('click', function() {
@@ -367,7 +419,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             algorithmDropDownMenu.style.display = 'none';
+            algorithmDropDownButton.innerHTML = 'Animate&#9650;';
             weightDropDownMenu.style.display = 'none';
+            weightDropDownButton.innerHTML = 'Adjust Weights&#9650;';
             removePreviousAlgorithm();
             disableButtons();
             gridBoard.algoIsRunning = true;
