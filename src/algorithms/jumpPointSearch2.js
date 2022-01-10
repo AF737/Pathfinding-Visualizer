@@ -568,8 +568,12 @@ function diagonalSearch(grid, parentNode, finishNode, rowChange, colChange, open
 }
 
 function getDistance(parentNode, childNode) {
-    return Math.sqrt(Math.pow((parentNode.row - childNode.row), 2) +
-            Math.pow((parentNode.column - childNode.column), 2));
+    //return Math.sqrt(Math.pow((parentNode.row - childNode.row), 2) +
+    //        Math.pow((parentNode.column - childNode.column), 2));
+    const rowChange = Math.abs(parentNode.row - childNode.row);
+    const colChange = Math.abs(parentNode.column - childNode.column);
+
+    return ((rowChange + colChange) + ((Math.SQRT2 - 2) * Math.min(rowChange, colChange))); 
 }
 
 function getNodeFromArray(array, node, direction) {

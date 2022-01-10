@@ -176,21 +176,37 @@ label.switch input {
     display: none;
 }
 
-span.toggleButtonSlider {
+span#directionsText {
     /* border: 1px solid blue; */
     cursor: pointer;
     /* Centers the text of the switch vertically */
     position: relative;
-    top: calc((50px - 1.2rem) / 2);
+    /* top: calc((50px - 2.4rem) / 2); */
+    top: 2px;
 }
 
-span.toggleButtonSlider:after {
+span#directionsText:after {
     content: "Four Directions";
     font-size: 1.2rem;
 }
 
-label.switch input:checked + span.toggleButtonSlider:after {
+label.switch input:checked + span#directionsText:after {
     content: "Eight Directions";
+}
+
+span#cornerCuttingText {
+    cursor: pointer;
+    position: relative;
+    top: 2px;
+}
+
+span#cornerCuttingText:after {
+    content: "No Corner Cutting";
+    font-size: 1.2rem;
+}
+
+label.switch input:checked + span#cornerCuttingText:after {
+    content: "Corner Cutting";
 }
 
 button.menuButton {

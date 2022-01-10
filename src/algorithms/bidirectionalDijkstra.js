@@ -98,7 +98,8 @@ function updateUnvisitedNeighbors(grid, node, initNode) {
 
     for (const neighbor of neighbors) {
         if (initNode === 'start') {
-            neighbor.distanceFromStart = node.distanceFromStart + neighbor.weight;
+            neighbor.distanceFromStart = node.distanceFromStart + neighbor.weight +
+                getDistance(node, neighbor);
             neighbor.prevNode = node;
         }
 
@@ -107,7 +108,8 @@ function updateUnvisitedNeighbors(grid, node, initNode) {
             chain of nodes leading to the other initial node (i.e. either start node
             or finish node would be unreachable) */
         else if (initNode === 'finish') {
-            neighbor.distanceFromFinish = node.distanceFromFinish + neighbor.weight;
+            neighbor.distanceFromFinish = node.distanceFromFinish + neighbor.weight +
+                getDistance(node, neighbor);
             neighbor.prevNodeFromFinish = node;
         }
     }
@@ -140,6 +142,11 @@ function getUnvisitedNeighbors(grid, node) {
 
 function checkUnvisited(neighbor) {
     return neighbor.isVisited === false;
+}
+
+function getDistance(parentNode, node) {
+    return (Math.abs(parentNode.row - node.row) +
+            Math.abs(parentNode.column - node.column));
 }
 
 function getPath(startingNode) {

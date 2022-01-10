@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var START_COL, START_ROW, FINISH_COL, FINISH_ROW;
     var ORIG_START_COL, ORIG_START_ROW, ORIG_FINISH_COL, ORIG_FINISH_ROW;
     const ANIMATION_SPEED = 10;
-    const NODE_WEIGHT_NONE = 1;
+    const NODE_WEIGHT_NONE = 0;
     var NODE_WEIGHT_LIGHT = 15;
     var NODE_WEIGHT_NORMAL = 30;
     var NODE_WEIGHT_HEAVY = 45;
@@ -53,6 +53,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var infoBoxVisible = true;
     var board = document.getElementById('board');
     var openInfoBoxButton = document.getElementById('openInfoBox');
+    var cornerCuttingToggleButton = document.getElementById('cornerCuttingToggleButton');
+    var cornerCutting = false;
 
     /* TODO:
        - Clean up code
@@ -120,6 +122,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         else {
             algorithmDropDownMenu.style.display = 'none';
+            algorithmDropDownButton.innerHTML = 'Algorithms&#9660;'
         }
     });
 
@@ -137,6 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         else {
             weightDropDownMenu.style.display = 'none';
+            weightDropDownButton.innerHTML = 'Adjust Weights&#9660;';
         }
     });
 
@@ -418,10 +422,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 eightDirections = false;
             }
 
+            if (cornerCuttingToggleButton.checked === true) {
+                cornerCutting = true;
+            }
+
+            else {
+                cornerCutting = false;
+            }
+
             algorithmDropDownMenu.style.display = 'none';
-            algorithmDropDownButton.innerHTML = 'Animate&#9650;';
+            algorithmDropDownButton.innerHTML = 'Animate&#9660;';
             weightDropDownMenu.style.display = 'none';
-            weightDropDownButton.innerHTML = 'Adjust Weights&#9650;';
+            weightDropDownButton.innerHTML = 'Adjust Weights&#9660;';
             removePreviousAlgorithm();
             disableButtons();
             gridBoard.algoIsRunning = true;
@@ -471,7 +483,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
         
         const [visitedNodes, shortestPath] = 
-            aStar(gridBoard, startNode, finishNode, eightDirections);
+            aStar(gridBoard, startNode, finishNode, eightDirections, cornerCutting);
         
         animateAlgorithm(visitedNodes, null, shortestPath);
     }
@@ -481,7 +493,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
 
         const [visitedNodes, path] = 
-            greedyBFS(gridBoard, startNode, finishNode);
+            greedyBFS(gridBoard, startNode, finishNode, eightDirections, cornerCutting);
 
         animateAlgorithm(visitedNodes, null, path);
     }
@@ -513,7 +525,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let finishNode = gridBoard.nodesMatrix[FINISH_ROW][FINISH_COL];
 
         const [visitedNodesFromStart, visitedNodesFromFinish, path] =
-            bidirectionalAStar(gridBoard, startNode, finishNode);
+            bidirectionalAStar(gridBoard, startNode, finishNode, eightDirections, cornerCutting);
 
         animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, path);
     }
@@ -920,6 +932,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 } 
             }
         }
+
+        for (let row = 0; row < gridBoard.rows; row++) {
+            for (let col = 0; col < gridBoard.columns; col++) {
+                console.log(gridBoard.nodesMatrix[row][col].isWall);
+            }
+        }
     }
 
     function removePreviousAlgorithm() {
@@ -932,6 +950,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     node.className = 'unvisited';
                 }
 
+                gridBoard.nodesMatrix[row][col].isVisited = false;
                 gridBoard.nodesMatrix[row][col].distanceFromStart = Infinity;
                 gridBoard.nodesMatrix[row][col].distanceFromFinish = Infinity;
                 gridBoard.nodesMatrix[row][col].heuristicDistance = Infinity;
