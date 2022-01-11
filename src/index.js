@@ -55,6 +55,9 @@ document.addEventListener('DOMContentLoaded', function() {
     var openInfoBoxButton = document.getElementById('openInfoBox');
     var cornerCuttingToggleButton = document.getElementById('cornerCuttingToggleButton');
     var cornerCutting = false;
+    var directionsSwitch = document.getElementById('directionsSwitch');
+    var cornerCuttingSwitch = document.getElementById('cornerCuttingSwitch');
+    const LAST_INFOBOX_PAGE = 7; 
 
     /* TODO:
        - Clean up code
@@ -78,29 +81,43 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 switch(radioButtons[i].value) {
                     case 'dijkstra':
-                    animateButtonText += 'Dijkstra\'s';
-                    break;
-                case 'aStar':
-                    animateButtonText += 'A*';
-                    break;
-                case 'greedyBFS':
-                    animateButtonText += 'Greedy';
-                    break;
-                case 'breadthFirstSearch':
-                    animateButtonText += 'Breadth-First';
-                    break;
-                case 'bidirectionalDijkstra':
-                    animateButtonText += 'Bi. Dijkstra\'s';
-                    break;
-                case 'bidirectionalAStar':
-                    animateButtonText += 'Bi. A*';
-                    break;
-                case 'depthFirstSearch':
-                    animateButtonText += 'DFS';
-                    break;
-                case 'jumpPointSearch':
-                    animateButtonText += 'JPS';
-                    break;
+                        animateButtonText += 'Dijkstra\'s';
+                        resetToggleButtons();
+                        disableToggleButtons();
+                        break;
+                    case 'aStar':
+                        animateButtonText += 'A*';
+                        resetToggleButtons();
+                        enableDirections();
+                        break;
+                    case 'greedyBFS':
+                        animateButtonText += 'Greedy';
+                        resetToggleButtons();
+                        enableDirections();
+                        break;
+                    case 'breadthFirstSearch':
+                        animateButtonText += 'Breadth-First';
+                        resetToggleButtons();
+                        disableToggleButtons();
+                        break;
+                    case 'bidirectionalDijkstra':
+                        animateButtonText += 'Bi. Dijkstra\'s';
+                        resetToggleButtons();
+                        disableToggleButtons();
+                        break;
+                    case 'bidirectionalAStar':
+                        animateButtonText += 'Bi. A*';
+                        resetToggleButtons();
+                        enableDirections();
+                        break;
+                    case 'depthFirstSearch':
+                        animateButtonText += 'DFS';
+                        resetToggleButtons();
+                        disableToggleButtons();
+                        break;
+                    case 'jumpPointSearch':
+                        animateButtonText += 'JPS';
+                        break;
                 }
 
                 animateAlgorithmButton.innerHTML = animateButtonText;
@@ -110,6 +127,32 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     setupAlgorithmRadioButtons();
+
+    directionsToggleButton.addEventListener('change', function() {
+        if (directionsToggleButton.checked === true) {
+            cornerCuttingToggleButton.disabled = false;
+            cornerCuttingSwitch.style.backgroundColor = '#79e082';
+            eightDirections = true;
+        }
+
+        else {
+            cornerCuttingToggleButton.checked = false;
+            cornerCuttingToggleButton.disabled = true;
+            cornerCuttingSwitch.style.backgroundColor = 'red';
+            cornerCutting = false;
+            eightDirections = false;
+        }
+    });
+
+    cornerCuttingToggleButton.addEventListener('change', function() {
+        if (cornerCuttingToggleButton.checked === true) {
+            cornerCutting = true;
+        }
+
+        else {
+            cornerCutting = false;
+        }
+    });
 
     algorithmDropDownButton.addEventListener('click', function() {
         /* The first time clicking the button no inline style will be set (it's an empty
@@ -220,7 +263,7 @@ document.addEventListener('DOMContentLoaded', function() {
     skipInfoBoxButton.addEventListener('click', closeInfoBox);
 
     function updateCurrPage(currPage) {
-        currInfoBoxPage.innerHTML = `${currPage + 1}/6`;
+        currInfoBoxPage.innerHTML = `${currPage + 1}/${LAST_INFOBOX_PAGE + 1}`;
     }
 
     prevInfoBoxButton.addEventListener('click', function() {
@@ -238,7 +281,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function nextInfoBoxPage() {
-        if (infoBoxPage < 5) {
+        if (infoBoxPage < (LAST_INFOBOX_PAGE)) {
             infoBoxPage++;
             updateCurrPage(infoBoxPage);
         }
@@ -251,12 +294,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     nextInfoButton.addEventListener('click', function() {
-        if (infoBoxPage === 4) {
+        if (infoBoxPage === (LAST_INFOBOX_PAGE - 1)) {
             nextInfoButton.innerHTML = 'Finish';
             nextInfoBoxPage();
         }
 
-        else if (infoBoxPage === 5) {
+        else if (infoBoxPage === LAST_INFOBOX_PAGE) {
             closeInfoBox();
         }
 
@@ -284,7 +327,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     <br/>You can skip this introductory tutorial at any point by clicking 
                     the "Skip"-button. Otherwise press "Next" for more info about this project.
                 </p>`
-
                 break;
             case 1:
                 infoBoxText.innerHTML = `<h2 class="h2InfoBox">Selecting an algorithm</h2>
@@ -296,8 +338,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     algorithms allow for weights to be placed on the 2d-grid, which are harder 
                     to traverse than an empty field, but not impossible like walls. <br/> 
                     <strong>Unweighted</strong> algorithms do not allow for the 
-                    placement of weights.</p>`;
-
+                    placement of weights.
+                </p>`;
                 break;
             case 2:
                 infoBoxText.innerHTML = `<h2 class="h2InfoBox">Info about each algorithm
@@ -313,7 +355,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     A*, but does not guarantee the shortest path. <br/>Breadth-first search
                     (unweighted): Like Dijkstra, but it does not take weights into account.
                 </p>`;
-                
                 break;
             case 3:
                 infoBoxText.innerHTML = `<h2 class="h2InfoBox">Info about each algorithm
@@ -332,7 +373,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     to see if there are any "jump points" (i.e. points next to walls) and then 
                     starts jumping from there. This algorithm also guarantees the shortest path.
                 </p>`;
-
                 break;
             case 4:
                 infoBoxText.innerHTML = `<h2 class="h2InfoBox">Overview of features 1/2</h2>
@@ -347,7 +387,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     want to place them. <br/>
                 </p>
                 <img src="images/walls_weights_movement.gif"/>`;
-                    
                 break;
             case 5:
                 infoBoxText.innerHTML = `<h2 class="h2InfoBox">Overview of features 2/2</h2>
@@ -357,7 +396,26 @@ document.addEventListener('DOMContentLoaded', function() {
                     original look so that all walls and weights are removed and the start and finish
                     node are in their original places too.
                 </p>`;
-
+                break;
+            case 6:
+                infoBoxText.innerHTML = `<h2 class="h2InfoBox">Diagonal movement</h2>
+                <p class="pInfoBox">Algorithms that use heuristics allow you to switch between two types
+                    of movement by clicking the switch "Four Directions". <br/><strong>"Four Directions"
+                    </strong> allows the start node to move up, down, left and right, while <strong>"Eight 
+                    Directions" </strong> adds four diagonal directions to the mix. The algorithms that 
+                    can make use of this feature are: A*, Greedy Best-First Search and Bidirectional A*.
+                    <br/><br/>
+                </p>
+                <img src="images/directions.png"/>`;
+                break;
+            case 7:
+                infoBoxText.innerHTML = `<h2 class="h2InfoBox">Cutting corners</h2>
+                <p class="pInfoBox"><strong>"Corner cutting"</strong> only works when the allowed directions
+                    are set to <strong>"Eight Directions"</strong>. This setting allows the red square to
+                    squeeze itself through non-existent spaces when moving diagonally. Please see the video 
+                    below for an illustration.
+                </p>
+                <img src="images/corner_cutting.gif"/>`;
                 break;
         }
     }
@@ -414,28 +472,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         else {
-            if (directionsToggleButton.checked === true) {
-                eightDirections = true;
-            }
-
-            else {
-                eightDirections = false;
-            }
-
-            if (cornerCuttingToggleButton.checked === true) {
-                cornerCutting = true;
-            }
-
-            else {
-                cornerCutting = false;
-            }
-
             algorithmDropDownMenu.style.display = 'none';
             algorithmDropDownButton.innerHTML = 'Animate&#9660;';
             weightDropDownMenu.style.display = 'none';
             weightDropDownButton.innerHTML = 'Adjust Weights&#9660;';
             removePreviousAlgorithm();
             disableButtons();
+            disableToggleButtons();
             gridBoard.algoIsRunning = true;
 
             switch (selectedAlgorithm.value) {
@@ -620,6 +663,13 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
                 gridBoard.algoIsRunning = false;
                 enableButtons();
+                // enableToggleButtons();
+                enableDirections();
+
+                if (directionsToggleButton.checked === true || 
+                    cornerCuttingToggleButton.checked === true) {
+                    enableCornerCutting();
+                }
             }, (visitedNodesFromStart.length  + shortestPath.length) * ANIMATION_SPEED);
         }
 
@@ -627,6 +677,13 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
                 gridBoard.algoIsRunning = false;
                 enableButtons();
+                // enableToggleButtons();
+                enableDirections();
+
+                if (directionsToggleButton.checked === true || 
+                    cornerCuttingToggleButton.checked === true) {
+                    enableCornerCutting();
+                }
             }, visitedNodesFromStart.length * ANIMATION_SPEED);
         }
     }
@@ -1014,5 +1071,27 @@ document.addEventListener('DOMContentLoaded', function() {
         FINISH_COL = ORIG_FINISH_COL;
         document.getElementById(`node-${START_ROW}-${START_COL}`).className = 'start';
         document.getElementById(`node-${FINISH_ROW}-${FINISH_COL}`).className = 'finish';
+    }
+
+    function resetToggleButtons() {
+        directionsToggleButton.checked = false;
+        cornerCuttingToggleButton.checked = false;
+    }
+
+    function disableToggleButtons() {
+        directionsToggleButton.disabled = true;
+        directionsSwitch.style.backgroundColor = 'red';
+        cornerCuttingToggleButton.disabled = true;
+        cornerCuttingSwitch.style.backgroundColor = 'red';
+    }
+
+    function enableDirections() {
+        directionsToggleButton.disabled = false;
+        directionsSwitch.style.backgroundColor = '#79e082';
+    }
+
+    function enableCornerCutting() {
+        cornerCuttingToggleButton.disabled = false;
+        cornerCuttingSwitch.style.backgroundColor = '#79e082';
     }
 }); 
