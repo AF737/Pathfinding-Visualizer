@@ -12,8 +12,9 @@ import {breadthFirstSearch} from './algorithms/breadthFirstSearch.js';
 import {bidirectionalDijkstra} from './algorithms/bidirectionalDijkstra.js';
 import {bidirectionalAStar} from './algorithms/bidirectionalAStar.js';
 import {depthFirstSearch} from './algorithms/depthFirstSearch.js';
-import {jumpPointSearch2} from './algorithms/jumpPointSearch2.js';
+import {jumpPointSearch3} from './algorithms/jumpPointSearch3.js';
 import {eightDirections, cornerCutting} from './index.js';
+import {removeWeights} from './weights.js';
 
 const ANIMATION_SPEED = 10;
 let directionsToggleButton = document.getElementById('directionsToggleButton');
@@ -76,7 +77,7 @@ function animateJumpPointSearch(startNode, finishNode, gridBoard) {
     removeWeights(gridBoard);
 
     const [visitedNodesFromStart, shortestPath] = 
-    jumpPointSearch2(gridBoard, startNode, finishNode, gridBoard);
+    jumpPointSearch3(gridBoard, startNode, finishNode, gridBoard);
 
     animateAlgorithm(visitedNodesFromStart, null, shortestPath, gridBoard);
 }

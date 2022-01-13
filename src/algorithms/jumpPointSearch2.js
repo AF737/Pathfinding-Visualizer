@@ -32,16 +32,17 @@ function jumpPointSearch2(grid, startNode, finishNode) {
         }
 
         if (closestNode.id === finishNode.id) {
-            //console.log('x');
+            // console.log('x');
             let currentNode = finishNode;
             const shortestPath = [];
             //console.log(finishNode);
 
             while (currentNode !== null) {
+                // console.log(currentNode);
                 shortestPath.unshift(currentNode);
                 currentNode = currentNode.prevNode;
             }
-
+            
             return [openList, shortestPath];
         }
 
@@ -93,6 +94,8 @@ function updateNeighbors(grid, node, startNode, finishNode, openList, closedList
         //let successors = [];
 
         //neighbor.prevNode = node;
+        startingPoints[i].prevNode = node;
+
         let rowChange, colChange;
 
         if (node === startNode) {
