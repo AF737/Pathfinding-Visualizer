@@ -6,7 +6,7 @@ import {adjustGridDimensions, createGrid} from './grid.js';
 import {openInfoBox, closeInfoBox, handlePrevInfoButton, 
         handleNextInfoButton} from './infoBox.js';
 import {disableButtons, removeWalls, resetToggleButtons, disableToggleButtons,
-        enableDirections, removePreviousAlgorithm, resetStartAndFinish} 
+        enableDirections, removePreviousAlgorithm, resetStartAndFinish, setAndDisableDirections} 
         from './helperFunctions.js';
 import {handleLightWeightSlider, handleNormalWeightSlider, handleHeavyWeightSlider, 
         removeWeights} from './weights.js';
@@ -92,6 +92,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         break;
                     case 'jumpPointSearch':
                         animateButtonText += 'JPS';
+                        resetToggleButtons();
+                        setAndDisableDirections();
                         break;
                 }
 

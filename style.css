@@ -305,6 +305,10 @@ div#heavyWeightNode {
     background-color: #06d314;
 }
 
+div#jumpPointNode {
+    background-color: black;
+}
+
 div#infoBox {
     width: 50vw;
     height: 70vh;

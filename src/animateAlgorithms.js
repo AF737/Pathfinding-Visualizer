@@ -77,7 +77,7 @@ function animateJumpPointSearch(startNode, finishNode, gridBoard) {
     removeWeights(gridBoard);
 
     const [visitedNodesFromStart, shortestPath] = 
-    jumpPointSearch3(gridBoard, startNode, finishNode, gridBoard);
+    jumpPointSearch3(gridBoard, startNode, finishNode, gridBoard, cornerCutting);
 
     animateAlgorithm(visitedNodesFromStart, null, shortestPath, gridBoard);
 }

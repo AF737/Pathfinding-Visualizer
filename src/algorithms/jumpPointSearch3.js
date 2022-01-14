@@ -2,7 +2,7 @@
 
 export {jumpPointSearch3};
 
-function jumpPointSearch3(grid, startNode, finishNode) {
+function jumpPointSearch3(grid, startNode, finishNode, cornerCutting) {
     const visitedNodes = [];
     visitedNodes.push(startNode);
     let jumpNodes = [];
@@ -33,7 +33,7 @@ function jumpPointSearch3(grid, startNode, finishNode) {
         }
 
         jumpNodes = jumpNodes.concat(getNewJumpNodes(grid, closestJumpNode, startNode, 
-            finishNode, visitedNodes));
+            finishNode, visitedNodes, cornerCutting));
     }
 
     return [visitedNodes, null];
@@ -44,7 +44,7 @@ function sortNodesByDistance(jumpNodes) {
         firstNode.totalDistance - secondNode.totalDistance);
 }
 
-function getNewJumpNodes(grid, closestNode, startNode, finishNode, visitedNodes) {
+function getNewJumpNodes(grid, closestNode, startNode, finishNode, visitedNodes, cornerCutting) {
     const initialJumpNodes = [];
     let newJumpNodes = [];
 
@@ -82,7 +82,7 @@ function getNewJumpNodes(grid, closestNode, startNode, finishNode, visitedNodes)
 
         else {
             newJumpNodes = newJumpNodes.concat(diagonalSearch(grid, initialJumpNodes[i],
-                rowChange, colChange, finishNode, visitedNodes));
+                rowChange, colChange, finishNode, visitedNodes, cornerCutting));
         }
     }
 
@@ -274,7 +274,7 @@ function horizontalSearch(grid, node, colChange, finishNode, visitedNodes) {
         finishNode, visitedNodes));
 }
 
-function diagonalSearch(grid, node, rowChange, colChange, finishNode, visitedNodes) {
+function diagonalSearch(grid, node, rowChange, colChange, finishNode, visitedNodes, cornerCutting) {
     let newJumpNodes = [];
 
     if (node.row + rowChange < 0 || node.row + rowChange > (grid.rows - 1) ||
@@ -287,6 +287,13 @@ function diagonalSearch(grid, node, rowChange, colChange, finishNode, visitedNod
     if (firstChild.isWall === true) {
         return newJumpNodes;
     }
+
+    /* Disallow corner cutting */
+    if (cornerCutting === false && 
+        grid.nodesMatrix[node.row + rowChange][node.column].isWall === true &&
+        grid.nodesMatrix[node.row][node.column + colChange].isWall === true) {
+            return newJumpNodes;
+        }
 
     firstChild.isVisited = true;
     firstChild.prevNode = node;

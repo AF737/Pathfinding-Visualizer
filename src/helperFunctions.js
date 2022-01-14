@@ -2,7 +2,8 @@
 
 export {enableButtons, disableButtons, changeWallStatus, removeWalls,
         resetToggleButtons, disableToggleButtons, enableDirections,
-        enableCornerCutting, removePreviousAlgorithm, resetStartAndFinish};
+        enableCornerCutting, removePreviousAlgorithm, resetStartAndFinish,
+        setAndDisableDirections};
 
 function enableButtons() {
     let dropDownButtons = document.getElementsByClassName('dropDownButton');
@@ -112,6 +113,12 @@ function disableToggleButtons() {
 function enableDirections() {
     document.getElementById('directionsToggleButton').disabled = false;
     document.getElementById('directionsSwitch').style.backgroundColor = '#79e082';
+}
+
+function setAndDisableDirections() {
+    document.getElementById('directionsToggleButton').checked = true;
+    document.getElementById('directionsToggleButton').disabled = true;
+    document.getElementById('directionsToggleButton').style.backgroundColor = 'red';
 }
 
 function enableCornerCutting() {
