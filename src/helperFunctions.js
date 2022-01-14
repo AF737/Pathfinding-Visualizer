@@ -54,7 +54,8 @@ function removePreviousAlgorithm(gridBoard) {
         for (let col = 0; col < gridBoard.columns; col++) {
             let node = document.getElementById(`node-${row}-${col}`);
 
-            if (node.className === 'visited' || node.className === 'shortestPath') {
+            if (node.className === 'visited' || node.className === 'shortestPath' ||
+                node.className === 'jumpPoint') {
                 gridBoard.nodesMatrix[row][col].isVisited = false;
                 node.className = 'unvisited';
             }
@@ -67,6 +68,7 @@ function removePreviousAlgorithm(gridBoard) {
             gridBoard.nodesMatrix[row][col].prevNode = null;
             gridBoard.nodesMatrix[row][col].prevNodeFromFinish = null;
             gridBoard.nodesMatrix[row][col].direction = null;
+            gridBoard.nodesMatrix[row][col].isJumpPoint = false;
         }
     }
     

@@ -93,6 +93,11 @@ function animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortes
                     .className = 'startVisited';
             }
 
+            else if (currentNode.isJumpPoint === true) {
+                document.getElementById(`node-${currentNode.row}-${currentNode.column}`)
+                    .className = 'jumpPoint';
+            }
+
             else {
                 document.getElementById(`node-${currentNode.row}-${currentNode.column}`)
                     .className = 'visited';

@@ -16,5 +16,6 @@ export default class Node {
         this.prevNode = null;
         this.prevNodeFromFinish = null;
         this.direction = null;
+        this.isJumpPoint = false;
     }
 }

@@ -812,3 +812,41 @@ div.heavyWeight {
         transform: scale(1.0);
     }
 }*/
+
+div.jumpPoint {
+    /* background-color: black; */
+    border: 1px solid black;
+    animation-name: jumpPointAnimation;
+    animation-duration: 1.5s;
+    animation-fill-mode: forwards;
+    animation-delay: 0s;
+    animation-iteration-count: 1;
+    animation-direction: normal;
+    animation-timing-function: ease-out;
+}
+
+@keyframes jumpPointAnimation {
+    0% {
+        background-color: white;
+        transform: scale(0.3);
+        border-radius: 100%;
+    }
+
+    25% {
+        background-color: #615f5f;
+    }
+
+    50% {
+        background-color: #424242;
+        transform: scale(1.20);
+    }
+
+    75% {
+        background-color: #242424;
+    }
+
+    100% {
+        background-color: black;
+        transform: scale(1.0);
+    }
+}

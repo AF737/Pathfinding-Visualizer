@@ -154,6 +154,7 @@ function verticalSearch(grid, node, rowChange, finishNode, visitedNodes) {
                 impacted */
             const jumpNode = JSON.parse(JSON.stringify(firstChild));
             jumpNode.direction = [rowChange, -1];
+            firstChild.isJumpPoint = true;
 
             newJumpNodes.push(jumpNode);
     }
@@ -163,6 +164,7 @@ function verticalSearch(grid, node, rowChange, finishNode, visitedNodes) {
         grid.nodesMatrix[secondChild.row][secondChild.column + 1].isWall === false) {
             const jumpNode = JSON.parse(JSON.stringify(firstChild));
             jumpNode.direction = [rowChange, 1];
+            firstChild.isJumpPoint = true;
 
             newJumpNodes.push(jumpNode);
     }
@@ -172,6 +174,7 @@ function verticalSearch(grid, node, rowChange, finishNode, visitedNodes) {
     if (newJumpNodes.length > 0) {
         const jumpNode = JSON.parse(JSON.stringify(firstChild));
         jumpNode.direction = [rowChange, 0];
+        firstChild.isJumpPoint = true;
         
         newJumpNodes.push(jumpNode);
     }
@@ -244,6 +247,7 @@ function horizontalSearch(grid, node, colChange, finishNode, visitedNodes) {
         grid.nodesMatrix[secondChild.row - 1][secondChild.column].isWall === false) {
             const jumpNode = JSON.parse(JSON.stringify(firstChild));
             jumpNode.direction = [-1, colChange];
+            firstChild.isJumpPoint = true;
             
             newJumpNodes.push(jumpNode);
     }
@@ -253,6 +257,7 @@ function horizontalSearch(grid, node, colChange, finishNode, visitedNodes) {
         grid.nodesMatrix[secondChild.row + 1][secondChild.column].isWall === false) {
             const jumpNode = JSON.parse(JSON.stringify(firstChild));
             jumpNode.direction = [1, colChange];
+            firstChild.isJumpPoint = true;
 
             newJumpNodes.push(jumpNode);
     }
@@ -260,6 +265,7 @@ function horizontalSearch(grid, node, colChange, finishNode, visitedNodes) {
     if (newJumpNodes.length > 0) {
         const jumpNode = JSON.parse(JSON.stringify(firstChild));
         jumpNode.direction = [0, colChange];
+        firstChild.isJumpPoint = true;
 
         newJumpNodes.push(jumpNode);
     }
@@ -346,6 +352,7 @@ function diagonalSearch(grid, node, rowChange, colChange, finishNode, visitedNod
         grid.nodesMatrix[node.row][secondChild.column].isVisited === false) {
             const jumpNode = JSON.parse(JSON.stringify(firstChild));
             jumpNode.direction = [-rowChange, colChange];
+            firstChild.isJumpPoint = true;
 
             newJumpNodes.push(jumpNode);
     }
@@ -356,6 +363,7 @@ function diagonalSearch(grid, node, rowChange, colChange, finishNode, visitedNod
         grid.nodesMatrix[secondChild.row][node.column].isVisited === false) {
             const jumpNode = JSON.parse(JSON.stringify(firstChild));
             jumpNode.direction = [rowChange, -colChange];
+            firstChild.isJumpPoint = true;
 
             newJumpNodes.push(jumpNode);
     }
@@ -377,6 +385,7 @@ function diagonalSearch(grid, node, rowChange, colChange, finishNode, visitedNod
         if (horizontalSearchDone === false) {
             const jumpNode = JSON.parse(JSON.stringify(firstChild));
             jumpNode.direction = [0, colChange];
+            firstChild.isJumpPoint = true;
 
             newJumpNodes.push(jumpNode);
         }
@@ -384,6 +393,7 @@ function diagonalSearch(grid, node, rowChange, colChange, finishNode, visitedNod
         if (verticalSearchDone === false) {
             const jumpNode = JSON.parse(JSON.stringify(firstChild));
             jumpNode.direction = [rowChange, 0];
+            firstChild.isJumpPoint = true;
 
             newJumpNodes.push(jumpNode);
         }
@@ -391,6 +401,7 @@ function diagonalSearch(grid, node, rowChange, colChange, finishNode, visitedNod
         /* Add a jump point that goes in the same direction that we came from */
         const jumpNode = JSON.parse(JSON.stringify(firstChild));
         jumpNode.direction = [rowChange, colChange];
+        firstChild.isJumpPoint = true;
 
         newJumpNodes.push(jumpNode);
     }

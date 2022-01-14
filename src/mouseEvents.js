@@ -67,6 +67,7 @@ function handleMouseDownAndEnter(ev, mouseEvent, gridBoard) {
                 case 'heavyWeight':
                 case 'visited':
                 case 'shortestPath':
+                case 'jumpPoint':
                     this.className = 'wall';
                     changeWallStatus(this.id, true, gridBoard);
                     changeWeightOfNode(this.id, NODE_WEIGHT_NONE, gridBoard);
@@ -118,6 +119,7 @@ function handleMouseDownAndEnter(ev, mouseEvent, gridBoard) {
             case 'heavyWeight':
             case 'visited':
             case 'shortestPath':
+            case 'jumpPoint':
                 this.className = 'lightWeight';
                 changeWeightOfNode(this.id, nodeWeightLight, gridBoard);
                 break;
@@ -137,6 +139,7 @@ function handleMouseDownAndEnter(ev, mouseEvent, gridBoard) {
             case 'heavyWeight':
             case 'visited':
             case 'shortestPath':
+            case 'jumpPoint':
                 this.className = 'normalWeight';
                 changeWeightOfNode(this.id, nodeWeightNormal, gridBoard);
                 break;
@@ -156,6 +159,7 @@ function handleMouseDownAndEnter(ev, mouseEvent, gridBoard) {
             case 'normalWeight':
             case 'visited':
             case 'shortestPath':
+            case 'jumpPoint':
                 this.className = 'heavyWeight';
                 changeWeightOfNode(this.id, nodeWeightHeavy, gridBoard);
                 break;
