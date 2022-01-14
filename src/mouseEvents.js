@@ -6,7 +6,9 @@ import {changeWallStatus} from './helperFunctions.js';
 import {NODE_WEIGHT_NONE, nodeWeightLight, nodeWeightNormal, nodeWeightHeavy, 
     changeWeightOfNode} from './weights.js';
 
-function handleMouseDownAndEnter(mouseEvent, gridBoard) {
+function handleMouseDownAndEnter(ev, mouseEvent, gridBoard) {
+    ev.preventDefault();
+
     if (gridBoard.algoIsRunning === true || infoBoxVisible === true) {
         return;
     }

@@ -151,8 +151,8 @@ function getNeighbors(grid, node, eightDirections, cornerCutting) {
     return neighbors;
 }
 
-/* The Manhattan distance is used, because the algorithm can only move in
-    four directions (up, down, left and right) */
+/* Octile distance is used to check if moving diagonally is has a smaller cost
+    than moving in only four directions */
 function getDistance(firstNode, secondNode) {
     //return (Math.abs(node.row - finishNode.row) + Math.abs(node.column - finishNode.column));
     const rowChange = Math.abs(firstNode.row - secondNode.row);

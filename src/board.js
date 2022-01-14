@@ -9,8 +9,6 @@ export default class Board {
         this.finishRow = null;
         this.finishCol = null;
         this.nodesMatrix = [];
-        this.visitedNodes = [];
-        this.shortestPath = [];
         this.mouseIsPressed = false;
         this.pressedKey = null;
         this.startIsPlaced = false;

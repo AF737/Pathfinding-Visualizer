@@ -7,11 +7,12 @@ function jumpPointSearch3(grid, startNode, finishNode) {
     visitedNodes.push(startNode);
     let jumpNodes = [];
     startNode.distanceFromStart = 0;
+    startNode.heuristicDistance = getDistance(startNode, finishNode);
+    startNode.totalDistance = startNode.distanceFromStart + startNode.heuristicDistance;
     jumpNodes.push(startNode);
 
     while (jumpNodes.length > 0) {
         sortNodesByDistance(jumpNodes);
-        console.log(jumpNodes);
         
         const closestJumpNode = jumpNodes.shift();
 
@@ -20,7 +21,6 @@ function jumpPointSearch3(grid, startNode, finishNode) {
         }
 
         if (closestJumpNode === finishNode) {
-            console.log(closestJumpNode);
             let closestNode = finishNode;
             const shortestPath = [];
 
@@ -41,7 +41,7 @@ function jumpPointSearch3(grid, startNode, finishNode) {
 
 function sortNodesByDistance(jumpNodes) {
     jumpNodes.sort((firstNode, secondNode) => 
-        firstNode.distanceFromStart - secondNode.distanceFromStart);
+        firstNode.totalDistance - secondNode.totalDistance);
 }
 
 function getNewJumpNodes(grid, closestNode, startNode, finishNode, visitedNodes) {
@@ -106,6 +106,8 @@ function verticalSearch(grid, node, rowChange, finishNode, visitedNodes) {
     firstChild.isVisited = true;
     firstChild.prevNode = node;
     firstChild.distanceFromStart = node.distanceFromStart + getDistance(node, firstChild);
+    firstChild.heuristicDistance = getDistance(firstChild, finishNode);
+    firstChild.totalDistance = firstChild.distanceFromStart + firstChild.heuristicDistance;
 
     if (visitedNodes.includes(firstChild) === false) {
         visitedNodes.push(firstChild);
@@ -131,6 +133,8 @@ function verticalSearch(grid, node, rowChange, finishNode, visitedNodes) {
     secondChild.prevNode = firstChild;
     secondChild.distanceFromStart = firstChild.distanceFromStart + 
         getDistance(firstChild, secondChild);
+    secondChild.heuristicDistance = getDistance(secondChild, finishNode);
+    secondChild.totalDistance = secondChild.distanceFromStart + secondChild.heuristicDistance;
 
     if (visitedNodes.includes(secondChild) === false) {
         visitedNodes.push(secondChild);
@@ -194,6 +198,8 @@ function horizontalSearch(grid, node, colChange, finishNode, visitedNodes) {
     firstChild.isVisited = true;
     firstChild.prevNode = node;
     firstChild.distanceFromStart = node.distanceFromStart + getDistance(node, firstChild);
+    firstChild.heuristicDistance = getDistance(firstChild, finishNode);
+    firstChild.totalDistance = firstChild.distanceFromStart + firstChild.heuristicDistance;
 
     if (visitedNodes.includes(firstChild) === false) {
         visitedNodes.push(firstChild);
@@ -220,6 +226,8 @@ function horizontalSearch(grid, node, colChange, finishNode, visitedNodes) {
     secondChild.prevNode = firstChild;
     secondChild.distanceFromStart = firstChild.distanceFromStart + 
         getDistance(firstChild, secondChild);
+    secondChild.heuristicDistance = getDistance(secondChild, finishNode);
+    secondChild.totalDistance = secondChild.distanceFromStart + secondChild.heuristicDistance;
 
     if (visitedNodes.includes(secondChild) === false) {
         visitedNodes.push(secondChild);
@@ -234,16 +242,15 @@ function horizontalSearch(grid, node, colChange, finishNode, visitedNodes) {
     /* Check above the two nodes */
     if (grid.nodesMatrix[firstChild.row - 1][firstChild.column].isWall === true &&
         grid.nodesMatrix[secondChild.row - 1][secondChild.column].isWall === false) {
-            console.log('x');
             const jumpNode = JSON.parse(JSON.stringify(firstChild));
             jumpNode.direction = [-1, colChange];
+            
             newJumpNodes.push(jumpNode);
     }
 
     /* Check below the two nodes */
     if (grid.nodesMatrix[firstChild.row + 1][firstChild.column].isWall === true &&
         grid.nodesMatrix[secondChild.row + 1][secondChild.column].isWall === false) {
-            console.log('y');
             const jumpNode = JSON.parse(JSON.stringify(firstChild));
             jumpNode.direction = [1, colChange];
 
@@ -278,6 +285,8 @@ function diagonalSearch(grid, node, rowChange, colChange, finishNode, visitedNod
     firstChild.isVisited = true;
     firstChild.prevNode = node;
     firstChild.distanceFromStart = node.distanceFromStart + getDistance(node, firstChild);
+    firstChild.heuristicDistance = getDistance(firstChild, finishNode);
+    firstChild.totalDistance = firstChild.distanceFromStart + firstChild.heuristicDistance;
 
     if (visitedNodes.includes(firstChild) === false) {
         visitedNodes.push(firstChild);
@@ -296,23 +305,35 @@ function diagonalSearch(grid, node, rowChange, colChange, finishNode, visitedNod
 
     const secondChild = grid.nodesMatrix[firstChild.row + rowChange][firstChild.column + colChange];
 
-    if (secondChild.isWall === true) {
-        return newJumpNodes;
-    }
+    /* This can create a problem when the jump point is located at a position like this:
+        +---+---+---+---+ j = jump point, x = impassable walls, we are moving up and to the
+        | x | x | x |x/2| right so secondChild(where "x/2" stands) will be a wall therefore
+        +---+---+---+---+ we will add no new jump point
+        | x | x | 1 |   |
+        +---+---+---+---+
+        |   | j |   |   |
+        +---+---+---+---+ */
+    // if (secondChild.isWall === true) {
+    // return newJumpNodes;
+    // }
 
-    secondChild.isVisited = true;
-    secondChild.prevNode = firstChild;
-    secondChild.distanceFromStart = firstChild.distanceFromStart + 
-        getDistance(firstChild, secondChild);
+    if (secondChild.isWall === false) {
+        secondChild.isVisited = true;
+        secondChild.prevNode = firstChild;
+        secondChild.distanceFromStart = firstChild.distanceFromStart + 
+            getDistance(firstChild, secondChild);
+        secondChild.heuristicDistance = getDistance(secondChild, finishNode);
+        secondChild.totalDistance = secondChild.distanceFromStart + secondChild.heuristicDistance;
 
-    if (visitedNodes.includes(secondChild) === false) {
-        visitedNodes.push(secondChild);
-    }
+        if (visitedNodes.includes(secondChild) === false) {
+            visitedNodes.push(secondChild);
+        }
 
-    if (secondChild === finishNode) {
-        newJumpNodes.push(secondChild);
+        if (secondChild === finishNode) {
+            newJumpNodes.push(secondChild);
 
-        return newJumpNodes;
+            return newJumpNodes;
+        }
     }
 
     let horizontalSearchDone = false, verticalSearchDone = false;
@@ -321,7 +342,8 @@ function diagonalSearch(grid, node, rowChange, colChange, finishNode, visitedNod
         create a jump node by in the direction and then going in the reverse horizontal
         direction creating a zigzag line */
     if (grid.nodesMatrix[node.row][firstChild.column].isWall === true &&
-        grid.nodesMatrix[node.row][secondChild.column].isWall === false) {
+        grid.nodesMatrix[node.row][secondChild.column].isWall === false &&
+        grid.nodesMatrix[node.row][secondChild.column].isVisited === false) {
             const jumpNode = JSON.parse(JSON.stringify(firstChild));
             jumpNode.direction = [-rowChange, colChange];
 
@@ -330,7 +352,8 @@ function diagonalSearch(grid, node, rowChange, colChange, finishNode, visitedNod
 
     /* Do the same thing for above and below */
     if (grid.nodesMatrix[firstChild.row][node.column].isWall === true &&
-        grid.nodesMatrix[secondChild.row][node.column].isWall === false) {
+        grid.nodesMatrix[secondChild.row][node.column].isWall === false &&
+        grid.nodesMatrix[secondChild.row][node.column].isVisited === false) {
             const jumpNode = JSON.parse(JSON.stringify(firstChild));
             jumpNode.direction = [rowChange, -colChange];
 
@@ -338,16 +361,16 @@ function diagonalSearch(grid, node, rowChange, colChange, finishNode, visitedNod
     }
 
     /* Do a horizontal search if no jump points were found */
-    if (newJumpNodes.length === 0) {
+    // if (newJumpNodes.length === 0) {
         newJumpNodes = newJumpNodes.concat(horizontalSearch(grid, firstChild, colChange, finishNode, visitedNodes));
         horizontalSearchDone = true;
-    }
+    // }
 
     /* If the horizontal search didn't end in a new jump node then do a vertical search */
-    if (newJumpNodes.length === 0) {
+    // if (newJumpNodes.length === 0) {
         newJumpNodes = newJumpNodes.concat(verticalSearch(grid, firstChild, rowChange, finishNode, visitedNodes));
         verticalSearchDone = true;
-    }
+    // }
 
     if (newJumpNodes.length > 0) {
         /* If there was no horizontal search then add a jump point for that */

@@ -77,15 +77,17 @@ function createGrid(gridBoard) {
             newNodeDiv.style.gridRow = `${row + 1}`;
             newNodeDiv.style.gridColumn = `${col + 1}`;
 
-            newNodeDiv.addEventListener('mousedown', function() {
-                handleMouseDownAndEnter.call(this, 'mouseDown', gridBoard);
+            newNodeDiv.addEventListener('mousedown', function(ev) {
+                handleMouseDownAndEnter.call(this, ev, 'mouseDown', gridBoard);
             });
 
-            newNodeDiv.addEventListener('mouseenter', function() {
-                handleMouseDownAndEnter.call(this, 'mouseEnter', gridBoard);
+            newNodeDiv.addEventListener('mouseenter', function(ev) {
+                handleMouseDownAndEnter.call(this, ev, 'mouseEnter', gridBoard);
             });
 
-            newNodeDiv.addEventListener('mouseup', function() {
+            newNodeDiv.addEventListener('mouseup', function(ev) {
+                ev.preventDefault();
+
                 gridBoard.mouseIsPressed = false;
             });
 
