@@ -24,21 +24,21 @@ function animateDijkstra(startNode, finishNode, gridBoard) {
     const [visitedNodes, shortestPath] = 
         dijkstra(gridBoard, startNode, finishNode);
 
-    animateAlgorithm(visitedNodes, null, shortestPath, gridBoard);
+    animateAlgorithm(visitedNodes, null, shortestPath, gridBoard, false);
 }
 
 function animateAStar(startNode, finishNode, gridBoard) {
     const [visitedNodes, shortestPath] = 
         aStar(gridBoard, startNode, finishNode, eightDirections, cornerCutting);
     
-    animateAlgorithm(visitedNodes, null, shortestPath, gridBoard);
+    animateAlgorithm(visitedNodes, null, shortestPath, gridBoard, true);
 }
 
 function animateGreedyBFS(startNode, finishNode, gridBoard) {
     const [visitedNodes, path] = 
         greedyBFS(gridBoard, startNode, finishNode, eightDirections, cornerCutting);
 
-    animateAlgorithm(visitedNodes, null, path, gridBoard);
+    animateAlgorithm(visitedNodes, null, path, gridBoard, true);
 }
 
 function animateBreadthFirstSearch(startNode, finishNode, gridBoard) {
@@ -47,21 +47,23 @@ function animateBreadthFirstSearch(startNode, finishNode, gridBoard) {
     const [visitedNodes, shortestPath] = 
         breadthFirstSearch(gridBoard, startNode, finishNode);
 
-    animateAlgorithm(visitedNodes, null, shortestPath, gridBoard);
+    animateAlgorithm(visitedNodes, null, shortestPath, gridBoard, false);
 }
 
 function animateBidirectionalDijkstra(startNode, finishNode, gridBoard) {
     const [visitedNodesFromStart, visitedNodesFromFinish, path] =
         bidirectionalDijkstra(gridBoard, startNode, finishNode);
 
-    animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, path, gridBoard);
+    animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, path, 
+        gridBoard, false);
 }
 
 function animateBidirectionalAStar(startNode, finishNode, gridBoard) {
     const [visitedNodesFromStart, visitedNodesFromFinish, path] =
         bidirectionalAStar(gridBoard, startNode, finishNode, eightDirections, cornerCutting);
 
-    animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, path, gridBoard);
+    animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, path, 
+        gridBoard, true);
 }
 
 function animateDepthFirstSearch(startNode, finishNode, gridBoard) {
@@ -70,20 +72,21 @@ function animateDepthFirstSearch(startNode, finishNode, gridBoard) {
     const [visitedNodesFromStart, path] = 
         depthFirstSearch(gridBoard, startNode, finishNode);
 
-    animateAlgorithm(visitedNodesFromStart, null, path, gridBoard);
+    animateAlgorithm(visitedNodesFromStart, null, path, gridBoard, false);
 }
 
 function animateJumpPointSearch(startNode, finishNode, gridBoard) {
     removeWeights(gridBoard);
 
     const [visitedNodesFromStart, shortestPath] = 
-    jumpPointSearch3(gridBoard, startNode, finishNode, gridBoard, cornerCutting);
+    jumpPointSearch3(gridBoard, startNode, finishNode, gridBoard);
 
-    animateAlgorithm(visitedNodesFromStart, null, shortestPath, gridBoard);
+    animateAlgorithm(visitedNodesFromStart, null, shortestPath, gridBoard,
+        false);
 }
 
-function animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortestPath
-    , gridBoard) {
+function animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortestPath, 
+    gridBoard, allowEightDirections) {
     for (let i = 0; i < visitedNodesFromStart.length; i++) {
         setTimeout(function() {
             const currentNode = visitedNodesFromStart[i];
@@ -155,13 +158,15 @@ function animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortes
             gridBoard.algoIsRunning = false;
             enableButtons();
             // enableToggleButtons();
-            enableDirections();
+            if (allowEightDirections === true) {
+                enableDirections();
+            }
 
             if (directionsToggleButton.checked === true || 
                 cornerCuttingToggleButton.checked === true) {
                 enableCornerCutting();
             }
-        }, (visitedNodesFromStart.length  + shortestPath.length) * ANIMATION_SPEED);
+        }, (visitedNodesFromStart.length + shortestPath.length) * ANIMATION_SPEED);
     }
 
     else {
@@ -169,7 +174,9 @@ function animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortes
             gridBoard.algoIsRunning = false;
             enableButtons();
             // enableToggleButtons();
-            enableDirections();
+            if (allowEightDirections === true) {
+                enableDirections();
+            }
 
             if (directionsToggleButton.checked === true || 
                 cornerCuttingToggleButton.checked === true) {

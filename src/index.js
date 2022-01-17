@@ -6,7 +6,7 @@ import {adjustGridDimensions, createGrid} from './grid.js';
 import {openInfoBox, closeInfoBox, handlePrevInfoButton, 
         handleNextInfoButton} from './infoBox.js';
 import {disableButtons, removeWalls, resetToggleButtons, disableToggleButtons,
-        enableDirections, removePreviousAlgorithm, resetStartAndFinish, setAndDisableDirections} 
+        enableDirections, removePreviousAlgorithm, resetStartAndFinish, setAndDisableDirections, enableCornerCutting} 
         from './helperFunctions.js';
 import {handleLightWeightSlider, handleNormalWeightSlider, handleHeavyWeightSlider, 
         removeWeights} from './weights.js';
@@ -94,6 +94,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         animateButtonText += 'JPS';
                         resetToggleButtons();
                         setAndDisableDirections();
+                        enableCornerCutting();
                         break;
                 }
 
