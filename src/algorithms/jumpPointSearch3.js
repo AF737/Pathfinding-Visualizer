@@ -6,10 +6,18 @@ function jumpPointSearch3(grid, startNode, finishNode) {
     const visitedNodes = [];
     visitedNodes.push(startNode);
     let jumpNodes = [];
-    startNode.distanceFromStart = 0;
-    startNode.heuristicDistance = getDistance(startNode, finishNode);
-    startNode.totalDistance = startNode.distanceFromStart + startNode.heuristicDistance;
-    jumpNodes.push(startNode);
+    let initialJumpNodes = getNeighbors(grid, startNode);
+
+    for (let i = 0; i < initialJumpNodes.length; i++) {
+        initialJumpNodes[i].direction = getDirection(startNode, initialJumpNodes[i]);
+        initialJumpNodes[i].prevNode = startNode;
+        initialJumpNodes[i].distanceFromStart = getDistance(startNode, initialJumpNodes[i]);
+        initialJumpNodes[i].heuristicDistance = getDistance(initialJumpNodes[i], finishNode);
+        initialJumpNodes[i].totalDistance = initialJumpNodes[i].distanceFromStart +
+                                            initialJumpNodes[i].heuristicDistance;
+    }
+
+    jumpNodes = jumpNodes.concat(initialJumpNodes);
 
     while (jumpNodes.length > 0) {
         sortNodesByDistance(jumpNodes);
@@ -32,8 +40,8 @@ function jumpPointSearch3(grid, startNode, finishNode) {
             return [visitedNodes, shortestPath];
         }
 
-        jumpNodes = jumpNodes.concat(getNewJumpNodes(grid, closestJumpNode, startNode, 
-            finishNode, visitedNodes));
+        jumpNodes = jumpNodes.concat(getNewJumpNodes(grid, closestJumpNode, finishNode, 
+                    visitedNodes));
     }
 
     return [visitedNodes, null];
@@ -44,39 +52,18 @@ function sortNodesByDistance(jumpNodes) {
         firstNode.totalDistance - secondNode.totalDistance);
 }
 
-function getNewJumpNodes(grid, closestNode, startNode, finishNode, visitedNodes) {
-    let initialJumpNodes = [];
+function getNewJumpNodes(grid, closestNode, finishNode, visitedNodes) {
     let newJumpNodes = [];
+    const [rowChange, colChange] = closestNode.direction;
 
-    if (closestNode === startNode) {
-        initialJumpNodes = getNeighbors(grid, startNode);
-
-        for (let i = 0; i < initialJumpNodes.length; i++) {
-            initialJumpNodes[i].direction = getDirection(startNode, initialJumpNodes[i]);
-            initialJumpNodes[i].prevNode = startNode;
-        }
+    if (rowChange !== 0 && colChange !== 0) {
+        newJumpNodes = newJumpNodes.concat(diagonalSearch(grid, closestNode,
+                        rowChange, colChange, finishNode, visitedNodes));
     }
 
     else {
-        initialJumpNodes.push(closestNode);
-    }
-    
-    for (let i = 0; i < initialJumpNodes.length; i++) {
-        if (initialJumpNodes[i].isWall === true) {
-            continue;
-        }
-
-        const [rowChange, colChange] = initialJumpNodes[i].direction;
-
-        if (rowChange !== 0 && colChange !== 0) {
-            newJumpNodes = newJumpNodes.concat(diagonalSearch(grid, initialJumpNodes[i],
-                            rowChange, colChange, finishNode, visitedNodes));
-        }
-
-        else {
-            newJumpNodes = newJumpNodes.concat(straightSearch(grid, initialJumpNodes[i],
-                            rowChange, colChange, finishNode, visitedNodes));
-        }
+        newJumpNodes = newJumpNodes.concat(straightSearch(grid, closestNode,
+                        rowChange, colChange, finishNode, visitedNodes));
     }
 
     return newJumpNodes;

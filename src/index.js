@@ -6,8 +6,8 @@ import {adjustGridDimensions, createGrid} from './grid.js';
 import {openInfoBox, closeInfoBox, handlePrevInfoButton, 
         handleNextInfoButton} from './infoBox.js';
 import {disableButtons, removeWalls, resetToggleButtons, disableToggleButtons,
-        enableDirections, removePreviousAlgorithm, resetStartAndFinish, setAndDisableDirections, enableCornerCutting} 
-        from './helperFunctions.js';
+        enableDirections, removePreviousAlgorithm, resetStartAndFinish, 
+        setAndDisableDirections} from './helperFunctions.js';
 import {handleLightWeightSlider, handleNormalWeightSlider, handleHeavyWeightSlider, 
         removeWeights} from './weights.js';
 import {animateDijkstra, animateAStar, animateGreedyBFS, animateBreadthFirstSearch,
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 switch(radioButtons[i].value) {
                     case 'dijkstra':
-                        animateButtonText += 'Dijkstra\'s';
+                        animateButtonText += 'Dijkstra';
                         resetToggleButtons();
                         disableToggleButtons();
                         break;
@@ -71,12 +71,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         enableDirections();
                         break;
                     case 'breadthFirstSearch':
-                        animateButtonText += 'Breadth-First';
+                        animateButtonText += 'BFS';
                         resetToggleButtons();
                         disableToggleButtons();
                         break;
                     case 'bidirectionalDijkstra':
-                        animateButtonText += 'Bi. Dijkstra\'s';
+                        animateButtonText += 'Bi. Dijkstra';
                         resetToggleButtons();
                         disableToggleButtons();
                         break;
@@ -94,7 +94,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         animateButtonText += 'JPS';
                         resetToggleButtons();
                         setAndDisableDirections();
-                        enableCornerCutting();
                         break;
                 }
 

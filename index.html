@@ -15,141 +15,141 @@
 
         <main>
             <div class="overlay">
-            <div class="menuBar">
-                <div class="dropDownWrapper">
-                    <button id="algorithmDropDownButton" class="dropDownButton" disabled="true"
-                        data-translate="algorithmButton" data-lang="en">Algorithms&#9660;
+                <div class="menuBar">
+                    <div class="dropDownWrapper">
+                        <button id="algorithmDropDownButton" class="dropDownButton" disabled="true">
+                            Algorithms&#9660;
+                        </button>
+                        <div id="algorithmDropDownMenu" class="dropDownMenu">
+                            <div class="radioButtonWrapper">
+                                <input type="radio" id="dijkstraRadio" name="algorithmOption"
+                                    class="algorithmRadioButtons" value="dijkstra">
+                                <label for="dijkstraRadio">Dijkstra's Algorithm</label>
+                            </div>
+                            <div class="radioButtonWrapper">
+                                <input type="radio" id="aStarRadio" name="algorithmOption"
+                                    class="algorithmRadioButtons" value="aStar">
+                                <label for="aStarRadio">A* Algorithm</label>
+                            </div>
+                            <div class="radioButtonWrapper">
+                                <input type="radio" id="greedyBFSRadio" name="algorithmOption"
+                                    class="algorithmRadioButtons" value="greedyBFS">
+                                <label for="greedyBFSRadio">Greedy Best-First Search</label>
+                            </div>
+                            <div class="radioButtonWrapper">
+                                <input type="radio" id="breadthFirstSearchRadio" name="algorithmOption"
+                                    class="algorithmRadioButtons" value="breadthFirstSearch">
+                                <label for="breadthFirstSearchRadio">Breadth-First Search</label>
+                            </div>
+                            <div class="radioButtonWrapper">
+                                <input type="radio" id="bidirectionalDijkstraRadio" name="algorithmOption"
+                                    class="algorithmRadioButtons" value="bidirectionalDijkstra">
+                                <label for="bidirectionalDijkstraRadio">
+                                    Bidirectional Dijkstra's Algorithm
+                                </label>
+                            </div>
+                            <div class="radioButtonWrapper">
+                                <input type="radio" id="bidirectionalAStarRadio" name="algorithmOption"
+                                    class="algorithmRadioButtons" value="bidirectionalAStar">
+                                <label for="bidirectionalAStarRadio">Bidirectional A* Algorithm</label>
+                            </div>
+                            <div class="radioButtonWrapper">
+                                <input type="radio" id="depthFirstSearchRadio" name="algorithmOption"
+                                    class="algorithmRadioButtons" value="depthFirstSearch">
+                                <label for="depthFirstSearchRadio">Depth-First Search</label>
+                            </div>
+                            <div class="radioButtonWrapper">
+                                <input type="radio" id="jumpPointSearchRadio" name="algorithmOption"
+                                    class="algorithmRadioButtons" value="jumpPointSearch">
+                                <label for="jumpPointSearchRadio">Jump Point Search</label>
+                            </div>
+                        </div> <!-- End of "algorithmDropDownMenu" -->
+                    </div> <!-- End of "dropDownWrapper" -->
+                    <div class="dropDownWrapper">
+                        <button id="weightDropDownButton" class="dropDownButton" disabled="true">
+                            Adjust Weights&#9660;
+                        </button>
+                        <div id="weightDropDownMenu" class="dropDownMenu">
+                            <div class="weightWrapper">
+                                <div id="lightWeightSquare" class="nodeColorSquare"></div>
+                                <input type="range" id="lightWeightSlider" class="weightSlider"
+                                    name="lightWeightSlider" min="1" max="100" step="1" value="15">
+                                <label for="lightWeightSlider" id="lightWeightLabel">15</label>
+                            </div>
+                            <div class="weightWrapper">
+                                <div id="normalWeightSquare" class="nodeColorSquare"></div>
+                                <input type="range" id="normalWeightSlider" class="weightSlider"
+                                    name="normalWeightSlider" min="1" max="100" step="1" value="30">
+                                <label for="normalWeightSlider" id="normalWeightLabel">30</label>    
+                            </div>
+                            <div class="weightWrapper">
+                                <div id="heavyWeightSquare" class="nodeColorSquare"></div>
+                                <input type="range" id="heavyWeightSlider" class="weightSlider"
+                                    name="heavyWeightSlider" min="1" max="100" step="1" value="45">
+                                <label for="heavyWeightSlider" id="heavyWeightLabel">45</label>
+                            </div>
+                        </div> <!-- End of "weightDropDownMenu" -->
+                    </div> <!-- End of "dropDownWrapper" -->
+                    <label id="directionsSwitch" class="switch">
+                        <input type="checkbox" id="directionsToggleButton" disabled="true">
+                        <span id="directionsText"></span>
+                    </label>
+                    <label id="cornerCuttingSwitch" class="switch">
+                        <input type="checkbox" id="cornerCuttingToggleButton" disabled="true">
+                        <span id="cornerCuttingText"></span>
+                    </label>
+                    <button id="animateAlgorithm" class="menuButton" disabled="true">
+                        Animate
                     </button>
-                    <div id="algorithmDropDownMenu" class="dropDownMenu">
-                        <div class="radioButtonWrapper">
-                            <input type="radio" id="dijkstraRadio" name="algorithmOption"
-                                class="algorithmRadioButtons" value="dijkstra">
-                            <label for="dijkstraRadio">Dijkstra's Algorithm</label>
-                        </div>
-                        <div class="radioButtonWrapper">
-                            <input type="radio" id="aStarRadio" name="algorithmOption"
-                                class="algorithmRadioButtons" value="aStar">
-                            <label for="aStarRadio">A* Algorithm</label>
-                        </div>
-                        <div class="radioButtonWrapper">
-                            <input type="radio" id="greedyBFSRadio" name="algorithmOption"
-                                class="algorithmRadioButtons" value="greedyBFS">
-                            <label for="greedyBFSRadio">Greedy Best-First Search</label>
-                        </div>
-                        <div class="radioButtonWrapper">
-                            <input type="radio" id="breadthFirstSearchRadio" name="algorithmOption"
-                                class="algorithmRadioButtons" value="breadthFirstSearch">
-                            <label for="breadthFirstSearchRadio">Breadth-First Search</label>
-                        </div>
-                        <div class="radioButtonWrapper">
-                            <input type="radio" id="bidirectionalDijkstraRadio" name="algorithmOption"
-                                class="algorithmRadioButtons" value="bidirectionalDijkstra">
-                            <label for="bidirectionalDijkstraRadio">
-                                Bidirectional Dijkstra's Algorithm
-                            </label>
-                        </div>
-                        <div class="radioButtonWrapper">
-                            <input type="radio" id="bidirectionalAStarRadio" name="algorithmOption"
-                                class="algorithmRadioButtons" value="bidirectionalAStar">
-                            <label for="bidirectionalAStarRadio">Bidirectional A* Algorithm</label>
-                        </div>
-                        <div class="radioButtonWrapper">
-                            <input type="radio" id="depthFirstSearchRadio" name="algorithmOption"
-                                class="algorithmRadioButtons" value="depthFirstSearch">
-                            <label for="depthFirstSearchRadio">Depth-First Search</label>
-                        </div>
-                        <div class="radioButtonWrapper">
-                            <input type="radio" id="jumpPointSearchRadio" name="algorithmOption"
-                                class="algorithmRadioButtons" value="jumpPointSearch">
-                            <label for="jumpPointSearchRadio">Jump Point Search</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="dropDownWrapper">
-                    <button id="weightDropDownButton" class="dropDownButton" disabled="true"
-                        data-translate="weightButton" data-lang="en">Adjust Weights&#9660;
+                    <button id="clearAlgorithm" class="menuButton" disabled="true">
+                        Clear Algorithm
                     </button>
-                    <div id="weightDropDownMenu" class="dropDownMenu">
-                        <div class="weightWrapper">
-                            <div id="lightWeightSquare" class="nodeColorSquare"></div>
-                            <input type="range" id="lightWeightSlider" class="weightSlider"
-                                name="lightWeightSlider" min="1" max="100" step="1" value="15">
-                            <label for="lightWeightSlider" id="lightWeightLabel">15</label>
-                        </div>
-                        <div class="weightWrapper">
-                            <div id="normalWeightSquare" class="nodeColorSquare"></div>
-                            <input type="range" id="normalWeightSlider" class="weightSlider"
-                                name="normalWeightSlider" min="1" max="100" step="1" value="30">
-                            <label for="normalWeightSlider" id="normalWeightLabel">30</label>    
-                        </div>
-                        <div class="weightWrapper">
-                            <div id="heavyWeightSquare" class="nodeColorSquare"></div>
-                            <input type="range" id="heavyWeightSlider" class="weightSlider"
-                                name="heavyWeightSlider" min="1" max="100" step="1" value="45">
-                            <label for="heavyWeightSlider" id="heavyWeightLabel">45</label>
-                        </div>
+                    <button id="clearWalls" class="menuButton" disabled="true">
+                        Clear Walls
+                    </button>
+                    <button id="clearWeights" class="menuButton" disabled="true">
+                        Clear Weights
+                    </button>
+                    <button id="resetBoard" class="menuButton" disabled="true">
+                        Reset Board
+                    </button>
+                    <button id="openInfoBox" class="menuButton" disabled="true">
+                        Open Infobox
+                    </button>
+                </div> <!-- End of "menuBar" -->
+                <div class="descriptionBar">
+                    <div class="nodeExplainationWrapper">
+                        <div id="startNode" class="nodeColor"></div>
+                        <label for="startNode">Start</label>
                     </div>
-                </div>
-                <label id="directionsSwitch" class="switch">
-                    <input type="checkbox" id="directionsToggleButton" disabled="true">
-                    <span id="directionsText"></span>
-                </label>
-                <label id="cornerCuttingSwitch" class="switch">
-                    <input type="checkbox" id="cornerCuttingToggleButton" disabled="true">
-                    <span id="cornerCuttingText"></span>
-                </label>
-                <button id="animateAlgorithm" class="menuButton" disabled="true"
-                    data-translate="animateAlgoButton" data-lang="en">Animate
-                </button>
-                <button id="clearAlgorithm" class="menuButton" disabled="true"
-                    data-translate="clearAlgoButton" data-lang="en">Clear Algorithm
-                </button>
-                <button id="clearWalls" class="menuButton" disabled="true"
-                    data-translate="clearWallsButton" data-lang="en">Clear Walls
-                </button>
-                <button id="clearWeights" class="menuButton" disabled="true"
-                    data-translate="clearWeightsButton" data-lang="en">Clear Weights
-                </button>
-                <button id="resetBoard" class="menuButton" disabled="true"
-                    data-translate="resetBoardButton" data-lang="en">Reset Board
-                </button>
-                <button id="openInfoBox" class="menuButton" disabled="true"
-                    data-translate="infoBoxButton" data-lang="en">Open Infobox
-                </button>
-            </div>
-            <div class="descriptionBar">
-                <div class="nodeExplainationWrapper">
-                    <div id="startNode" class="nodeColor"></div>
-                    <label for="startNode">Start</label>
-                </div>
-                <div class="nodeExplainationWrapper">
-                    <div id="finishNode" class="nodeColor"></div>
-                    <label for="finishNode">Finish</label>
-                </div>
-                <div class="nodeExplainationWrapper">
-                    <div id="visitedNode" class="nodeColor"></div>
-                    <label for="visitedNode">Visited</label>
-                </div>
-                <div id="shortestPathWrapper" class="nodeExplainationWrapper">
-                    <div id="shortestPathNode" class="nodeColor"></div>
-                    <label for="shortestPathNode">Shortest Path</label>
-                </div>
-                <div id="wallWrapper" class="nodeExplainationWrapper">
-                    <div id="wallNode" class="nodeColor"></div>
-                    <label for="wallNode">Wall</label>
-                </div>
-                <div id="weightsWrapper" class="nodeExplainationWrapper">
-                    <div id="lightWeightNode" class="nodeColor"></div>
-                    <div id="normalWeightNode" class="nodeColor"></div>
-                    <div id="heavyWeightNode" class="nodeColor"></div>
-                    <label for="heavyWeightNode">Weights</label>
-                </div>
-                <div id="jumpPoinWrapper" class="nodeExplainationWrapper">
-                    <div id="jumpPointNode" class="nodeColor"></div>
-                    <label for="jumpPointNode">Jump Point</label>
-                </div>
-            </div>
-            </div>
+                    <div class="nodeExplainationWrapper">
+                        <div id="finishNode" class="nodeColor"></div>
+                        <label for="finishNode">Finish</label>
+                    </div>
+                    <div class="nodeExplainationWrapper">
+                        <div id="visitedNode" class="nodeColor"></div>
+                        <label for="visitedNode">Visited</label>
+                    </div>
+                    <div id="shortestPathWrapper" class="nodeExplainationWrapper">
+                        <div id="shortestPathNode" class="nodeColor"></div>
+                        <label for="shortestPathNode">Shortest Path</label>
+                    </div>
+                    <div id="wallWrapper" class="nodeExplainationWrapper">
+                        <div id="wallNode" class="nodeColor"></div>
+                        <label for="wallNode">Wall</label>
+                    </div>
+                    <div id="weightsWrapper" class="nodeExplainationWrapper">
+                        <div id="lightWeightNode" class="nodeColor"></div>
+                        <div id="normalWeightNode" class="nodeColor"></div>
+                        <div id="heavyWeightNode" class="nodeColor"></div>
+                        <label for="heavyWeightNode">Weights</label>
+                    </div>
+                    <div id="jumpPoinWrapper" class="nodeExplainationWrapper">
+                        <div id="jumpPointNode" class="nodeColor"></div>
+                        <label for="jumpPointNode">Jump Point</label>
+                    </div>
+                </div> <!-- End of "descriptionBar" -->
+            </div> <!-- End of "overlay" -->
             <div id="infoBox">
                 <div id="currInfoBoxPage">1/8</div>
                 <div id="infoBoxText">
@@ -174,15 +174,7 @@
                     Prev
                 </button>
                 <button id="nextInfoBoxButton" class="infoBoxButton">Next</button>
-            </div>
-            <!--<button id="dijkstra">Dijkstra</button>
-            <button id="astar">A-Star</button>
-            <button id="greedyBFS">Greedy BFS</button>
-            <button id="breadthFirstSearch">BFS</button>
-            <button id="bidirectionalDijkstra">Bi Dijkstra</button>
-            <button id="bidirectionalAStar">Bi A-Star</button>
-            <button id="depthFirstSearch">DFS</button>
-            <button id="jumpPointSearch">JPS</button>-->
+            </div> <!-- End of "infoBox" -->
             <div class="overlay">
                 <div id="board"></div>
             </div>

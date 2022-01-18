@@ -113,8 +113,7 @@ function displayInfoBoxText(currentPage) {
             </p>`;
             break;
         case 2:
-            infoBoxText.innerHTML = `<h2 class="h2InfoBox">Info about each algorithm
-            1/2</h2>
+            infoBoxText.innerHTML = `<h2 class="h2InfoBox">The algorithms 1/2</h2>
             <p class="pInfoBox">Dijkstra's algorithm (weighted): Explores all directions
                 equally and guarantees the shortest path from start to finish.
                 <br/>A* algorithm (weighted): Uses heuristics and the distance from start 
@@ -128,8 +127,7 @@ function displayInfoBoxText(currentPage) {
             </p>`;
             break;
         case 3:
-            infoBoxText.innerHTML = `<h2 class="h2InfoBox">Info about each algorithm
-            2/2</h2>
+            infoBoxText.innerHTML = `<h2 class="h2InfoBox">The algorithms 2/2</h2>
             <p class="pInfoBox">Bidirectional Dijkstra's algorithm (weighted): Here Dijkstra's algorithm
                 begins from both the start and finsih node. The first point where both
                 algorithms meet has to be part of the connecting path therefore not
@@ -148,7 +146,7 @@ function displayInfoBoxText(currentPage) {
         case 4:
             infoBoxText.innerHTML = `<h2 class="h2InfoBox">Overview of features 1/2</h2>
             <p class="pInfoBox">Walls can be easily added by left-clicking on a tile and
-                removed by once again left-clicking on that tile. <br/>There are three
+                removed by clicking on it again. <br/>There are three
                 different weights which can be placed by left-clicking while pressing either of
                 these buttons: <span style="color: #32ccb2">Q</span>, <span style="color: #e8dd19">
                 W</span>, <span style="color: #06d314">E</span>. Their values can be adjusted 
@@ -157,7 +155,7 @@ function displayInfoBoxText(currentPage) {
                 can be moved by simply left-clicking on them and then clicking the tile where you 
                 want to place them. <br/>
             </p>
-            <img src="images/walls_weights_movement.gif"/>`;
+            <img src="images/walls_weights_movement.gif" id="movementGif"/>`;
             break;
         case 5:
             infoBoxText.innerHTML = `<h2 class="h2InfoBox">Overview of features 2/2</h2>
@@ -177,7 +175,7 @@ function displayInfoBoxText(currentPage) {
                 can make use of this feature are: A*, Greedy Best-First Search and Bidirectional A*.
                 <br/><br/>
             </p>
-            <img src="images/directions.png"/>`;
+            <img src="images/directions.png" id="directionsImg"/>`;
             break;
         case 7:
             infoBoxText.innerHTML = `<h2 class="h2InfoBox">Cutting corners</h2>
@@ -186,7 +184,7 @@ function displayInfoBoxText(currentPage) {
                 squeeze itself through non-existent spaces when moving diagonally. Please see the video 
                 below for an illustration.
             </p>
-            <img src="images/corner_cutting.gif"/>`;
+            <img src="images/corner_cutting.gif" id="cornerCuttingGif"/>`;
             break;
     }
 }

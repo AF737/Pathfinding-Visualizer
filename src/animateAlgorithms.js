@@ -24,21 +24,21 @@ function animateDijkstra(startNode, finishNode, gridBoard) {
     const [visitedNodes, shortestPath] = 
         dijkstra(gridBoard, startNode, finishNode);
 
-    animateAlgorithm(visitedNodes, null, shortestPath, gridBoard, false);
+    animateAlgorithm(visitedNodes, null, shortestPath, gridBoard, false, false);
 }
 
 function animateAStar(startNode, finishNode, gridBoard) {
     const [visitedNodes, shortestPath] = 
         aStar(gridBoard, startNode, finishNode, eightDirections, cornerCutting);
     
-    animateAlgorithm(visitedNodes, null, shortestPath, gridBoard, true);
+    animateAlgorithm(visitedNodes, null, shortestPath, gridBoard, true, false);
 }
 
 function animateGreedyBFS(startNode, finishNode, gridBoard) {
     const [visitedNodes, path] = 
         greedyBFS(gridBoard, startNode, finishNode, eightDirections, cornerCutting);
 
-    animateAlgorithm(visitedNodes, null, path, gridBoard, true);
+    animateAlgorithm(visitedNodes, null, path, gridBoard, true, false);
 }
 
 function animateBreadthFirstSearch(startNode, finishNode, gridBoard) {
@@ -47,7 +47,7 @@ function animateBreadthFirstSearch(startNode, finishNode, gridBoard) {
     const [visitedNodes, shortestPath] = 
         breadthFirstSearch(gridBoard, startNode, finishNode);
 
-    animateAlgorithm(visitedNodes, null, shortestPath, gridBoard, false);
+    animateAlgorithm(visitedNodes, null, shortestPath, gridBoard, false, false);
 }
 
 function animateBidirectionalDijkstra(startNode, finishNode, gridBoard) {
@@ -55,7 +55,7 @@ function animateBidirectionalDijkstra(startNode, finishNode, gridBoard) {
         bidirectionalDijkstra(gridBoard, startNode, finishNode);
 
     animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, path, 
-        gridBoard, false);
+        gridBoard, false, false);
 }
 
 function animateBidirectionalAStar(startNode, finishNode, gridBoard) {
@@ -63,7 +63,7 @@ function animateBidirectionalAStar(startNode, finishNode, gridBoard) {
         bidirectionalAStar(gridBoard, startNode, finishNode, eightDirections, cornerCutting);
 
     animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, path, 
-        gridBoard, true);
+        gridBoard, true, false);
 }
 
 function animateDepthFirstSearch(startNode, finishNode, gridBoard) {
@@ -72,7 +72,7 @@ function animateDepthFirstSearch(startNode, finishNode, gridBoard) {
     const [visitedNodesFromStart, path] = 
         depthFirstSearch(gridBoard, startNode, finishNode);
 
-    animateAlgorithm(visitedNodesFromStart, null, path, gridBoard, false);
+    animateAlgorithm(visitedNodesFromStart, null, path, gridBoard, false, false);
 }
 
 function animateJumpPointSearch(startNode, finishNode, gridBoard) {
@@ -82,11 +82,11 @@ function animateJumpPointSearch(startNode, finishNode, gridBoard) {
     jumpPointSearch3(gridBoard, startNode, finishNode, gridBoard);
 
     animateAlgorithm(visitedNodesFromStart, null, shortestPath, gridBoard,
-        false);
+        false, true);
 }
 
 function animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortestPath, 
-    gridBoard, allowEightDirections) {
+    gridBoard, allowEightDirections, jumpPointSearch) {
     for (let i = 0; i < visitedNodesFromStart.length; i++) {
         setTimeout(function() {
             const currentNode = visitedNodesFromStart[i];
@@ -162,8 +162,9 @@ function animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortes
                 enableDirections();
             }
 
-            if (directionsToggleButton.checked === true || 
-                cornerCuttingToggleButton.checked === true) {
+            if ((directionsToggleButton.checked === true || 
+                cornerCuttingToggleButton.checked === true) && 
+                jumpPointSearch === false) {
                 enableCornerCutting();
             }
         }, (visitedNodesFromStart.length + shortestPath.length) * ANIMATION_SPEED);
@@ -178,8 +179,9 @@ function animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortes
                 enableDirections();
             }
 
-            if (directionsToggleButton.checked === true || 
-                cornerCuttingToggleButton.checked === true) {
+            if ((directionsToggleButton.checked === true || 
+                cornerCuttingToggleButton.checked === true) &&
+                jumpPointSearch === false) {
                 enableCornerCutting();
             }
         }, visitedNodesFromStart.length * ANIMATION_SPEED);
