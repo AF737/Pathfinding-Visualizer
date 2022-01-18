@@ -29,6 +29,8 @@ function adjustGridDimensions() {
 
 function createGrid(gridBoard) {
     console.log('x');
+    /* Remove all previous children */
+    board.innerHTML = '';
     //let board = document.getElementById('board');
     console.log(board.style.width);
     let boardWidth = parseInt(board.style.width, 10);

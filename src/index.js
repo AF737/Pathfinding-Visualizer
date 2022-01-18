@@ -47,6 +47,11 @@ document.addEventListener('DOMContentLoaded', function() {
         gridBoard.pressedKey = null;
     });
 
+    window.addEventListener('resize', function() {
+        adjustGridDimensions();
+        createGrid(gridBoard);
+    });
+
     function setupAlgorithmRadioButtons() {
         let radioButtons = document.querySelectorAll('input[name="algorithmOption"]');
 
@@ -103,14 +108,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    setupAlgorithmRadioButtons();
-
-    function setupGrid() {
+    function setup() {
+        setupAlgorithmRadioButtons();
         adjustGridDimensions();
         createGrid(gridBoard);
     };
 
-    setupGrid();
+    setup();
 
     directionsToggleButton.addEventListener('change', function() {
         if (directionsToggleButton.checked === true) {
