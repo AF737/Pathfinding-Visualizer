@@ -12,8 +12,7 @@ import {handleLightWeightSlider, handleNormalWeightSlider, handleHeavyWeightSlid
         removeWeights} from './weights.js';
 import {animateDijkstra, animateAStar, animateGreedyBFS, animateBreadthFirstSearch,
         animateBidirectionalDijkstra, animateBidirectionalAStar, animateDepthFirstSearch, 
-        animateJumpPointSearch}
-        from './animateAlgorithms.js';
+        animateJumpPointSearch} from './animateAlgorithms.js';
 
 let eightDirections = false, cornerCutting = false;
 
@@ -39,18 +38,13 @@ document.addEventListener('DOMContentLoaded', function() {
     let cornerCuttingToggleButton = document.getElementById('cornerCuttingToggleButton');
     let cornerCuttingSwitch = document.getElementById('cornerCuttingSwitch'); 
 
-    document.addEventListener('keydown', function(ev) {
-        gridBoard.pressedKey = ev.key;
-    });
-
-    document.addEventListener('keyup', function() {
-        gridBoard.pressedKey = null;
-    });
-
-    window.addEventListener('resize', function() {
+    function setup() {
+        setupAlgorithmRadioButtons();
         adjustGridDimensions();
         createGrid(gridBoard);
-    });
+    }
+
+    setup();
 
     function setupAlgorithmRadioButtons() {
         let radioButtons = document.querySelectorAll('input[name="algorithmOption"]');
@@ -103,26 +97,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
 
                 animateAlgorithmButton.innerHTML = animateButtonText;
+                /* The border was 3px solid red if no radio button was selected and
+                    the "Animate" button was pressed */
                 algorithmDropDownButton.style.border = '1px solid white';
             });
         }
     }
 
-    function setup() {
-        setupAlgorithmRadioButtons();
+    document.addEventListener('keydown', function(ev) {
+        gridBoard.pressedKey = ev.key;
+    });
+
+    document.addEventListener('keyup', function() {
+        gridBoard.pressedKey = null;
+    });
+
+    /* Create a new grid if the user resized the window */
+    window.addEventListener('resize', function() {
         adjustGridDimensions();
         createGrid(gridBoard);
-    };
-
-    setup();
+    });
 
     directionsToggleButton.addEventListener('change', function() {
+        /* Allow "corner cutting" if "eight directions" is enabled */
         if (directionsToggleButton.checked === true) {
             cornerCuttingToggleButton.disabled = false;
             cornerCuttingSwitch.style.backgroundColor = '#79e082';
             eightDirections = true;
         }
 
+        /* Disallow "corner cutting" when "eight directions" is disabled */
         else {
             cornerCuttingToggleButton.checked = false;
             cornerCuttingToggleButton.disabled = true;
@@ -143,20 +147,21 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     algorithmDropDownButton.addEventListener('click', function() {
-        /* The first time clicking the button no inline style will be set (it's an empty
-            string) */
+        /* Display the menu if the button is clicked */
         if (algorithmDropDownMenu.style.display === '' || 
                 algorithmDropDownMenu.style.display === 'none') {
             algorithmDropDownMenu.style.display = 'block';
             algorithmDropDownButton.innerHTML = 'Algorithms&#9650;'
         }
 
+        /* Hide it if the button is clicked again while it's open */
         else {
             algorithmDropDownMenu.style.display = 'none';
             algorithmDropDownButton.innerHTML = 'Algorithms&#9660;'
         }
     });
 
+    /* Close the menu if the user's mouse leaves it */
     algorithmDropDownMenu.addEventListener('mouseleave', function() {
         algorithmDropDownMenu.style.display = 'none';
         algorithmDropDownButton.innerHTML = 'Algorithms&#9660;'
@@ -202,7 +207,9 @@ document.addEventListener('DOMContentLoaded', function() {
         removeWalls(gridBoard);
     });
 
-    clearWeightsButton.addEventListener('click', removeWeights);
+    clearWeightsButton.addEventListener('click', function() {
+        removeWeights(gridBoard);
+    });
 
     resetBoardButton.addEventListener('click', function() {
         removeWalls(gridBoard);
@@ -221,11 +228,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     animateAlgorithmButton.addEventListener('click', function() {
         let selectedAlgorithm = document.querySelector('input[name="algorithmOption"]:checked');
-        // console.log(selectedAlgorithm.value);
         /* If no algorithm has been selected */
         if (selectedAlgorithm === null) {
             animateAlgorithmButton.innerHTML = 'Select An Algorithm';
-
+            /* Get user's attention with a red border around the dropdown menu to select
+                an algorithm */
             algorithmDropDownButton.style.border = '3px solid red';
         }
 
@@ -235,6 +242,7 @@ document.addEventListener('DOMContentLoaded', function() {
             weightDropDownMenu.style.display = 'none';
             weightDropDownButton.innerHTML = 'Adjust Weights&#9660;';
             removePreviousAlgorithm(gridBoard);
+            /* Disable all menu buttons until the algorithm is done */
             disableButtons();
             disableToggleButtons();
             gridBoard.algoIsRunning = true;

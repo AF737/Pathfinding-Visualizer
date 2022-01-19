@@ -5,10 +5,10 @@ import Node from './node.js';
 import {handleMouseDownAndEnter} from './mouseEvents.js';
 
 let board = document.getElementById('board');
-let startRow, startCol, finishRow, finishCol;
+const NODE_WIDTH = 20;
+const NODE_HEIGHT = 20;
 
 function adjustGridDimensions() {
-    //let board = document.getElementById('board');
     let windowWidth = window.innerWidth;
     let windowHeight = window.innerHeight;
     let boardWidth = windowWidth - 100 - 
@@ -18,25 +18,20 @@ function adjustGridDimensions() {
 
     board.style.width = `${boardWidth}px`;
     board.style.height = `${boardHeight}px`;
-    board.style.marginLeft = `${(windowWidth - 
-        boardWidth) / 2}px`;
-    /* board.style.marginTop = `${(windowHeight - 
-        boardHeight) / 2}px`; */
+    board.style.marginLeft = `${(windowWidth - boardWidth) / 2}px`;
     board.style.marginTop = '50px';
-    board.style.gridTemplateColumns = `${Math.floor(boardWidth / 20)}`;
-    board.style.gridTemplateRows = `${Math.floor(boardHeight / 20)}`;
+    /* Create a grid where each element is 20 by 20 pixels in size */
+    board.style.gridTemplateColumns = `${Math.floor(boardWidth / NODE_WIDTH)}`;
+    board.style.gridTemplateRows = `${Math.floor(boardHeight / NODE_HEIGHT)}`;
 }
 
 function createGrid(gridBoard) {
-    console.log('x');
-    /* Remove all previous children */
+    /* Remove all previous children in case of resizing */
     board.innerHTML = '';
-    //let board = document.getElementById('board');
-    console.log(board.style.width);
     let boardWidth = parseInt(board.style.width, 10);
     let boardHeight = parseInt(board.style.height, 10);
-    let numOfCols = Math.floor(boardWidth / 20);
-    let numOfRows = Math.floor(boardHeight / 20);
+    let numOfCols = Math.floor(boardWidth / NODE_WIDTH);
+    let numOfRows = Math.floor(boardHeight / NODE_HEIGHT);
 
     gridBoard.rows = numOfRows;
     gridBoard.columns = numOfCols;
@@ -46,7 +41,6 @@ function createGrid(gridBoard) {
     gridBoard.finishRow = Math.floor(numOfRows / 2);
     gridBoard.finishCol = Math.floor((numOfCols / 4) * 3);
 
-    console.log(`${boardWidth}, ${boardHeight}`);
     for (let row = 0; row < numOfRows; row++) {
         const newGridArr = [];
         for (let col = 0; col < numOfCols; col++) {
@@ -67,18 +61,17 @@ function createGrid(gridBoard) {
             }
 
             newNode = new Node(newNodeIndex, row, col, newNodeClass);
-            // gridBoard.nodesMatrix.push(newNode);
             newGridArr.push(newNode);
 
             let newNodeDiv = document.createElement('div');
             newNodeDiv.id = `node-${newNodeIndex}`;
             newNodeDiv.className = `${newNodeClass}`;
-            // console.log(newNodeDiv);
-            // newNodeDiv.push(newNode);
             /* CSS Grid Layout starts indexing at 1 instead of 0 */
             newNodeDiv.style.gridRow = `${row + 1}`;
             newNodeDiv.style.gridColumn = `${col + 1}`;
 
+            /* Add event listeners so the user can add/remove walls and weights and
+                put start and finish to new places */
             newNodeDiv.addEventListener('mousedown', function(ev) {
                 handleMouseDownAndEnter.call(this, ev, 'mouseDown', gridBoard);
             });
@@ -94,7 +87,6 @@ function createGrid(gridBoard) {
             });
 
             board.appendChild(newNodeDiv);
-            
         }
         gridBoard.nodesMatrix.push(newGridArr);
     }

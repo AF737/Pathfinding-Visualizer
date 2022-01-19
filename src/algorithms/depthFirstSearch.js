@@ -11,7 +11,8 @@ function depthFirstSearch(grid, startNode, finishNode) {
     nodesToCheck.push(startNode);
 
     while (nodesToCheck.length > 0) {
-        /* Always check the last of the node the array */
+        /* Always check the last of the node the array, because we are exploring
+            every path to its end before going on to the next one */
         const currentNode = nodesToCheck.pop();
 
         if (currentNode.isWall === true) {
@@ -23,11 +24,9 @@ function depthFirstSearch(grid, startNode, finishNode) {
 
         if (currentNode === finishNode) {
             let pathNode = finishNode;
-            /* Just called path, because this algorithm doesn't
-                necessarily produce the shortest path from start
-                to finish */
             const path = [];
 
+            /* Backtrack from finish to start node */
             while (pathNode !== null) {
                 path.unshift(pathNode);
                 pathNode = pathNode.prevNode;

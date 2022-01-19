@@ -2,8 +2,6 @@
 
 export {breadthFirstSearch};
 
-/* Like Dijkstra but doesnt take weights into account (unweighted) */
-
 function breadthFirstSearch(grid, startNode, finishNode) {
     const visitedNodes = [];
     startNode.distanceFromStart = 0;
@@ -95,6 +93,7 @@ function checkUnvisited(neighbor) {
     return neighbor.isVisited === false;
 }
 
+/* Manhattan distance */
 function getDistance(parentNode, node) {
     return (Math.abs(parentNode.row - node.row) + 
             Math.abs(parentNode.column - node.column));

@@ -99,6 +99,7 @@ function checkUnvisited(neighbor) {
     return neighbor.isVisited === false;
 }
 
+/* Manhattan distance */
 function getDistance(parentNode, node) {
     return (Math.abs(parentNode.row - node.row) + 
             Math.abs(parentNode.column - node.column));

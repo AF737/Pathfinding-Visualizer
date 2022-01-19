@@ -8,28 +8,28 @@ export {enableButtons, disableButtons, changeWallStatus, removeWalls,
 function enableButtons() {
     let dropDownButtons = document.getElementsByClassName('dropDownButton');
 
-    for (let i = 0; i < dropDownButtons.length; i++) {
-        dropDownButtons[i].disabled = false;
+    for (const button of dropDownButtons.length) {
+        button.disabled = false;
     }
 
     let menuButtons = document.getElementsByClassName('menuButton');
 
-    for (let i = 0; i < menuButtons.length; i++) {
-        menuButtons[i].disabled = false;
+    for (const button of menuButtons.length) {
+        button.disabled = false;
     }
 }
 
 function disableButtons() {
     let dropDownButtons = document.getElementsByClassName('dropDownButton');
 
-    for (let i = 0; i < dropDownButtons.length; i++) {
-        dropDownButtons[i].disabled = true;
+    for (const button of dropDownButtons.length) {
+        button.disabled = true;
     }
 
     let menuButtons = document.getElementsByClassName('menuButton');
 
-    for (let i = 0; i < menuButtons.length; i++) {
-        menuButtons[i].disabled = true;
+    for (const button of menuButtons.length) {
+        button.disabled = true;
     }
 }
 
@@ -55,12 +55,14 @@ function removePreviousAlgorithm(gridBoard) {
         for (let col = 0; col < gridBoard.columns; col++) {
             let node = document.getElementById(`node-${row}-${col}`);
 
+            /* Leave walls and weights as they are */
             if (node.className === 'visited' || node.className === 'shortestPath' ||
                 node.className === 'jumpPoint') {
-                gridBoard.nodesMatrix[row][col].isVisited = false;
                 node.className = 'unvisited';
             }
 
+            /* Reset each element in the nodesMatrix so that the next algorithm
+                can start fresh */
             gridBoard.nodesMatrix[row][col].isVisited = false;
             gridBoard.nodesMatrix[row][col].distanceFromStart = Infinity;
             gridBoard.nodesMatrix[row][col].distanceFromFinish = Infinity;
@@ -73,14 +75,14 @@ function removePreviousAlgorithm(gridBoard) {
         }
     }
     
-    gridBoard.nodesMatrix[gridBoard.startRow][gridBoard.startCol].isVisited = false;
     document.getElementById(`node-${gridBoard.startRow}-${gridBoard.startCol}`)
         .className = 'start';
-    gridBoard.nodesMatrix[gridBoard.finishRow][gridBoard.finishCol].isVisited = false;
     document.getElementById(`node-${gridBoard.finishRow}-${gridBoard.finishCol}`)
     .className = 'finish';
 }
 
+/* Place start and finish at their original positions from when the grid was first
+    created */
 function resetStartAndFinish(gridBoard) {
     document.getElementById(`node-${gridBoard.startRow}-${gridBoard.startCol}`)
         .className = 'unvisited';
@@ -115,6 +117,7 @@ function enableDirections() {
     document.getElementById('directionsSwitch').style.backgroundColor = '#79e082';
 }
 
+/* Used for Jump Point Search where only eight directions are allowed */
 function setAndDisableDirections() {
     document.getElementById('directionsToggleButton').checked = true;
     document.getElementById('directionsToggleButton').disabled = true;

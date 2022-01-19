@@ -208,7 +208,7 @@ div.descriptionBar {
     border-bottom-color: black;
 }
 
-div.nodeExplainationWrapper {
+div.nodeExplanationWrapper {
     height: inherit;
     background-color: inherit;
     -webkit-display: inline-flex;
@@ -218,7 +218,7 @@ div.nodeExplainationWrapper {
     margin-left: 1vw;
 }
 
-div.nodeExplainationWrapper label {
+div.nodeExplanationWrapper label {
     margin-left: 0.5vw;
     font-size: 1.2rem;
 }
@@ -730,7 +730,7 @@ div.jumpPoint {
         font-size: 0.9rem;
     }
 
-    div.nodeExplainationWrapper label {
+    div.nodeExplanationWrapper label {
         font-size: 0.9rem;
     }
 

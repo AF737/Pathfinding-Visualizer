@@ -12,7 +12,7 @@ import {breadthFirstSearch} from './algorithms/breadthFirstSearch.js';
 import {bidirectionalDijkstra} from './algorithms/bidirectionalDijkstra.js';
 import {bidirectionalAStar} from './algorithms/bidirectionalAStar.js';
 import {depthFirstSearch} from './algorithms/depthFirstSearch.js';
-import {jumpPointSearch3} from './algorithms/jumpPointSearch3.js';
+import {jumpPointSearch} from './algorithms/jumpPointSearch.js';
 import {eightDirections, cornerCutting} from './index.js';
 import {removeWeights} from './weights.js';
 
@@ -79,7 +79,7 @@ function animateJumpPointSearch(startNode, finishNode, gridBoard) {
     removeWeights(gridBoard);
 
     const [visitedNodesFromStart, shortestPath] = 
-    jumpPointSearch3(gridBoard, startNode, finishNode, gridBoard);
+    jumpPointSearch(gridBoard, startNode, finishNode, gridBoard);
 
     animateAlgorithm(visitedNodesFromStart, null, shortestPath, gridBoard,
         false, true);
@@ -108,6 +108,7 @@ function animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortes
         }, i * ANIMATION_SPEED);
     }
 
+    /* Used for bidirectional search algorithms */
     if (visitedNodesFromFinish !== null) {
         for (let i = 0; i < visitedNodesFromFinish.length; i++) {
             setTimeout(function() {
@@ -150,18 +151,23 @@ function animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortes
     }
 
     /* Allow the user to edit the board and use the buttons once the algorithm is done.
-        The arrays visitedNodesFromStart/...Finish both always have the same length so
-        they both take the same time to animate, so it's enough to use the length of
-        visitedNodesFromStart which is never null */
+        The arrays visitedNodesFromStart, visitedNodesFromFinish both always have the 
+        same length so they both take the same time to animate, so it's enough to use 
+        the length of visitedNodesFromStart which is never null */
     if (shortestPath !== null) {
         setTimeout(function() {
             gridBoard.algoIsRunning = false;
             enableButtons();
-            // enableToggleButtons();
+
+            /* Enable "eight directions" button if the algorithm allows for a change
+                between four and eight */
             if (allowEightDirections === true) {
                 enableDirections();
             }
 
+            /* Jump Point Search uses eight directions, but doesn't allow for corner
+                cutting so the extra check is necessary otherwise just enable it if
+                it was set before */
             if ((directionsToggleButton.checked === true || 
                 cornerCuttingToggleButton.checked === true) && 
                 jumpPointSearch === false) {
@@ -170,11 +176,13 @@ function animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortes
         }, (visitedNodesFromStart.length + shortestPath.length) * ANIMATION_SPEED);
     }
 
+    /* If no shortest path was found then enable all buttons when the algorithm has
+        terminated */
     else {
         setTimeout(function() {
             gridBoard.algoIsRunning = false;
             enableButtons();
-            // enableToggleButtons();
+            
             if (allowEightDirections === true) {
                 enableDirections();
             }

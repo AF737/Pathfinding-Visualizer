@@ -186,6 +186,9 @@ function getDistance(node, goalNode) {
     return ((rowChange + colChange) + ((Math.SQRT2 - 2) * Math.min(rowChange, colChange)));
 }
 
+/* Prohibit diagonal movement if there's a wall directly left or right and above or below
+    (depending on the movement direction) the current node and corner cutting is disabled.
+    Otherwise allow the move */
 function checkCornerCutting(grid, cornerCutting, row, col, rowChange, colChange) {
     if (cornerCutting === true) {
         return true;

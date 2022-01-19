@@ -31,7 +31,7 @@ function aStar(grid, startNode, finishNode, eightDirections, cornerCutting) {
             const shortestPath = [];
 
             /* Recreate the path from the finish to the start node by going
-                through the previous nodes */
+                through the previous nodes until the start node is reached */
             while (currentNode !== null) {
                 shortestPath.unshift(currentNode);
                 currentNode = currentNode.prevNode;
@@ -151,16 +151,18 @@ function getNeighbors(grid, node, eightDirections, cornerCutting) {
     return neighbors;
 }
 
-/* Octile distance is used to check if moving diagonally is has a smaller cost
+/* Octile distance is used to check if moving diagonally has a smaller cost
     than moving in only four directions */
 function getDistance(firstNode, secondNode) {
-    //return (Math.abs(node.row - finishNode.row) + Math.abs(node.column - finishNode.column));
     const rowChange = Math.abs(firstNode.row - secondNode.row);
     const colChange = Math.abs(firstNode.column - secondNode.column);
 
     return ((rowChange + colChange) + ((Math.SQRT2 - 2) * Math.min(rowChange, colChange)));
 }
 
+/* Prohibit diagonal movement if there's a wall directly left or right and above or below
+    (depending on the movement direction) the current node and corner cutting is disabled.
+    Otherwise allow the move */
 function checkCornerCutting(grid, cornerCutting, row, col, rowChange, colChange) {
     if (cornerCutting === true) {
         return true;

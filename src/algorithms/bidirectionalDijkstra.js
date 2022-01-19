@@ -151,10 +151,6 @@ function getDistance(parentNode, node) {
 
 function getPath(startingNode) {
     let currentNode = startingNode;
-    /* It's called path instead of shortest path, because the path
-        that connects the start node with the common one and the
-        common one to the finish node doesn't have to be the
-        shortest path */
     const path = [];
 
     /* Backtrack from the node that both algorithms have in common to

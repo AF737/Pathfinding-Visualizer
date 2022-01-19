@@ -19,6 +19,7 @@ function openInfoBox() {
 }
 
 function closeInfoBox() {
+    /* Remove the white overlay */
     let overlays = document.getElementsByClassName('overlay');
     
     for (let i = 0; i < overlays.length; i++) {
@@ -43,7 +44,7 @@ function handlePrevInfoButton() {
         updateCurrPage(infoBoxPage);
     }
 
-    if (infoBoxPage === 0) {
+    else if (infoBoxPage === 0) {
         prevInfoBoxButton.disabled = true;
     }
 
@@ -85,14 +86,9 @@ function displayInfoBoxText(currentPage) {
         case 0:
             infoBoxText.innerHTML = `<h2 class="h2InfoBox">Welcome to my Pathfinding
             Visualizer</h2>
-            <h3 class="h3InfoBox">This project was inspired by Clément Mihailescu
-                <br/>You can check out his pathfinding visualizer 
-                <a href="https://github.com/clementmihailescu/Pathfinding-Visualizer">
-                here</a>
-            </h3>
             <p class="pInfoBox">This project was created to visualize different 
                 pathfinding algorithms, but what is a that? These kinds of algorithms 
-                are used to find the shortest path between to points (here nodes 
+                are used to find the shortest path between two points (here nodes 
                 on a 2d-grid). <br/>Please note that not all algorithms that are
                 listed here <strong>guarantee</strong> the shortest path. 
                 <br/>You can skip this introductory tutorial at any point by clicking 
@@ -105,7 +101,7 @@ function displayInfoBoxText(currentPage) {
                 titled "Pick An Algorithm"
             </h3>
             <p class="pInfoBox">Please note that some of these algorithms are weighted 
-                while others are unweighed. <br/> <strong>Weighted</strong> 
+                while others are unweighed. <br/><strong>Weighted</strong> 
                 algorithms allow for weights to be placed on the 2d-grid, which are harder 
                 to traverse than an empty field, but not impossible like walls. <br/> 
                 <strong>Unweighted</strong> algorithms do not allow for the 
@@ -114,33 +110,32 @@ function displayInfoBoxText(currentPage) {
             break;
         case 2:
             infoBoxText.innerHTML = `<h2 class="h2InfoBox">The algorithms 1/2</h2>
-            <p class="pInfoBox">Dijkstra's algorithm (weighted): Explores all directions
-                equally and guarantees the shortest path from start to finish.
-                <br/>A* algorithm (weighted): Uses heuristics and the distance from start 
-                to each node to first explore nodes which promise a short path therefore 
-                reducing the number of nodes that need to be visited.
-                Also guarantees the shortest path. <br/>Greedy best-first search (weighted): 
-                Like A*, but it relies solely on heuristics, because it does not take the
-                distance from the start to the current node into account. It is faster than
-                A*, but does not guarantee the shortest path. <br/>Breadth-first search
-                (unweighted): Like Dijkstra, but it does not take weights into account.
+            <p class="pInfoBox"><strong>Dijkstra's algorithm (weighted):</strong> Explores 
+                all directions equally and guarantees the shortest path from start to finish.
+                <br/><strong>A* algorithm (weighted):</strong> Uses heuristics to explore the 
+                most promising nodes first, therefore speeding up the search process. Also 
+                guarantees the shortest path. <br/><strong>Greedy best-first search (weighted):
+                </strong> Like A*, but it relies solely on heuristics, making it faster than A*, 
+                but more prone to errors and not guaranteeing the shortest path. <br/>
+                <strong>Breadth-first search (unweighted):</strong> Like Dijkstra, but it does 
+                not take weights into account.
             </p>`;
             break;
         case 3:
             infoBoxText.innerHTML = `<h2 class="h2InfoBox">The algorithms 2/2</h2>
-            <p class="pInfoBox">Bidirectional Dijkstra's algorithm (weighted): Here Dijkstra's algorithm
-                begins from both the start and finsih node. The first point where both
-                algorithms meet has to be part of the connecting path therefore not
-                guaranteeing the shorest path. <br/>Bidirectional A* algorithm (weighted):
-                Again both start and finish node use A* algorithm to reach each other and
-                there is no guarantee that the found path is the shortest one. <br/>
-                Depth-first search (unweighted): It explores every chosen path until it 
-                reaches the edge of the grid without any heuristics and is therefore slow
-                and and does not guarantee the shortest path. <br/>Jump Point Search 
-                (unweighted): An improved version of the A* algorithm where instead of 
-                checking each individual neighbor the algorithm jumps into these directions
-                to see if there are any "jump points" (i.e. points next to walls) and then 
-                starts jumping from there. This algorithm also guarantees the shortest path.
+            <p class="pInfoBox"><strong>Bidirectional Dijkstra's algorithm (weighted):</strong>
+                Like Dijkstra's, but the search starts from both start and finish simultaneously. 
+                It does not guarantee the shortest path. <br/>
+                <strong>Bidirectional A* algorithm (weighted):</strong> Again both start and finish
+                node use A* algorithm to reach each other and there is no guarantee that the found 
+                path is the shortest one. <br/><strong>Depth-first search (unweighted):</strong> It 
+                explores every chosen path until it reaches the edge of the grid without any 
+                heuristics and is therefore slow and and does not guarantee the shortest path. 
+                <br/><strong>Jump Point Search (unweighted):</strong> An improved version of the A*
+                algorithm where instead of checking each individual neighbor the algorithm jumps 
+                into these directions to see if there are any "jump points" (i.e. points next to 
+                walls) and then starts jumping from there. This algorithm also guarantees the 
+                shortest path.
             </p>`;
             break;
         case 4:

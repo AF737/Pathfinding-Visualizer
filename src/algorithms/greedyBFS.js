@@ -23,6 +23,7 @@ function greedyBFS(grid, startNode, finishNode, eightDirections, cornerCutting) 
             let currentNode = finishNode;
             const path = [];
 
+            /* Backtrack the path from finish node to start node */
             while (currentNode !== null) {
                 path.unshift(currentNode);
                 currentNode = currentNode.prevNode;
@@ -121,16 +122,16 @@ function checkUnvisited(neighbor) {
     return neighbor.isVisited === false;
 }
 
-/* The Manhattan distance is used, because the algorithm can only move in
-    four directions (up, down, left and right) */
 function getHeuristicDistance(node, finishNode) {
-    //return (Math.abs(node.row - finishNode.row) + Math.abs(node.column - finishNode.column));
     const rowChange = Math.abs(node.row - finishNode.row);
     const colChange = Math.abs(node.column - finishNode.column);
     
     return ((rowChange + colChange) + ((Math.SQRT2 - 2) * Math.min(rowChange, colChange)));
 }
 
+/* Prohibit diagonal movement if there's a wall directly left or right and above or below
+    (depending on the movement direction) the current node and corner cutting is disabled.
+    Otherwise allow the move */
 function checkCornerCutting(grid, cornerCutting, row, col, rowChange, colChange) {
     if (cornerCutting === true) {
         return true;
