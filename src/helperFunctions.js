@@ -6,29 +6,29 @@ export {enableButtons, disableButtons, changeWallStatus, removeWalls,
         setAndDisableDirections};
 
 function enableButtons() {
-    let dropDownButtons = document.getElementsByClassName('dropDownButton');
+    const dropDownButtons = document.getElementsByClassName('dropDownButton');
 
-    for (const button of dropDownButtons.length) {
+    for (const button of dropDownButtons) {
         button.disabled = false;
     }
 
-    let menuButtons = document.getElementsByClassName('menuButton');
+    const menuButtons = document.getElementsByClassName('menuButton');
 
-    for (const button of menuButtons.length) {
+    for (const button of menuButtons) {
         button.disabled = false;
     }
 }
 
 function disableButtons() {
-    let dropDownButtons = document.getElementsByClassName('dropDownButton');
+    const dropDownButtons = document.getElementsByClassName('dropDownButton');
 
-    for (const button of dropDownButtons.length) {
+    for (const button of dropDownButtons) {
         button.disabled = true;
     }
 
-    let menuButtons = document.getElementsByClassName('menuButton');
+    const menuButtons = document.getElementsByClassName('menuButton');
 
-    for (const button of menuButtons.length) {
+    for (const button of menuButtons) {
         button.disabled = true;
     }
 }
@@ -89,10 +89,20 @@ function resetStartAndFinish(gridBoard) {
     document.getElementById(`node-${gridBoard.finishRow}-${gridBoard.finishCol}`)
         .className = 'unvisited';
     
-    gridBoard.startRow = Math.floor(gridBoard.rows / 2);
-    gridBoard.startCol = Math.floor(gridBoard.columns / 4);
-    gridBoard.finishRow = Math.floor(gridBoard.rows / 2);
-    gridBoard.finishCol = Math.floor((gridBoard.columns / 4) * 3);
+    if (gridBoard.columns >= gridBoard.rows) {
+        gridBoard.startRow = Math.floor(gridBoard.rows / 2);
+        gridBoard.startCol = Math.floor(gridBoard.columns / 4);
+        gridBoard.finishRow = Math.floor(gridBoard.rows / 2);
+        gridBoard.finishCol = Math.floor((gridBoard.columns / 4) * 3);
+    }
+
+    /* Place them under each other for the mobile version */
+    else {
+        gridBoard.startRow = Math.floor(numOfRows / 4);
+        gridBoard.startCol = Math.floor(numOfCols / 2);
+        gridBoard.finishRow = Math.floor((numOfRows / 4) * 3);
+        gridBoard.finishCol = Math.floor(numOfCols / 2);
+    }
 
     document.getElementById(`node-${gridBoard.startRow}-${gridBoard.startCol}`)
         .className = 'start';

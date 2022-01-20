@@ -36,7 +36,8 @@ document.addEventListener('DOMContentLoaded', function() {
     let nextInfoButton = document.getElementById('nextInfoBoxButton');
     let openInfoBoxButton = document.getElementById('openInfoBox');
     let cornerCuttingToggleButton = document.getElementById('cornerCuttingToggleButton');
-    let cornerCuttingSwitch = document.getElementById('cornerCuttingSwitch'); 
+    let cornerCuttingSwitch = document.getElementById('cornerCuttingSwitch');
+    let mobileMenuButton = document.getElementById('mobileMenuButton');
 
     function setup() {
         setupAlgorithmRadioButtons();
@@ -236,6 +237,11 @@ document.addEventListener('DOMContentLoaded', function() {
             algorithmDropDownButton.style.border = '3px solid red';
         }
 
+        /* Only start the algorithm if both start and finish are placed */
+        else if (gridBoard.startIsPlaced === false || gridBoard.finishIsPlaced === false) {
+            return;
+        }
+
         else {
             algorithmDropDownMenu.style.display = 'none';
             algorithmDropDownButton.innerHTML = 'Animate&#9660;';
@@ -275,6 +281,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 case 'jumpPointSearch':
                     animateJumpPointSearch(startNode, finishNode, gridBoard);
                     break;
+            }
+        }
+    });
+
+    mobileMenuButton.addEventListener('click', function() {
+        const menuStyles = document.getElementsByClassName('menuStyle');
+
+        for (const menuStyle of menuStyles) {
+            if (menuStyle.style.display === 'flex') {
+                menuStyle.style.display = 'none';
+            }
+
+            else {
+                menuStyle.style.display = 'flex';
             }
         }
     });

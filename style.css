@@ -17,6 +17,19 @@ div.menuBar {
     background-color: #1db82a;
     display: flex;
     justify-content: center;
+    /* border: 3px solid red; */
+}
+
+div.menuStyle {
+    /* width: inherit;
+    height: inherit; */
+    width: 75vw;
+    background-color: inherit;
+    display: flex;
+    flex-wrap: nowrap;
+    /* Place menu above grid */
+    z-index: 1;
+    /* border: 1px solid blue; */
 }
 
 div.dropDownWrapper {
@@ -24,7 +37,7 @@ div.dropDownWrapper {
     /* Top and bottom margin of 25px are necessary so that the wrapper has the same
         size as the button so that the hover pseudo class only triggers if the cursor
         is actually above the button */
-    margin: 25px 0.625vw;
+    margin: 25px 0.625vw; 
     width: 10vw;
     /* Ensures that the dropdown menu is above the 2d-grid */
     z-index: 1;
@@ -50,6 +63,8 @@ div.dropDownMenu {
     display: none;
     width: inherit;
     background-color: #1db82a;
+    border: 1px solid white;
+    border-top: none;
 }
 
 div.radioButtonWrapper {
@@ -58,7 +73,7 @@ div.radioButtonWrapper {
     display: inline-flex;
     align-items: center;
     text-align: center;
-    padding: 0.5vh 0;
+    padding: 0.5vh 0.5vw;
 }
 
 div.radioButtonWrapper:hover {
@@ -195,6 +210,23 @@ button.menuButton {
 
 button.menuButton:disabled {
     background-color: red;
+}
+
+div#mobileMenuButton {
+    width: 33px;
+    height: 33px;
+    top: 8.5px;
+    right: 10px;
+    position: fixed;
+    display: none;
+}
+
+div#mobileMenuButton .bar {
+    width: 25px;
+    height: 3px;
+    margin: 5px auto;
+    background-color: white;
+    display: block;
 }
 
 div.descriptionBar {
@@ -756,7 +788,31 @@ div.jumpPoint {
     }
 }
 
-@media screen and (max-width: 1150px) {
+/* Enable desktop menu again if the user switched from mobile version
+    to a higher resolution */
+@media screen and (min-width: 1051px) {
+    div.menuStyle {
+        /* This overwrites the html-style attribute of display
+            that's set by clicking the mobile menu button and 
+            displays the entire menu if the user resizes the screen
+            from mobile version to a larger one */
+        display: flex !important;
+        flex-wrap: nowrap;
+        margin-top: 0;
+        height: 100px;
+        position: inline;
+    }
+
+    div#weightDropDownWrapper {
+        display: inline;
+    }
+
+    div#mobileMenuButton {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 1051px) and (max-width: 1150px) {
     button.dropDownButton {
         font-size: 0.8rem;
     }
@@ -803,6 +859,74 @@ div.jumpPoint {
 
     img#cornerCuttingGif {
         width: 400px;
+    }
+}
+
+/* Switch to mobile design */
+@media screen and (max-width: 1050px) {
+    div.menuBar {
+        height: 50px;
+    }
+
+    div.menuStyle {
+        width: 100vw;
+        height: 50vh;
+        top: 50px;
+        display: none;
+        flex-wrap: wrap;
+        flex-direction: column;
+        position: fixed;
+        z-index: 1;
+    } 
+
+    div#mobileMenuButton {
+        display: block;
+    }
+
+    label.switch,
+    button.menuButton {
+        width: 20vw;
+        margin: 20px 2.5vw;
+    }
+
+    div.dropDownWrapper {
+        width: 30vw;
+        height: 33px;
+        margin: 8.5px 20px;
+    }
+
+    button.dropDownButton {
+        height: 33px;
+    }
+
+    button#animateAlgorithm {
+        width: 30vw;
+        height: 33px;
+        margin: 8.5px 20px;
+    }
+    
+    /* Hide dropdown button because no weights can be placed while in
+        mobile mode */
+    div#weightDropDownWrapper {
+        display: none;
+    }
+
+    div.descriptionBar {
+        height: 40px;
+    }
+
+    /* No weights can be added while on mobile */
+    div#weightsWrapper {
+        display: none;
+    }
+
+    div.nodeColor {
+        width: 20px;
+        height: 20px;
+    }
+
+    div.nodeExplanationWrapper {
+        font-size: 1rem;
     }
 }
 

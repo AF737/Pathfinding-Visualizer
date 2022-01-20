@@ -65,57 +65,64 @@
                             </div>
                         </div> <!-- End of "algorithmDropDownMenu" -->
                     </div> <!-- End of "dropDownWrapper" -->
-                    <div class="dropDownWrapper">
-                        <button id="weightDropDownButton" class="dropDownButton" disabled="true">
-                            Adjust Weights&#9660;
-                        </button>
-                        <div id="weightDropDownMenu" class="dropDownMenu">
-                            <div class="weightWrapper">
-                                <div id="lightWeightSquare" class="nodeColorSquare"></div>
-                                <input type="range" id="lightWeightSlider" class="weightSlider"
-                                    name="lightWeightSlider" min="1" max="100" step="1" value="15">
-                                <label for="lightWeightSlider" id="lightWeightLabel">15</label>
-                            </div>
-                            <div class="weightWrapper">
-                                <div id="normalWeightSquare" class="nodeColorSquare"></div>
-                                <input type="range" id="normalWeightSlider" class="weightSlider"
-                                    name="normalWeightSlider" min="1" max="100" step="1" value="30">
-                                <label for="normalWeightSlider" id="normalWeightLabel">30</label>    
-                            </div>
-                            <div class="weightWrapper">
-                                <div id="heavyWeightSquare" class="nodeColorSquare"></div>
-                                <input type="range" id="heavyWeightSlider" class="weightSlider"
-                                    name="heavyWeightSlider" min="1" max="100" step="1" value="45">
-                                <label for="heavyWeightSlider" id="heavyWeightLabel">45</label>
-                            </div>
-                        </div> <!-- End of "weightDropDownMenu" -->
-                    </div> <!-- End of "dropDownWrapper" -->
-                    <label id="directionsSwitch" class="switch">
-                        <input type="checkbox" id="directionsToggleButton" disabled="true">
-                        <span id="directionsText"></span>
-                    </label>
-                    <label id="cornerCuttingSwitch" class="switch">
-                        <input type="checkbox" id="cornerCuttingToggleButton" disabled="true">
-                        <span id="cornerCuttingText"></span>
-                    </label>
                     <button id="animateAlgorithm" class="menuButton" disabled="true">
                         Animate
                     </button>
-                    <button id="clearAlgorithm" class="menuButton" disabled="true">
-                        Clear Algorithm
-                    </button>
-                    <button id="clearWalls" class="menuButton" disabled="true">
-                        Clear Walls
-                    </button>
-                    <button id="clearWeights" class="menuButton" disabled="true">
-                        Clear Weights
-                    </button>
-                    <button id="resetBoard" class="menuButton" disabled="true">
-                        Reset Board
-                    </button>
-                    <button id="openInfoBox" class="menuButton" disabled="true">
-                        Open Infobox
-                    </button>
+                    <div class="menuStyle">
+                        <div id="weightDropDownWrapper" class="dropDownWrapper">
+                            <button id="weightDropDownButton" class="dropDownButton" disabled="true">
+                                Adjust Weights&#9660;
+                            </button>
+                            <div id="weightDropDownMenu" class="dropDownMenu">
+                                <div class="weightWrapper">
+                                    <div id="lightWeightSquare" class="nodeColorSquare"></div>
+                                    <input type="range" id="lightWeightSlider" class="weightSlider"
+                                        name="lightWeightSlider" min="1" max="100" step="1" value="15">
+                                    <label for="lightWeightSlider" id="lightWeightLabel">15</label>
+                                </div>
+                                <div class="weightWrapper">
+                                    <div id="normalWeightSquare" class="nodeColorSquare"></div>
+                                    <input type="range" id="normalWeightSlider" class="weightSlider"
+                                        name="normalWeightSlider" min="1" max="100" step="1" value="30">
+                                    <label for="normalWeightSlider" id="normalWeightLabel">30</label>    
+                                </div>
+                                <div class="weightWrapper">
+                                    <div id="heavyWeightSquare" class="nodeColorSquare"></div>
+                                    <input type="range" id="heavyWeightSlider" class="weightSlider"
+                                        name="heavyWeightSlider" min="1" max="100" step="1" value="45">
+                                    <label for="heavyWeightSlider" id="heavyWeightLabel">45</label>
+                                </div>
+                            </div> <!-- End of "weightDropDownMenu" -->
+                        </div> <!-- End of "dropDownWrapper" -->
+                        <label id="directionsSwitch" class="switch">
+                            <input type="checkbox" id="directionsToggleButton" disabled="true">
+                            <span id="directionsText"></span>
+                        </label>
+                        <label id="cornerCuttingSwitch" class="switch">
+                            <input type="checkbox" id="cornerCuttingToggleButton" disabled="true">
+                            <span id="cornerCuttingText"></span>
+                        </label>
+                        <button id="clearAlgorithm" class="menuButton" disabled="true">
+                            Clear Algorithm
+                        </button>
+                        <button id="clearWalls" class="menuButton" disabled="true">
+                            Clear Walls
+                        </button>
+                        <button id="clearWeights" class="menuButton" disabled="true">
+                            Clear Weights
+                        </button>
+                        <button id="resetBoard" class="menuButton" disabled="true">
+                            Reset Board
+                        </button>
+                        <button id="openInfoBox" class="menuButton" disabled="true">
+                            Open Infobox
+                        </button>
+                    </div> <!-- End of "menuStyle" -->
+                    <div id="mobileMenuButton">
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                        <span class="bar"></span>
+                    </div>
                 </div> <!-- End of "menuBar" -->
                 <div class="descriptionBar">
                     <div class="nodeExplanationWrapper">

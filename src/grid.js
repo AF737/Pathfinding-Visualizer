@@ -36,10 +36,20 @@ function createGrid(gridBoard) {
     gridBoard.rows = numOfRows;
     gridBoard.columns = numOfCols;
 
-    gridBoard.startRow = Math.floor(numOfRows / 2);
-    gridBoard.startCol = Math.floor(numOfCols / 4);
-    gridBoard.finishRow = Math.floor(numOfRows / 2);
-    gridBoard.finishCol = Math.floor((numOfCols / 4) * 3);
+    if (gridBoard.columns >= gridBoard.rows) {
+        gridBoard.startRow = Math.floor(numOfRows / 2);
+        gridBoard.startCol = Math.floor(numOfCols / 4);
+        gridBoard.finishRow = Math.floor(numOfRows / 2);
+        gridBoard.finishCol = Math.floor((numOfCols / 4) * 3);
+    }
+
+    /* Place them under each other for the mobile version */
+    else {
+        gridBoard.startRow = Math.floor(numOfRows / 4);
+        gridBoard.startCol = Math.floor(numOfCols / 2);
+        gridBoard.finishRow = Math.floor((numOfRows / 4) * 3);
+        gridBoard.finishCol = Math.floor(numOfCols / 2);
+    }
 
     for (let row = 0; row < numOfRows; row++) {
         const newGridArr = [];
