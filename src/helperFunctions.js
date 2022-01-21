@@ -1,6 +1,6 @@
 'use strict';
 
-export {enableButtons, disableButtons, changeWallStatus, removeWalls,
+export {enableButtons, enableButtonsMobile, disableButtons, changeWallStatus, removeWalls,
         resetToggleButtons, disableToggleButtons, enableDirections,
         enableCornerCutting, removePreviousAlgorithm, resetStartAndFinish,
         setAndDisableDirections};
@@ -15,6 +15,18 @@ function enableButtons() {
     const menuButtons = document.getElementsByClassName('menuButton');
 
     for (const button of menuButtons) {
+        button.disabled = false;
+    }
+}
+
+function enableButtonsMobile() {
+    const menuButtons = document.getElementsByClassName('menuButton');
+    
+    for (const button of menuButtons) {
+        if (button.id === 'animateAlgorithm') {
+            continue;
+        }
+
         button.disabled = false;
     }
 }

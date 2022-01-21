@@ -1,7 +1,9 @@
 'use strict';
 
-export {infoBoxVisible, openInfoBox, closeInfoBox, handlePrevInfoButton, handleNextInfoButton};
-import {enableButtons, disableButtons} from './helperFunctions.js';
+export {infoBoxVisible, openInfoBox, closeInfoBox, handlePrevInfoButton, 
+        handleNextInfoButton, mobileFriendlyInfoBox};
+import {enableButtons, enableButtonsMobile, disableButtons} 
+        from './helperFunctions.js';
 
 const LAST_INFOBOX_PAGE = 7;
 let infoBoxPage = 0;
@@ -10,6 +12,15 @@ let prevInfoBoxButton = document.getElementById('prevInfoBoxButton');
 let nextInfoBoxButton = document.getElementById('nextInfoBoxButton');
 let currInfoBoxPage = document.getElementById('currInfoBoxPage');
 let infoBoxText = document.getElementById('infoBoxText');
+let infoBox = document.getElementById('infoBox');
+
+function mobileFriendlyInfoBox() {
+    infoBox.style.width = '100vw';
+    infoBox.style.height = '80vh';
+    infoBox.style.top = '10vh';
+    infoBox.style.left = '0';
+    infoBox.style.transform = 'translate(0, 0)';
+}
 
 function openInfoBox() {
     disableButtons();
@@ -26,7 +37,20 @@ function closeInfoBox() {
         overlays[i].style.opacity = '1';
     }
 
-    enableButtons();
+    /* In the mobile version if the user closes the info box while the 
+        menu's open then don't enable the two buttons (algorithm dropdown
+        menu and animate algorithm) in the upper bar */
+    const menuStyles = document.getElementsByClassName('menuStyle');
+
+    for (const menuStyle of menuStyles) {
+        if (menuStyle.style.display === 'flex') {
+            enableButtonsMobile();
+        }
+
+        else {
+            enableButtons();
+        }
+    }
 
     infoBoxVisible = false;
 
@@ -141,14 +165,15 @@ function displayInfoBoxText(currentPage) {
         case 4:
             infoBoxText.innerHTML = `<h2 class="h2InfoBox">Overview of features 1/2</h2>
             <p class="pInfoBox">Walls can be easily added by left-clicking on a tile and
-                removed by clicking on it again. <br/>There are three
-                different weights which can be placed by left-clicking while pressing either of
-                these buttons: <span style="color: #32ccb2">Q</span>, <span style="color: #e8dd19">
-                W</span>, <span style="color: #06d314">E</span>. Their values can be adjusted 
-                individually by using the "Adjust Weights" menu and they can be removed by pressing
-                the same key and left-clicking. <br/>The start and finish node 
-                can be moved by simply left-clicking on them and then clicking the tile where you 
-                want to place them. <br/>
+                removed by clicking on it again. <br/>The start and finish node can be moved
+                by simply left-clicking on them and then clicking the tile where you want to 
+                place them. <br/><span style="color: red;">The following does not working in 
+                the mobile version:</span><br/>There are three different weights which can be 
+                placed by left-clicking while pressing either of these buttons: 
+                <span style="color: #32ccb2;">Q</span>, <span style="color: #e8dd19;">
+                W</span>, <span style="color: #06d314;">E</span>. Their values can be 
+                adjusted individually by using the "Adjust Weights" menu and they can be 
+                removed by pressing the same key and left-clicking.
             </p>
             <img src="images/walls_weights_movement.gif" id="movementGif"/>`;
             break;

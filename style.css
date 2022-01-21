@@ -381,16 +381,19 @@ div#board {
 }
 
 div.unvisited {
+    cursor: pointer;
     background-color: white;
     border: 1px solid black;
 }
 
 div.start {
+    cursor: pointer;
     background-color: red;
     border: 1px solid black;
 }
 
 div.startVisited {
+    cursor: pointer;
     border: 1px solid black;
     /* Create a blue border inside the square so that the red background color still
         shows the start and the blue outline shows that it has been visited */
@@ -435,6 +438,7 @@ div.startVisited {
 }
 
 div.startShortestPath {
+    cursor: pointer;
     border: 1px solid black;
     outline-offset: -5px;
     animation-name: startShortestPathAnimation;
@@ -477,11 +481,13 @@ div.startShortestPath {
 }
 
 div.finish {
+    cursor: pointer;
     background-color: green;
     border: 1px solid black;
 }
 
 div.finishVisited {
+    cursor: pointer;
     background-color: green;
     border: 1px solid black;
     outline-offset: -5px;
@@ -525,6 +531,7 @@ div.finishVisited {
 }
 
 div.finishShortestPath {
+    cursor: pointer;
     background-color: green;
     border: 1px solid black;
     outline-offset: -5px;
@@ -568,6 +575,7 @@ div.finishShortestPath {
 }
 
 div.visited {
+    cursor: pointer;
     border: 1px solid black;
     animation-name: visitedAnimation;
     animation-duration: 1.5s;
@@ -605,6 +613,7 @@ div.visited {
 }
 
 div.shortestPath {
+    cursor: pointer;
     border: 1px solid black;
     animation-name: shortestPathAnimation;
     animation-duration: 1.5s;
@@ -642,27 +651,31 @@ div.shortestPath {
 }
 
 div.wall {
+    cursor: pointer;
     background-color: #fca62d;
     border: 1px solid black;
 }
 
 div.lightWeight {
+    cursor: pointer;
     background-color: #32ccb2;
     border: 1px solid black;
 }
 
 div.normalWeight {
+    cursor: pointer;
     background-color: #e8dd19;
     border: 1px solid black;
 }
 
 div.heavyWeight {
+    cursor: pointer;
     background-color: #06d314;
     border: 1px solid black;
 }
 
 div.jumpPoint {
-    /* background-color: black; */
+    cursor: pointer;
     border: 1px solid black;
     animation-name: jumpPointAnimation;
     animation-duration: 1.5s;
@@ -810,6 +823,14 @@ div.jumpPoint {
     div#mobileMenuButton {
         display: none;
     }
+
+    div#infoBox {
+        width: 50vw !important;
+        height: 70vh !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+    }
 }
 
 @media screen and (min-width: 1051px) and (max-width: 1150px) {
@@ -883,10 +904,11 @@ div.jumpPoint {
         display: block;
     }
 
+    /* Each button now occupies 1/3 of the screen */
     label.switch,
     button.menuButton {
-        width: 20vw;
-        margin: 20px 2.5vw;
+        width: 30vw;
+        margin: 20px 1.66vw;
     }
 
     div.dropDownWrapper {

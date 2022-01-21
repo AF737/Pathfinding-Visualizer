@@ -11,7 +11,7 @@ const NODE_HEIGHT = 20;
 function adjustGridDimensions() {
     let windowWidth = window.innerWidth;
     let windowHeight = window.innerHeight;
-    let boardWidth = windowWidth - 100 - 
+    let boardWidth = windowWidth - 40 - 
         (windowWidth % 100);
     let boardHeight = windowHeight - 200 -
         (windowHeight % 100);
@@ -83,11 +83,15 @@ function createGrid(gridBoard) {
             /* Add event listeners so the user can add/remove walls and weights and
                 put start and finish to new places */
             newNodeDiv.addEventListener('mousedown', function(ev) {
-                handleMouseDownAndEnter.call(this, ev, 'mouseDown', gridBoard);
+                ev.preventDefault();
+
+                handleMouseDownAndEnter.call(this, 'mouseDown', gridBoard);
             });
 
             newNodeDiv.addEventListener('mouseenter', function(ev) {
-                handleMouseDownAndEnter.call(this, ev, 'mouseEnter', gridBoard);
+                ev.preventDefault();
+
+                handleMouseDownAndEnter.call(this, 'mouseEnter', gridBoard);
             });
 
             newNodeDiv.addEventListener('mouseup', function(ev) {
