@@ -167,9 +167,9 @@ function displayInfoBoxText(currentPage) {
             <p class="pInfoBox">Walls can be easily added by left-clicking on a tile and
                 removed by clicking on it again. <br/>The start and finish node can be moved
                 by simply left-clicking on them and then clicking the tile where you want to 
-                place them. <br/><span style="color: red;">The following does not working in 
-                the mobile version:</span><br/>There are three different weights which can be 
-                placed by left-clicking while pressing either of these buttons: 
+                place them. <br/><span style="color: red;">The following does <strong>NOT</strong> 
+                work in the mobile version:</span><br/>There are three different weights 
+                which can be placed by left-clicking while pressing either of these buttons: 
                 <span style="color: #32ccb2;">Q</span>, <span style="color: #e8dd19;">
                 W</span>, <span style="color: #06d314;">E</span>. Their values can be 
                 adjusted individually by using the "Adjust Weights" menu and they can be 

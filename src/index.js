@@ -13,6 +13,7 @@ import {handleLightWeightSlider, handleNormalWeightSlider, handleHeavyWeightSlid
 import {animateDijkstra, animateAStar, animateGreedyBFS, animateBreadthFirstSearch,
         animateBidirectionalDijkstra, animateBidirectionalAStar, animateDepthFirstSearch, 
         animateJumpPointSearch} from './animateAlgorithms.js';
+import {handleMouseDownAndMove} from './mouseEvents.js';
 
 let eightDirections = false, cornerCutting = false;
 
@@ -38,6 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let cornerCuttingToggleButton = document.getElementById('cornerCuttingToggleButton');
     let cornerCuttingSwitch = document.getElementById('cornerCuttingSwitch');
     let mobileMenuButton = document.getElementById('mobileMenuButton');
+    let board = document.getElementById('board');
 
     function setup() {
         setupMouseAndTouchInteractions();
@@ -47,6 +49,24 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     setup();
+
+    board.addEventListener('mousedown', function(ev) {
+        ev.preventDefault();
+
+        handleMouseDownAndMove(ev, 'mouseDown', gridBoard);
+    });
+
+    board.addEventListener('mousemove', function(ev) {
+        ev.preventDefault();
+
+        handleMouseDownAndMove(ev, 'mouseMove', gridBoard);
+    });
+
+    board.addEventListener('mouseup', function(ev) {
+        ev.preventDefault();
+
+        gridBoard.mouseIsPressed = false;
+    });
 
     function setupMouseAndTouchInteractions() {
         ['touchstart', 'click'].forEach(function(userEvent) {

@@ -2,14 +2,20 @@
 
 export {adjustGridDimensions, createGrid};
 import Node from './node.js';
-import {handleMouseDownAndEnter} from './mouseEvents.js';
 
 let board = document.getElementById('board');
 const NODE_WIDTH = 20;
 const NODE_HEIGHT = 20;
+const MOBILE_MAX_WIDTH = 1050;
+let mobileDesign = false;
 
 function adjustGridDimensions() {
     let windowWidth = window.innerWidth;
+
+    if (windowWidth <= MOBILE_MAX_WIDTH) {
+        mobileDesign = true;
+    }
+
     let windowHeight = window.innerHeight;
     let boardWidth = windowWidth - 40 - 
         (windowWidth % 100);
@@ -79,26 +85,6 @@ function createGrid(gridBoard) {
             /* CSS Grid Layout starts indexing at 1 instead of 0 */
             newNodeDiv.style.gridRow = `${row + 1}`;
             newNodeDiv.style.gridColumn = `${col + 1}`;
-
-            /* Add event listeners so the user can add/remove walls and weights and
-                put start and finish to new places */
-            newNodeDiv.addEventListener('mousedown', function(ev) {
-                ev.preventDefault();
-
-                handleMouseDownAndEnter.call(this, 'mouseDown', gridBoard);
-            });
-
-            newNodeDiv.addEventListener('mouseenter', function(ev) {
-                ev.preventDefault();
-
-                handleMouseDownAndEnter.call(this, 'mouseEnter', gridBoard);
-            });
-
-            newNodeDiv.addEventListener('mouseup', function(ev) {
-                ev.preventDefault();
-
-                gridBoard.mouseIsPressed = false;
-            });
 
             board.appendChild(newNodeDiv);
         }

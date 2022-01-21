@@ -1,12 +1,14 @@
 'use strict';
 
-export {handleMouseDownAndEnter};
+export {handleMouseDownAndMove};
 import {infoBoxVisible} from './infoBox.js';
 import {changeWallStatus} from './helperFunctions.js';
 import {NODE_WEIGHT_NONE, nodeWeightLight, nodeWeightNormal, nodeWeightHeavy, 
-    changeWeightOfNode} from './weights.js';
+        changeWeightOfNode} from './weights.js';
 
-function handleMouseDownAndEnter(mouseEvent, gridBoard) {
+let previousTarget = null;
+
+function handleMouseDownAndMove(ev, mouseEvent, gridBoard) {
     /* Disable click events while an algorithm is running or the info box is up */
     if (gridBoard.algoIsRunning === true || infoBoxVisible === true) {
         return;
@@ -16,26 +18,35 @@ function handleMouseDownAndEnter(mouseEvent, gridBoard) {
         gridBoard.mouseIsPressed = true;
     }
 
+    /* The user can move the mouse without changing the tile that the mouse is
+        over therefore executing this function multiple times. We do nothing after
+        the first click on each tile until the user has changed it to avoid
+        toggling walls, weights, start and finish constantly */
+    else if (mouseEvent === 'mouseMove' && ev.target === previousTarget) {
+        return;
+    }
+
     /* Prevents walls from being placed when the user's just moving his cursor
         across the board without clicking the left mouse button */
-    else if (gridBoard.mouseIsPressed === false && 
-        mouseEvent === 'mouseEnter') {
-            return;
+    else if (gridBoard.mouseIsPressed === false && mouseEvent === 'mouseMove') {
+        return;
     }
+
+    previousTarget = ev.target;
 
     if (gridBoard.pressedKey === null) {
         if (gridBoard.startIsPlaced === false) {
             /* If start is placed where finish was */
-            if (this.className === 'finish' || 
-                this.className === 'finishVisited' ||
-                this.className === 'finishShortestPath') {
-                gridBoard.finishIsPlaced = false;
+            if (ev.target.className === 'finish' || 
+                ev.target.className === 'finishVisited' ||
+                ev.target.className === 'finishShortestPath') {
+                    gridBoard.finishIsPlaced = false;
             }
             
             /* Reset the old position of start to be unvisited */
             gridBoard.nodesMatrix[gridBoard.startRow][gridBoard.startCol].class = 
                 'unvisited';
-            const [descriptor, row, col] = this.id.split('-');
+            const [descriptor, row, col] = ev.target.id.split('-');
             /* Update the coordinates of start */
             gridBoard.startRow = row;
             gridBoard.startCol = col;
@@ -43,33 +54,33 @@ function handleMouseDownAndEnter(mouseEvent, gridBoard) {
             gridBoard.nodesMatrix[gridBoard.startRow][gridBoard.startCol].class = 
                 'start';
             /* Color the node that is being clicked with the start color */
-            this.className = 'start';
+            ev.target.className = 'start';
             gridBoard.startIsPlaced = true;
         }
 
         /* If finish is placed where start was */
         else if (gridBoard.finishIsPlaced === false) {
-            if (this.className === 'start' ||
-                this.className === 'startVisited' ||
-                this.className === 'startShortestPath') {
-                gridBoard.startIsPlaced = false;
+            if (ev.target.className === 'start' ||
+                ev.target.className === 'startVisited' ||
+                ev.target.className === 'startShortestPath') {
+                    gridBoard.startIsPlaced = false;
             }
 
             gridBoard.nodesMatrix[gridBoard.finishRow][gridBoard.finishCol].class = 
                 'unvisited';
-            const [descriptor, row, col] = this.id.split('-');
+            const [descriptor, row, col] = ev.target.id.split('-');
             gridBoard.finishRow = row;
             gridBoard.finishCol = col;
             gridBoard.nodesMatrix[gridBoard.finishRow][gridBoard.finishCol].class = 
                 'finish';
-            this.className = 'finish';
+            ev.target.className = 'finish';
             gridBoard.finishIsPlaced = true;
         }
 
         /* Any node except for start and finish */
         else {
-            switch(this.className) {
-                /* Simple left-click creates a wall at this node */
+            switch(ev.target.className) {
+                /* Simple left-click creates a wall at ev.target node */
                 case 'unvisited':
                 case 'lightWeight':
                 case 'normalWeight':
@@ -77,46 +88,46 @@ function handleMouseDownAndEnter(mouseEvent, gridBoard) {
                 case 'visited':
                 case 'shortestPath':
                 case 'jumpPoint':
-                    this.className = 'wall';
-                    changeWallStatus(this.id, true, gridBoard);
-                    changeWeightOfNode(this.id, NODE_WEIGHT_NONE, gridBoard);
+                    ev.target.className = 'wall';
+                    changeWallStatus(ev.target.id, true, gridBoard);
+                    changeWeightOfNode(ev.target.id, NODE_WEIGHT_NONE, gridBoard);
                     break;
 
                 /* Left-clicking on a wall removes it */
                 case 'wall':
-                    this.className = 'unvisited';
-                    changeWallStatus(this.id, false, gridBoard);
+                    ev.target.className = 'unvisited';
+                    changeWallStatus(ev.target.id, false, gridBoard);
                     break;
 
                 /* Start is removed and will be placed at the next node clicked at */
                 case 'start':
-                    this.className = 'unvisited';
+                    ev.target.className = 'unvisited';
                     gridBoard.startIsPlaced = false;
                     break;
 
                 case 'startVisited':
-                    this.className = 'visited';
+                    ev.target.className = 'visited';
                     gridBoard.startIsPlaced = false;
                     break;
 
                 /* If start is clicked after the algorithm's done */
                 case 'startShortestPath':
-                    this.className = 'shortestPath';
+                    ev.target.className = 'shortestPath';
                     gridBoard.startIsPlaced = false;
                     break;
 
                 case 'finish':
-                    this.className = 'unvisited';
+                    ev.target.className = 'unvisited';
                     gridBoard.finishIsPlaced = false;
                     break;
 
                 case 'finishVisited':
-                    this.className = 'visited';
+                    ev.target.className = 'visited';
                     gridBoard.finishIsPlaced = false;
                     break;
 
                 case 'finishShortestPath':
-                    this.className = 'shortestPath';
+                    ev.target.className = 'shortestPath';
                     gridBoard.finishIsPlaced = false;
                     break;
             }
@@ -125,7 +136,7 @@ function handleMouseDownAndEnter(mouseEvent, gridBoard) {
 
     /* If the user presses "q" while left-clicking */
     else if (gridBoard.pressedKey === 'q') {
-        switch(this.className) {
+        switch(ev.target.className) {
             /* Change the current node to be a light weight one */
             case 'unvisited':
             case 'wall':
@@ -134,20 +145,20 @@ function handleMouseDownAndEnter(mouseEvent, gridBoard) {
             case 'visited':
             case 'shortestPath':
             case 'jumpPoint':
-                this.className = 'lightWeight';
-                changeWeightOfNode(this.id, nodeWeightLight, gridBoard);
+                ev.target.className = 'lightWeight';
+                changeWeightOfNode(ev.target.id, nodeWeightLight, gridBoard);
                 break;
 
             /* Reset a light weight node to be a normal one */
             case 'lightWeight':
-                this.className = 'unvisited';
-                changeWeightOfNode(this.id, NODE_WEIGHT_NONE, gridBoard);
+                ev.target.className = 'unvisited';
+                changeWeightOfNode(ev.target.id, NODE_WEIGHT_NONE, gridBoard);
                 break;
         }
     }
 
     else if (gridBoard.pressedKey === 'w') {
-        switch(this.className) {
+        switch(ev.target.className) {
             case 'unvisited':
             case 'wall':
             case 'lightWeight':
@@ -155,19 +166,19 @@ function handleMouseDownAndEnter(mouseEvent, gridBoard) {
             case 'visited':
             case 'shortestPath':
             case 'jumpPoint':
-                this.className = 'normalWeight';
-                changeWeightOfNode(this.id, nodeWeightNormal, gridBoard);
+                ev.target.className = 'normalWeight';
+                changeWeightOfNode(ev.target.id, nodeWeightNormal, gridBoard);
                 break;
             
             case 'normalWeight':
-                this.className = 'unvisited';
-                changeWeightOfNode(this.id, NODE_WEIGHT_NONE, gridBoard);
+                ev.target.className = 'unvisited';
+                changeWeightOfNode(ev.target.id, NODE_WEIGHT_NONE, gridBoard);
                 break;
         }
     }
 
     else if (gridBoard.pressedKey === 'e') {
-        switch(this.className) {
+        switch(ev.target.className) {
             case 'unvisited':
             case 'wall':
             case 'lightWeight':
@@ -175,13 +186,13 @@ function handleMouseDownAndEnter(mouseEvent, gridBoard) {
             case 'visited':
             case 'shortestPath':
             case 'jumpPoint':
-                this.className = 'heavyWeight';
-                changeWeightOfNode(this.id, nodeWeightHeavy, gridBoard);
+                ev.target.className = 'heavyWeight';
+                changeWeightOfNode(ev.target.id, nodeWeightHeavy, gridBoard);
                 break;
 
             case 'heavyWeight':
-                this.className = 'unvisited';
-                changeWeightOfNode(this.id, NODE_WEIGHT_NONE, gridBoard);
+                ev.target.className = 'unvisited';
+                changeWeightOfNode(ev.target.id, NODE_WEIGHT_NONE, gridBoard);
                 break;
         }
     }
