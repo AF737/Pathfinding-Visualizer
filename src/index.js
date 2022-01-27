@@ -340,7 +340,7 @@ document.addEventListener('DOMContentLoaded', function() {
         removePreviousAlgorithm(gridBoard);
     });
 
-    mobileMenuButton.addEventListener('touchstart', function(ev) {
+    mobileMenuButton.addEventListener('click', function(ev) {
         /* Prevent mouse events from being created for touch events */
         ev.preventDefault();
 

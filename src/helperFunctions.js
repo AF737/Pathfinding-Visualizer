@@ -7,6 +7,8 @@ export {enableButtons, enableButtonsMobile, disableButtons, changeWallStatus, re
 
 function enableButtons() {
     const dropDownButtons = document.getElementsByClassName('dropDownButton');
+    const mobileMenuButton = document.getElementById('mobileMenuButton');
+    const bars = document.getElementsByClassName('bar');
 
     for (const button of dropDownButtons) {
         button.disabled = false;
@@ -16,6 +18,12 @@ function enableButtons() {
 
     for (const button of menuButtons) {
         button.disabled = false;
+    }
+
+    mobileMenuButton.style.pointerEvents = 'auto';
+
+    for (const bar of bars) {
+        bar.style.backgroundColor = 'white';
     }
 }
 
@@ -33,15 +41,22 @@ function enableButtonsMobile() {
 
 function disableButtons() {
     const dropDownButtons = document.getElementsByClassName('dropDownButton');
+    const menuButtons = document.getElementsByClassName('menuButton');
+    const mobileMenuButton = document.getElementById('mobileMenuButton');
+    const bars = document.getElementsByClassName('bar');
 
     for (const button of dropDownButtons) {
         button.disabled = true;
     }
 
-    const menuButtons = document.getElementsByClassName('menuButton');
-
     for (const button of menuButtons) {
         button.disabled = true;
+    }
+
+    mobileMenuButton.style.pointerEvents = 'none';
+
+    for (const bar of bars) {
+        bar.style.backgroundColor = 'red';
     }
 }
 
