@@ -1,6 +1,8 @@
 @charset "utf-8";
 
+/* These settings apply to all elements */
 * {
+	/* Includes padding and border size in an element's total width and height */
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -17,19 +19,15 @@ div.menuBar {
     background-color: #1db82a;
     display: flex;
     justify-content: center;
-    /* border: 3px solid red; */
 }
 
 div.menuStyle {
-    /* width: inherit;
-    height: inherit; */
     width: 75vw;
     background-color: inherit;
     display: flex;
     flex-wrap: nowrap;
-    /* Place menu above grid */
+    /* Place the menu above the grid for mobile version */
     z-index: 1;
-    /* border: 1px solid blue; */
 }
 
 div.dropDownWrapper {
@@ -69,6 +67,7 @@ div.dropDownMenu {
 
 div.radioButtonWrapper {
     width: inherit;
+    /* Enable inline-flex in Safari */
     -webkit-display: inline-flex;
     display: inline-flex;
     align-items: center;
@@ -204,7 +203,7 @@ button.menuButton {
     font-size: 1.2rem;
     border: 1px solid white;
     border-radius: 5px;
-    padding: 0 1vw 0 1vw;
+    padding: 0 1vw;
     cursor: pointer;
 }
 
@@ -308,6 +307,7 @@ div#infoBox {
     left: 50%;
     transform: translate(-50%, -50%);
     position: fixed;
+    /* Place the infobox above the grid and the menu */
     z-index: 2;
     text-align: center;
 }
@@ -349,15 +349,6 @@ h3.h3InfoBox {
 p.pInfoBox {
     font-size: 1.5rem;
     margin: 3vh 2vw 0 2vw;
-}
-
-a {
-    color: #1db82a;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
 }
 
 button#skipInfoBoxButton {
@@ -825,11 +816,31 @@ div.jumpPoint {
     }
 
     div#infoBox {
-        width: 50vw !important;
-        height: 70vh !important;
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) !important;
+        width: 50vw;
+        height: 70vh;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    button.infoBoxButton {
+        width: 6vw;
+    }
+
+    button#prevInfoBoxButton {
+        right: 8vw;
+    }
+
+    img#movementGif {
+        display: inline;
+    }
+
+    img#cornerCuttingGif {
+        display: inline;
+    }
+
+    img#directionsImg {
+        display: inline;
     }
 }
 
@@ -949,6 +960,33 @@ div.jumpPoint {
 
     div.nodeExplanationWrapper {
         font-size: 1rem;
+    }
+
+    div#infoBox {
+        width: 100vw;
+        top: 15%;
+        left: 0%;
+        transform: translate(0%, -15%);
+    }
+
+    button.infoBoxButton {
+        width: 15vw;
+    }
+
+    button#prevInfoBoxButton {
+        right: 20vw;
+    }
+
+    img#movementGif {
+        display: none;
+    }
+
+    img#cornerCuttingGif {
+        display: none;
+    }
+
+    img#directionsImg {
+        display: none;
     }
 }
 

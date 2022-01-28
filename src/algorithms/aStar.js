@@ -121,28 +121,24 @@ function getNeighbors(grid, node, eightDirections, cornerCutting) {
     }
 
     if (eightDirections === true) {
-        if (up === true && left === true) {
-            if (checkCornerCutting(grid, cornerCutting, row, col, -1, -1) === true) {
+        if (up === true && left === true &&
+            checkCornerCutting(grid, cornerCutting, row, col, -1, -1) === true) {
                 neighbors.push(grid.nodesMatrix[row - 1][col - 1]);
-            }
         }
 
-        if (up === true && right === true) {
-            if (checkCornerCutting(grid, cornerCutting, row, col, -1, 1) === true) {
+        if (up === true && right === true &&
+            checkCornerCutting(grid, cornerCutting, row, col, -1, 1) === true) {
                 neighbors.push(grid.nodesMatrix[row - 1][col + 1]);
-            }
         }
 
-        if (down === true && left === true) {
-            if (checkCornerCutting(grid, cornerCutting, row, col, 1, -1) === true) {
+        if (down === true && left === true &&
+            checkCornerCutting(grid, cornerCutting, row, col, 1, -1) === true) {
                 neighbors.push(grid.nodesMatrix[row + 1][col - 1]);
-            }
         }
 
-        if (down === true && right === true) {
-            if (checkCornerCutting(grid, cornerCutting, row, col, 1, 1) === true) {
+        if (down === true && right === true &&
+            checkCornerCutting(grid, cornerCutting, row, col, 1, 1) === true) {
                 neighbors.push(grid.nodesMatrix[row + 1][col + 1]);
-            }
         }
     }
 
