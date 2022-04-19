@@ -82,14 +82,14 @@ function removePreviousAlgorithm(gridBoard) {
         for (let col = 0; col < gridBoard.columns; col++) {
             let node = document.getElementById(`node-${row}-${col}`);
 
-            /* Leave walls and weights as they are */
+            /* Leave start, finish, walls and weights as they are */
             if (node.className === 'visited' || node.className === 'shortestPath' ||
                 node.className === 'jumpPoint') {
                 node.className = 'unvisited';
             }
 
             /* Reset each element in the nodesMatrix so that the next algorithm
-                can start fresh */
+                can start from scratch */
             gridBoard.nodesMatrix[row][col].isVisited = false;
             gridBoard.nodesMatrix[row][col].distanceFromStart = Infinity;
             gridBoard.nodesMatrix[row][col].distanceFromFinish = Infinity;
@@ -154,7 +154,7 @@ function enableDirections() {
     document.getElementById('directionsSwitch').style.backgroundColor = '#79e082';
 }
 
-/* Used for Jump Point Search where only eight directions are allowed */
+/* Used for Jump Point Search where eight directions are necessary */
 function setAndDisableDirections() {
     document.getElementById('directionsToggleButton').checked = true;
     document.getElementById('directionsToggleButton').disabled = true;

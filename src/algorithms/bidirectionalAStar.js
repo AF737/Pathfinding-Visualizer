@@ -1,8 +1,6 @@
 'use strict';
 
-export {bidirectionalAStar};
-
-function bidirectionalAStar(grid, startNode, finishNode, eightDirections, cornerCutting) {
+export default function bidirectionalAStar(grid, startNode, finishNode, eightDirections, cornerCutting) {
     const closedListFromStart = [];
     const closedListFromFinish = [];
     startNode.distanceFromStart = 0;
@@ -63,10 +61,8 @@ function sortNodesByDistance(openList) {
         firstNode.totalDistance - secondNode.totalDistance);
 }
 
-/* initNode describes the node from which the algorithm originally started
-    (i.e. start or finish node). goalNode describes the goal from the current
-    starting node (i.e. for start node that would be the finish node and vice
-    versa) */
+/* initNode is the node that the current a-star algorithm originated from.
+    goalNode is the node that the current a-star algorithm tries to reach */
 function updateNeighbors(grid, node, goalNode, openList, closedList, initNode, 
     eightDirections, cornerCutting) {
     const neighbors = getNeighbors(grid, node, eightDirections, cornerCutting);
@@ -90,7 +86,7 @@ function updateNeighbors(grid, node, goalNode, openList, closedList, initNode,
                 getDistance(node, neighbor);
         }
 
-        /* I fthe neighbor isn't yet in the open list then add it */
+        /* If the neighbor isn't yet in the open list then add it */
         if (openList.includes(neighbor) === false) {
             /* If the element wasn't in the open list then the current path to it
                 is the shortest one */
@@ -107,7 +103,7 @@ function updateNeighbors(grid, node, goalNode, openList, closedList, initNode,
         if (shortestPathFound === true) {
             if (initNode === 'start') {
                 neighbor.prevNode = node;
-                /* Overwrite the longer path with the new and shorter one */
+                /* Overwrite the longer path with the new shorter one */
                 neighbor.distanceFromStart = shortestPathToNode;
                 neighbor.totalDistance = neighbor.distanceFromStart + neighbor.heuristicDistance;
             }
@@ -174,17 +170,17 @@ function getNeighbors(grid, node, eightDirections, cornerCutting) {
     return neighbors;
 }
 
+/* Octile distance is used to check if moving diagonally has a smaller cost
+    than moving in only four directions */
 function getDistance(node, goalNode) {
-    //return (Math.abs(node.row - goalNode.row) + Math.abs(node.column - goalNode.column));
     const rowChange = Math.abs(node.row - goalNode.row);
     const colChange = Math.abs(node.column - goalNode.column);
 
     return ((rowChange + colChange) + ((Math.SQRT2 - 2) * Math.min(rowChange, colChange)));
 }
 
-/* Prohibit diagonal movement if there's a wall directly left or right and above or below
-    (depending on the movement direction) the current node and corner cutting is disabled.
-    Otherwise allow the move */
+/* Prohibit diagonal movement in that direction if there's a wall directly next to it
+    vertically and horizontally and corner cutting is disabled */
 function checkCornerCutting(grid, cornerCutting, row, col, rowChange, colChange) {
     if (cornerCutting === true) {
         return true;
@@ -202,12 +198,9 @@ function checkCornerCutting(grid, cornerCutting, row, col, rowChange, colChange)
     }
 }
 
+/* This path doesn't have to be the shortest one */
 function getPath(startingNode) {
     let currentNode = startingNode;
-    /* It's called path instead of shortest path, because the path
-        that connects the start node with the common one and the
-        common one to the finish node doesn't have to be the
-        shortest path */
     const path = [];
 
     /* Backtrack from the node that both algorithms have in common to

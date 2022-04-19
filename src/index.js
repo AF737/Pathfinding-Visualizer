@@ -1,6 +1,7 @@
 'use strict';
 
 export {eightDirections, cornerCutting};
+
 import Board from './board.js';
 import {adjustGridDimensions, createGrid} from './grid.js';
 import {openInfoBox, closeInfoBox, handlePrevInfoButton, 
@@ -244,13 +245,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     case 'jumpPointSearch':
                         animateButtonText += 'JPS';
                         resetToggleButtons();
+                        /* JPS only works with eight directional movement */
                         setAndDisableDirections();
                         break;
                 }
 
                 animateAlgorithmButton.innerHTML = animateButtonText;
-                /* The border was 3px solid red if no radio button was selected and
-                    the "Animate" button was pressed */
+                /* Remove possible 3px solid red border */
                 algorithmDropDownButton.style.border = '1px solid white';
             });
         }
@@ -271,14 +272,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     directionsToggleButton.addEventListener('change', function() {
-        /* Allow "corner cutting" if "eight directions" is enabled */
+        /* Allow corner cutting if eight directions is enabled */
         if (directionsToggleButton.checked === true) {
             cornerCuttingToggleButton.disabled = false;
             cornerCuttingSwitch.style.backgroundColor = '#79e082';
             eightDirections = true;
         }
 
-        /* Disallow "corner cutting" when "eight directions" is disabled */
+        /* Disallow corner cutting when eight directions is disabled */
         else {
             cornerCuttingToggleButton.checked = false;
             cornerCuttingToggleButton.disabled = true;
@@ -323,8 +324,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     lightWeightSlider.addEventListener('input', function() {
-        /* The prototype function "call" passes "this" to the function 
-            handleLightWeightSlider (here lightWeightSlider) */
         handleLightWeightSlider.call(this);
     });
 
@@ -341,7 +340,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     mobileMenuButton.addEventListener('click', function(ev) {
-        /* Prevent mouse events from being created for touch events */
         ev.preventDefault();
 
         const menuStyles = document.getElementsByClassName('menuStyle');

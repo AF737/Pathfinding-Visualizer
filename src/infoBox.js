@@ -2,6 +2,7 @@
 
 export {infoBoxVisible, openInfoBox, closeInfoBox, handlePrevInfoButton, 
         handleNextInfoButton, mobileFriendlyInfoBox};
+        
 import {enableButtons, enableButtonsMobile, disableButtons} 
         from './helperFunctions.js';
 
@@ -30,16 +31,16 @@ function openInfoBox() {
 }
 
 function closeInfoBox() {
-    /* Remove the white overlay */
     let overlays = document.getElementsByClassName('overlay');
     
+    /* Remove the white overlay of the background */
     for (let i = 0; i < overlays.length; i++) {
         overlays[i].style.opacity = '1';
     }
 
     /* In the mobile version if the user closes the info box while the 
-        menu's open then don't enable the two buttons (algorithm dropdown
-        menu and animate algorithm) in the upper bar */
+        menu's open then don't enable the algorithm dropdown menu and 
+        animate algorithm button in the upper bar */
     const menuStyles = document.getElementsByClassName('menuStyle');
 
     for (const menuStyle of menuStyles) {

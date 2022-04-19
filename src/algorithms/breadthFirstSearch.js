@@ -1,8 +1,6 @@
 'use strict';
 
-export {breadthFirstSearch};
-
-function breadthFirstSearch(grid, startNode, finishNode) {
+export default function breadthFirstSearch(grid, startNode, finishNode) {
     const visitedNodes = [];
     startNode.distanceFromStart = 0;
     const unvisitedNodes = getUnivistedNodes(grid);

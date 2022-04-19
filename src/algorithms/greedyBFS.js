@@ -1,8 +1,6 @@
 'use strict';
 
-export {greedyBFS};
-
-function greedyBFS(grid, startNode, finishNode, eightDirections, cornerCutting) {
+export default function greedyBFS(grid, startNode, finishNode, eightDirections, cornerCutting) {
     const visitedNodes = [];
     const nodesToCheck = [];
     startNode.heuristicDistance = getHeuristicDistance(startNode, finishNode);
@@ -42,9 +40,9 @@ function greedyBFS(grid, startNode, finishNode, eightDirections, cornerCutting) 
     return [visitedNodes, null];
 }
 
+/* The node with the estimated shortest path to the finish node will be at
+    the first place of this array */
 function sortNodesByDistance(nodesToCheck) {
-    /* The node with the estimated shortest path to the finish node will be at
-        the first place of this array */
     nodesToCheck.sort((firstNode, secondNode) =>
         firstNode.heuristicDistance - secondNode.heuristicDistance);
 }
@@ -55,7 +53,6 @@ function updateUnvisitedNeighbors(grid, node, finishNode, nodesToCheck,
 
     for (const neighbor of neighbors) {
         neighbor.isVisited = true;
-        /* Takes the weight of the current node into account */
         neighbor.heuristicDistance = neighbor.weight + getHeuristicDistance(neighbor, finishNode);
         neighbor.prevNode = node;
         nodesToCheck.push(neighbor);
@@ -118,6 +115,8 @@ function checkUnvisited(neighbor) {
     return neighbor.isVisited === false;
 }
 
+/* Octile distance is used to check if moving diagonally has a smaller cost
+    than moving in only four directions */
 function getHeuristicDistance(node, finishNode) {
     const rowChange = Math.abs(node.row - finishNode.row);
     const colChange = Math.abs(node.column - finishNode.column);
@@ -125,9 +124,8 @@ function getHeuristicDistance(node, finishNode) {
     return ((rowChange + colChange) + ((Math.SQRT2 - 2) * Math.min(rowChange, colChange)));
 }
 
-/* Prohibit diagonal movement if there's a wall directly left or right and above or below
-    (depending on the movement direction) the current node and corner cutting is disabled.
-    Otherwise allow the move */
+/* Prohibit diagonal movement in that direction if there's a wall directly next to it
+    vertically and horizontally and corner cutting is disabled */
 function checkCornerCutting(grid, cornerCutting, row, col, rowChange, colChange) {
     if (cornerCutting === true) {
         return true;

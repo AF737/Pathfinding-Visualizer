@@ -1,6 +1,7 @@
 'use strict';
 
 export {adjustGridDimensions, createGrid};
+
 import Node from './node.js';
 
 let board = document.getElementById('board');
@@ -26,13 +27,13 @@ function adjustGridDimensions() {
     board.style.height = `${boardHeight}px`;
     board.style.marginLeft = `${(windowWidth - boardWidth) / 2}px`;
     board.style.marginTop = '50px';
-    /* Create a grid where each element is 20 by 20 pixels in size */
     board.style.gridTemplateColumns = `${Math.floor(boardWidth / NODE_WIDTH)}`;
     board.style.gridTemplateRows = `${Math.floor(boardHeight / NODE_HEIGHT)}`;
 }
 
 function createGrid(gridBoard) {
-    /* Remove all previous children in case of resizing */
+    /* Remove all previous children (divs that contain the grid cells)
+        in case of resizing */
     board.innerHTML = '';
     let boardWidth = parseInt(board.style.width, 10);
     let boardHeight = parseInt(board.style.height, 10);

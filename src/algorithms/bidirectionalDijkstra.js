@@ -1,13 +1,7 @@
 'use strict';
 
-export {bidirectionalDijkstra};
-
-function bidirectionalDijkstra(grid, startNode, finishNode) {
-    /* Contains all the nodes that have been visited starting with the
-        start node */
+export default function bidirectionalDijkstra(grid, startNode, finishNode) {
     const visitedNodesFromStart = [];
-    /* Contains all the nodes that have been visited starting with the
-        finish node */
     const visitedNodesFromFinish = [];
     startNode.distanceFromStart = 0;
     finishNode.distanceFromFinish = 0;
@@ -33,8 +27,8 @@ function bidirectionalDijkstra(grid, startNode, finishNode) {
             closestNodeFromFinish = unvisitedNodesFromFinish.shift();
         }
 
-        /* If either the start or finish node is unreachable then there's no
-            point in continuing the algorithm */
+        /* If either the start or the finish node is completely surrounded by
+            walls then terminate, because no path can be found */
         if (closestNodeFromStart.distanceFromStart === Infinity
             || closestNodeFromFinish.distanceFromFinish === Infinity) {
                 return [visitedNodesFromStart, visitedNodesFromFinish, null];
@@ -45,17 +39,15 @@ function bidirectionalDijkstra(grid, startNode, finishNode) {
         closestNodeFromFinish.isVisited = true;
         visitedNodesFromFinish.push(closestNodeFromFinish);
 
-        /* If the node that's being visited from the finish node has already 
-            been visited by the dijkstra algorithm from the start node then
-            there's a way from this node to both the start and finish node */
+        /* If the current node has already been visited by the other
+            dijkstra algorithm then a path can connect start and finish
+            node through the current node */
         if (visitedNodesFromStart.includes(closestNodeFromFinish)) {
             const path = getPath(closestNodeFromFinish);
 
             return [visitedNodesFromStart, visitedNodesFromFinish, path];
         }
 
-        /* Same as above, but this time the node has already been visited by the
-            dijkstra algorithm starting from the finish node */
         else if (visitedNodesFromFinish.includes(closestNodeFromStart)) {
             const path = getPath(closestNodeFromStart)
 
@@ -79,20 +71,17 @@ function getUnvisitedNodes(grid) {
     return unvisitedNodes;
 }
 
-/* Return the node closest to the start node */
 function sortNodesByDistanceFromStart(unvisitedNodesFromStart) {
     unvisitedNodesFromStart.sort((firstNode, secondNode) =>
         firstNode.distanceFromStart - secondNode.distanceFromStart);
 }
 
-/* Return the node closest to the finish node */
 function sortNodesByDistanceFromFinish(unvisitedNodesFromFinish) {
     unvisitedNodesFromFinish.sort((firstNode, secondNode) =>
         firstNode.distanceFromFinish - secondNode.distanceFromFinish);
 }
 
-/* initNode describes the node that the current dijkstra algorithm originated 
-    from */
+/* initNode is the node that the current dijkstra algorithm originated from */
 function updateUnvisitedNeighbors(grid, node, initNode) {
     const neighbors = getUnvisitedNeighbors(grid, node);
 
@@ -105,8 +94,8 @@ function updateUnvisitedNeighbors(grid, node, initNode) {
 
         /* A second prev node is needed because one of the two dijkstra's algorithms
             would overwrite the prevNode parameter and we would therefore lose the
-            chain of nodes leading to the other initial node (i.e. either start node
-            or finish node would be unreachable) */
+            chain of nodes leading to the other initial node (either the start or 
+            finish node would be unreachable) */
         else if (initNode === 'finish') {
             neighbor.distanceFromFinish = node.distanceFromFinish + neighbor.weight +
                 getDistance(node, neighbor);
@@ -136,7 +125,7 @@ function getUnvisitedNeighbors(grid, node) {
         neighbors.push(grid.nodesMatrix[row][col + 1]);
     }
 
-    /* Only return the neighbors that haven't been visited yet */
+    /* Only return unvisited neighbors */
     return neighbors.filter(checkUnvisited);
 }
 
@@ -144,11 +133,13 @@ function checkUnvisited(neighbor) {
     return neighbor.isVisited === false;
 }
 
+/* Manhattan distance */
 function getDistance(parentNode, node) {
     return (Math.abs(parentNode.row - node.row) +
             Math.abs(parentNode.column - node.column));
 }
 
+/* This path doesn't have to be the shortest one */
 function getPath(startingNode) {
     let currentNode = startingNode;
     const path = [];

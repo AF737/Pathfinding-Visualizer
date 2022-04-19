@@ -1,6 +1,7 @@
 'use strict';
 
 export {handleMouseDownAndMove};
+
 import {infoBoxVisible} from './infoBox.js';
 import {changeWallStatus} from './helperFunctions.js';
 import {NODE_WEIGHT_NONE, nodeWeightLight, nodeWeightNormal, nodeWeightHeavy, 
@@ -9,7 +10,7 @@ import {NODE_WEIGHT_NONE, nodeWeightLight, nodeWeightNormal, nodeWeightHeavy,
 let previousTarget = null;
 
 function handleMouseDownAndMove(ev, mouseEvent, gridBoard) {
-    /* Disable click events while an algorithm is running or the info box is up */
+    /* Disable click events for buttons and the grid */
     if (gridBoard.algoIsRunning === true || infoBoxVisible === true) {
         return;
     }
@@ -77,10 +78,9 @@ function handleMouseDownAndMove(ev, mouseEvent, gridBoard) {
             gridBoard.finishIsPlaced = true;
         }
 
-        /* Any node except for start and finish */
         else {
             switch(ev.target.className) {
-                /* Simple left-click creates a wall at ev.target node */
+                /* Simple left-click creates a wall */
                 case 'unvisited':
                 case 'lightWeight':
                 case 'normalWeight':
@@ -134,7 +134,7 @@ function handleMouseDownAndMove(ev, mouseEvent, gridBoard) {
         }
     }
 
-    /* If the user presses "q" while left-clicking */
+    /* If the user presses the "q" key while left-clicking */
     else if (gridBoard.pressedKey === 'q') {
         switch(ev.target.className) {
             /* Change the current node to be a light weight one */

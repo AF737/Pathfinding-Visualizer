@@ -3,16 +3,17 @@
 export {animateDijkstra, animateAStar, animateGreedyBFS, animateBreadthFirstSearch,
         animateBidirectionalDijkstra, animateBidirectionalAStar, 
         animateDepthFirstSearch, animateJumpPointSearch};
+
 import {enableButtons, enableDirections, enableCornerCutting} 
         from './helperFunctions.js';
-import {dijkstra} from './algorithms/dijkstra.js';
-import {aStar} from './algorithms/aStar.js';
-import {greedyBFS} from './algorithms/greedyBFS.js';
-import {breadthFirstSearch} from './algorithms/breadthFirstSearch.js';
-import {bidirectionalDijkstra} from './algorithms/bidirectionalDijkstra.js';
-import {bidirectionalAStar} from './algorithms/bidirectionalAStar.js';
-import {depthFirstSearch} from './algorithms/depthFirstSearch.js';
-import {jumpPointSearch} from './algorithms/jumpPointSearch.js';
+import dijkstra from './algorithms/dijkstra.js';
+import aStar from './algorithms/aStar.js';
+import greedyBFS from './algorithms/greedyBFS.js';
+import breadthFirstSearch from './algorithms/breadthFirstSearch.js';
+import bidirectionalDijkstra from './algorithms/bidirectionalDijkstra.js';
+import bidirectionalAStar from './algorithms/bidirectionalAStar.js';
+import depthFirstSearch from './algorithms/depthFirstSearch.js';
+import jumpPointSearch from './algorithms/jumpPointSearch.js';
 import {eightDirections, cornerCutting} from './index.js';
 import {removeWeights} from './weights.js';
 
@@ -150,17 +151,13 @@ function animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortes
         }
     }
 
-    /* Allow the user to edit the board and use the buttons once the algorithm is done.
-        The arrays visitedNodesFromStart, visitedNodesFromFinish both always have the 
-        same length so they both take the same time to animate, so it's enough to use 
-        the length of visitedNodesFromStart which is never null */
+    /* visitedNodesFromStart and visitedNodesFromFinish always have the same length so 
+        taking the first one to calculate the time until the animation's done is enough */
     if (shortestPath !== null) {
         setTimeout(function() {
             gridBoard.algoIsRunning = false;
             enableButtons();
 
-            /* Enable "eight directions" button if the algorithm allows for a change
-                between four and eight */
             if (allowEightDirections === true) {
                 enableDirections();
             }

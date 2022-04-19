@@ -10,7 +10,7 @@ let nodeWeightNormal = 30;
 let nodeWeightHeavy = 45;
 
 function handleLightWeightSlider() {
-    /* The "10" ensures that this.value is read as a decible number */
+    /* Ensures that the value's read as a decimal number */
     nodeWeightLight = parseInt(this.value, 10);
     document.getElementById('lightWeightLabel').innerHTML = this.value;
     

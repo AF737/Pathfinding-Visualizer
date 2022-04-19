@@ -1,8 +1,6 @@
 'use strict';
 
-export {dijkstra};
-
-function dijkstra(grid, startNode, finishNode) {
+export default function dijkstra(grid, startNode, finishNode) {
     const visitedNodes = [];
     startNode.distanceFromStart = 0;
     const unvisitedNodes = getUnvisitedNodes(grid);
@@ -55,7 +53,6 @@ function getUnvisitedNodes(grid) {
 }
 
 function sortNodesByDistanceFromStart(unvisitedNodes) {
-    /* Return the node closest to the starting node */
     unvisitedNodes.sort((firstNode, secondNode) => 
         firstNode.distanceFromStart - secondNode.distanceFromStart);
 }

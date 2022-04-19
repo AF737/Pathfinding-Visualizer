@@ -1,8 +1,6 @@
 'use strict';
 
-export {depthFirstSearch};
-
-function depthFirstSearch(grid, startNode, finishNode) {
+export default function depthFirstSearch(grid, startNode, finishNode) {
     const visitedNodes = [];
     const nodesToCheck = [];
     startNode.distanceFromStart = 0;
@@ -11,8 +9,8 @@ function depthFirstSearch(grid, startNode, finishNode) {
     nodesToCheck.push(startNode);
 
     while (nodesToCheck.length > 0) {
-        /* Always check the last of the node the array, because we are exploring
-            every path to its end before going on to the next one */
+        /* Always check the last node of the array, because this algorithm explores
+            every direction until it meets a dead end */
         const currentNode = nodesToCheck.pop();
 
         if (currentNode.isWall === true) {

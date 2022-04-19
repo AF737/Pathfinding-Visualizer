@@ -1,8 +1,6 @@
 'use strict';
 
-export {aStar};
-
-function aStar(grid, startNode, finishNode, eightDirections, cornerCutting) {
+export default function aStar(grid, startNode, finishNode, eightDirections, cornerCutting) {
     /* Contains all nodes to which the shortest path is known */
     const closedList = [];
     startNode.distanceFromStart = 0;
@@ -73,7 +71,7 @@ function updateNeighbors(grid, node, finishNode, openList, closedList,
         /* If the neighbor isn't yet in the open list then add it */
         if (openList.includes(neighbor) === false) {
             /* If the element wasn't in the open list then the current path to it
-                is the shortest one */
+                is the shortest one currently known */
             shortestPathFound = true;
             neighbor.heuristicDistance = getDistance(neighbor, finishNode);
             openList.push(neighbor);
@@ -86,7 +84,7 @@ function updateNeighbors(grid, node, finishNode, openList, closedList,
 
         if (shortestPathFound === true) {
             neighbor.prevNode = node;
-            /* Overwrite the longer path with the new and shorter one */
+            /* Overwrite the longer path with the new shorter one */
             neighbor.distanceFromStart = shortestPathToNode;
             neighbor.totalDistance = neighbor.distanceFromStart + 
                 neighbor.heuristicDistance;
@@ -156,9 +154,8 @@ function getDistance(firstNode, secondNode) {
     return ((rowChange + colChange) + ((Math.SQRT2 - 2) * Math.min(rowChange, colChange)));
 }
 
-/* Prohibit diagonal movement if there's a wall directly left or right and above or below
-    (depending on the movement direction) the current node and corner cutting is disabled.
-    Otherwise allow the move */
+/* Prohibit diagonal movement in that direction if there's a wall directly next to it
+    vertically and horizontally and corner cutting is disabled */
 function checkCornerCutting(grid, cornerCutting, row, col, rowChange, colChange) {
     if (cornerCutting === true) {
         return true;

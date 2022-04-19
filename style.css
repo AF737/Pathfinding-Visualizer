@@ -1,5 +1,21 @@
 @charset "utf-8";
 
+:root {
+    --main-background-color: #1db82a;
+    --button-background-color: #79e082;
+    --main-font-color: white;
+    --main-border-color: white;
+    --start-node-color: red;
+    --finish-node-color: green;
+    --visited-node-color: blue;
+    --shortest-path-node-color: #f059eb;
+    --wall-node-color: #fca62d;
+    --light-weight-node-color: #32ccb2;
+    --normal-weight-node-color: #e8dd19;
+    --heavy-weight-node-color: #06d314;
+    --jump-point-node-color: black;
+}
+
 /* These settings apply to all elements */
 * {
 	/* Includes padding and border size in an element's total width and height */
@@ -16,7 +32,7 @@ div.overlay {
 div.menuBar {
     width: 100vw;
     height: 100px;
-    background-color: #1db82a;
+    background-color: var(--main-background-color);
     display: flex;
     justify-content: center;
 }
@@ -26,7 +42,7 @@ div.menuStyle {
     background-color: inherit;
     display: flex;
     flex-wrap: nowrap;
-    /* Place the menu above the grid for mobile version */
+    /* Display menu elements above the grid */
     z-index: 1;
 }
 
@@ -44,10 +60,10 @@ div.dropDownWrapper {
 button.dropDownButton {
     width: inherit;
     height: 50px;
-    background-color: #79e082;
-    color: white;
+    background-color: var(--button-background-color);
+    color: var(--main-font-color);
     font-size: 1.2rem;
-    border: 1px solid white;
+    border: 1px solid var(--main-border-color);
     border-radius: 5px;
     padding: 0 1vw 0 1vw;
     cursor: pointer;
@@ -60,8 +76,8 @@ button.dropDownButton:disabled {
 div.dropDownMenu {
     display: none;
     width: inherit;
-    background-color: #1db82a;
-    border: 1px solid white;
+    background-color: var(--main-background-color);
+    border: 1px solid var(--main-border-color);
     border-top: none;
 }
 
@@ -89,10 +105,8 @@ div.radioButtonWrapper input:checked + label {
 }
 
 div.radioButtonWrapper label {
-    /* Label is an inline element so it's only as big as the text that it contains
-        so by setting it to be the parent's width text-align can take effect */
     width: inherit;
-    color: white;
+    color: var(--main-font-color);
     font-size: 1.2rem;
     cursor: pointer;
 }
@@ -109,7 +123,7 @@ div.nodeColorSquare {
     width: 2vw;
     height: 4vh;
     content: "";
-    border: 1px solid white;
+    border: 1px solid var(--main-border-color);
     margin-top: calc((5vh - 4vh - 2px) / 2);
     margin-left: 0.5vw;
 }
@@ -119,15 +133,15 @@ input.weightSlider {
 }
 
 div#lightWeightSquare {
-    background-color: #32ccb2;
+    background-color: var(--light-weight-node-color);
 }
 
 div#normalWeightSquare {
-    background-color: #e8dd19;
+    background-color: var(--normal-weight-node-color);
 }
 
 div#heavyWeightSquare {
-    background-color: #06d314;
+    background-color: var(--heavy-weight-node-color);
 }
 
 input.weightSlider {
@@ -137,7 +151,7 @@ input.weightSlider {
 div.weightWrapper label {
     width: 3vw;
     height: inherit;
-    color: white;
+    color: var(--main-font-color);
     font-size: 1.2rem;
     text-align: center;
     padding-top: 1.5vh;
@@ -149,9 +163,9 @@ label.switch {
     display: inline-block;
     margin: 25px 0.625vw;
     background-color: red;
-    color: white;
+    color: var(--main-font-color);
     font-size: 1.2rem;
-    border: 1px solid white;
+    border: 1px solid var(--main-border-color);
     border-radius: 5px;
     padding: 0 1vw 0 1vw;
     cursor: pointer;
@@ -198,10 +212,10 @@ button.menuButton {
     width: 10vw;
     height: 50px;
     margin: 25px 0.625vw;
-    background-color: #79e082;
-    color: white;
+    background-color: var(--button-background-color);
+    color: var(--main-font-color);
     font-size: 1.2rem;
-    border: 1px solid white;
+    border: 1px solid var(--main-border-color);
     border-radius: 5px;
     padding: 0 1vw;
     cursor: pointer;
@@ -262,39 +276,39 @@ div.nodeColor {
 }
 
 div#startNode {
-    background-color: red;
+    background-color: var(--start-node-color);
 }
 
 div#finishNode {
-    background-color: green;
+    background-color: var(--finish-node-color);
 }
 
 div#visitedNode {
-    background-color: blue;
+    background-color: var(--visited-node-color);
 }
 
 div#shortestPathNode {
-    background-color: #f059eb;
+    background-color: var(--shortest-path-node-color);
 }
 
 div#wallNode {
-    background-color: #fca62d;
+    background-color: var(--wall-node-color);
 }
 
 div#lightWeightNode {
-    background-color: #32ccb2;
+    background-color: var(--light-weight-node-color);
 }
 
 div#normalWeightNode {
-    background-color: #e8dd19;
+    background-color: var(--normal-weight-node-color);
 }
 
 div#heavyWeightNode {
-    background-color: #06d314;
+    background-color: var(--heavy-weight-node-color);
 }
 
 div#jumpPointNode {
-    background-color: black;
+    background-color: var(--jump-point-node-color);
 }
 
 div#infoBox {
@@ -307,7 +321,7 @@ div#infoBox {
     left: 50%;
     transform: translate(-50%, -50%);
     position: fixed;
-    /* Place the infobox above the grid and the menu */
+    /* Place the infobox above the grid and menu */
     z-index: 2;
     text-align: center;
 }
@@ -323,10 +337,10 @@ div#currInfoBoxPage {
 button.infoBoxButton {
     width: 6vw;
     height: 4vh;
-    background-color: #1db82a;
-    color: white;
+    background-color: var(--main-background-color);
+    color: var(--main-font-color);
     font-size: 1.2rem;
-    border: 1px solid white;
+    border: 1px solid var(--main-border-color);
     border-radius: 5px;
     position: fixed;
     cursor: pointer;
@@ -379,7 +393,7 @@ div.unvisited {
 
 div.start {
     cursor: pointer;
-    background-color: red;
+    background-color: var(--start-node-color);
     border: 1px solid black;
 }
 
@@ -407,24 +421,24 @@ div.startVisited {
 
     25% {
         background-color: #c94b4b;
-        outline: 1px solid blue;
+        outline: 1px solid var(--visited-node-color);
     }
 
     50% {
         background-color: #eb4949;
         transform: scale(1.20);
-        outline: 2px solid blue;
+        outline: 2px solid var(--visited-node-color);
     }
 
     75% {
         background-color: #d43d3d;
-        outline: 3px solid blue;
+        outline: 3px solid var(--visited-node-color);
     }
 
     100% {
-        background-color: red;
+        background-color: var(--start-node-color);
         transform: scale(1.0);
-        outline: 4px solid blue;
+        outline: 4px solid var(--visited-node-color);
     }
 }
 
@@ -450,36 +464,35 @@ div.startShortestPath {
 
     25% {
         background-color: #c94b4b;
-        outline: 1px solid #f059eb;
+        outline: 1px solid var(--shortest-path-node-color);
     }
 
     50% {
         background-color: #eb4949;
         transform: scale(1.20);
-        outline: 2px solid #f059eb;
+        outline: 2px solid var(--shortest-path-node-color);
     }
 
     75% {
         background-color: #d43d3d;
-        outline: 3px solid #f059eb;
+        outline: 3px solid var(--shortest-path-node-color);
     }
 
     100% {
-        background-color: red;
+        background-color: var(--start-node-color);
         transform: scale(1.0);
-        outline: 4px solid #f059eb;
+        outline: 4px solid var(--shortest-path-node-color);
     }
 }
 
 div.finish {
     cursor: pointer;
-    background-color: green;
+    background-color: var(--finish-node-color);
     border: 1px solid black;
 }
 
 div.finishVisited {
     cursor: pointer;
-    background-color: green;
     border: 1px solid black;
     outline-offset: -5px;
     animation-name: finishVisitedAnimation;
@@ -500,30 +513,29 @@ div.finishVisited {
 
     25% {
         background-color: #87ed8e;
-        outline: 1px solid blue;
+        outline: 1px solid var(--visited-node-color);
     }
 
     50% {
         background-color: #64f56e;
         transform: scale(1.20);
-        outline: 2px solid blue;
+        outline: 2px solid var(--visited-node-color);
     }
 
     75% {
         background-color: #2ae836;
-        outline: 3px solid blue;
+        outline: 3px solid var(--visited-node-color);
     }
 
     100% {
-        background-color: green;
+        background-color: var(--finish-node-color);
         transform: scale(1.0);
-        outline: 4px solid blue;
+        outline: 4px solid var(--visited-node-color);
     }
 }
 
 div.finishShortestPath {
     cursor: pointer;
-    background-color: green;
     border: 1px solid black;
     outline-offset: -5px;
     animation-name: finishShortestPathAnimation;
@@ -544,24 +556,24 @@ div.finishShortestPath {
 
     25% {
         background-color: #87ed8e;
-        outline: 1px solid #f059eb;
+        outline: 1px solid var(--shortest-path-node-color);
     }
 
     50% {
         background-color: #64f56e;
         transform: scale(1.20);
-        outline: 2px solid #f059eb;
+        outline: 2px solid var(--shortest-path-node-color);
     }
 
     75% {
         background-color: #2ae836;
-        outline: 3px solid #f059eb;
+        outline: 3px solid var(--shortest-path-node-color);
     }
 
     100% {
-        background-color: green;
+        background-color: var(--finish-node-color);
         transform: scale(1.0);
-        outline: 4px solid #f059eb;
+        outline: 4px solid var(--shortest-path-node-color);
     }
 }
 
@@ -598,7 +610,7 @@ div.visited {
     }
 
     100% {
-        background-color: blue;
+        background-color: var(--visited-node-color);
         transform: scale(1.0);
     }
 }
@@ -636,32 +648,32 @@ div.shortestPath {
     }
 
     100% {
-        background-color: #f059eb;
+        background-color: var(--shortest-path-node-color);
         transform: scale(1.0);
     }
 }
 
 div.wall {
     cursor: pointer;
-    background-color: #fca62d;
+    background-color: var(--wall-node-color);
     border: 1px solid black;
 }
 
 div.lightWeight {
     cursor: pointer;
-    background-color: #32ccb2;
+    background-color: var(--light-weight-node-color);
     border: 1px solid black;
 }
 
 div.normalWeight {
     cursor: pointer;
-    background-color: #e8dd19;
+    background-color: var(--normal-weight-node-color);
     border: 1px solid black;
 }
 
 div.heavyWeight {
     cursor: pointer;
-    background-color: #06d314;
+    background-color: var(--heavy-weight-node-color);
     border: 1px solid black;
 }
 
@@ -698,7 +710,7 @@ div.jumpPoint {
     }
 
     100% {
-        background-color: black;
+        background-color: var(--jump-point-node-color);
         transform: scale(1.0);
     }
 }

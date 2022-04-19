@@ -1,8 +1,6 @@
 'use strict';
 
-export {jumpPointSearch};
-
-function jumpPointSearch(grid, startNode, finishNode) {
+export default function jumpPointSearch(grid, startNode, finishNode) {
     const visitedNodes = [];
     visitedNodes.push(startNode);
     let jumpNodes = [];
@@ -71,7 +69,7 @@ function getNewJumpNodes(grid, closestNode, finishNode, visitedNodes) {
     return newJumpNodes;
 }
 
-/* Search horizontally and vertically */
+/* Search horizontally or vertically */
 function straightSearch(grid, node, rowChange, colChange, finishNode, visitedNodes) {
     let newJumpNodes = [];
 
@@ -125,8 +123,8 @@ function straightSearch(grid, node, rowChange, colChange, finishNode, visitedNod
         if (grid.nodesMatrix[node.row][node.column - 1].isWall === true &&
             grid.nodesMatrix[child.row][child.column - 1].isWall === false) {
                 /* Add a new jump point that goes up (or down) and to the left. Then
-                    create a deep copy and change its direction so that the direction of
-                    this jump point doesn't change even if node changes */
+                    create a deep copy and change its direction so that it's saved even
+                    when the original node changes direction */
                 const jumpNode = JSON.parse(JSON.stringify(node));
                 jumpNode.direction = [rowChange, -1];
                 node.isJumpPoint = true;
@@ -134,7 +132,7 @@ function straightSearch(grid, node, rowChange, colChange, finishNode, visitedNod
                 newJumpNodes.push(jumpNode);
         }
 
-        /* Same thing for the right side */
+        /* Check if there is a wall directly right of the current node, but not its child */
         if (grid.nodesMatrix[node.row][node.column + 1].isWall === true &&
             grid.nodesMatrix[child.row][child.column + 1].isWall === false) {
                 const jumpNode = JSON.parse(JSON.stringify(node));
@@ -157,7 +155,7 @@ function straightSearch(grid, node, rowChange, colChange, finishNode, visitedNod
 
     /* Moving horizontally */
     if (colChange !== 0) {
-        /* Check above the two nodes */
+        /* Check if there is a wall directly above the current node, but not its child */
         if (grid.nodesMatrix[node.row - 1][node.column].isWall === true &&
             grid.nodesMatrix[child.row - 1][child.column].isWall === false) {
                 const jumpNode = JSON.parse(JSON.stringify(node));
@@ -167,7 +165,7 @@ function straightSearch(grid, node, rowChange, colChange, finishNode, visitedNod
                 newJumpNodes.push(jumpNode);
         }
 
-        /* Check below the two nodes */
+        /* Check if there is a wall directly below the current node, but not its child */
         if (grid.nodesMatrix[node.row + 1][node.column].isWall === true &&
             grid.nodesMatrix[child.row + 1][child.column].isWall === false) {
                 const jumpNode = JSON.parse(JSON.stringify(node));
@@ -186,8 +184,8 @@ function straightSearch(grid, node, rowChange, colChange, finishNode, visitedNod
         }
     }
 
-    /* Continue searching in the same direction until a wall is hit or the finish node
-        is found */
+    /* Continue searching in the same direction until a wall, the end of the grid or 
+        the finish node is found */
     return newJumpNodes = newJumpNodes.concat(straightSearch(grid, child, rowChange,
                             colChange, finishNode, visitedNodes));
 }
@@ -243,7 +241,7 @@ function diagonalSearch(grid, node, rowChange, colChange, finishNode, visitedNod
 
     /* If there's a wall directly left or right of the current node, but not behind it then
         create a jump node at the position of the child node, but invert the vertical
-        movement */ 
+        movement because that empty spot can't be reached any other way */ 
     if (grid.nodesMatrix[node.row][child.column].isWall === true &&
         grid.nodesMatrix[node.row][child.column + colChange].isWall === false &&
         grid.nodesMatrix[node.row][child.column + colChange].isVisited === false) {
@@ -280,8 +278,6 @@ function diagonalSearch(grid, node, rowChange, colChange, finishNode, visitedNod
     }
 
     if (newJumpNodes.length > 0) {
-        /* If one of the first two special cases returned a new jump point the add
-            one that searches horizontally */
         if (horizontalSearchDone === false) {
             const jumpNode = JSON.parse(JSON.stringify(node));
             jumpNode.direction = [0, colChange];
@@ -307,7 +303,8 @@ function diagonalSearch(grid, node, rowChange, colChange, finishNode, visitedNod
         newJumpNodes.push(jumpNode);
     }
 
-    /* Continue searching in the same direction until a wall is hit or we are off grid */
+    /* Continue searching in the same direction until a wall, the end of the grid or 
+        the finish node is found */
     return newJumpNodes = newJumpNodes.concat(diagonalSearch(grid, child, rowChange,
                             colChange, finishNode, visitedNodes));
 }
@@ -338,8 +335,6 @@ function getNeighbors(grid, startNode) {
         right = true;
     }
 
-    /* If there's a new to above and to the left of the current node
-        then there must be one up and to the left as well */
     if (up === true && left === true) {
         neighbors.push(grid.nodesMatrix[row - 1][col - 1]);
     }
@@ -359,11 +354,8 @@ function getNeighbors(grid, startNode) {
     return neighbors;
 }
 
-/* Octile distance is used if we can move in eight directions 
-    rowChange + colChange: distance if we can only move horizontally and vertically
-    Math.min(rowChange, colChange): minimum amount of diagonal steps
-    Math.SQRT2 - 2: each diagonal step has a cost of sqrt(2), but saves 1 horizontal
-                    and 1 vertical step, which has a cost of 2 */
+/* Octile distance is used to check if moving diagonally has a smaller cost
+    than moving in only four directions */
 function getDistance(parentNode, node) {
     const rowChange = Math.abs(parentNode.row - node.row);
     const colChange = Math.abs(parentNode.column - node.column);
