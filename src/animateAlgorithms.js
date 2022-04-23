@@ -1,10 +1,6 @@
 'use strict';
 
-export {animateDijkstra, animateAStar, animateGreedyBFS, animateBreadthFirstSearch,
-        animateBidirectionalDijkstra, animateBidirectionalAStar, 
-        animateDepthFirstSearch, animateJumpPointSearch};
-
-import {enableButtons, enableDirections, enableCornerCutting} 
+import {enableButtons, enableEightDirections, enableCornerCutting} 
         from './helperFunctions.js';
 import dijkstra from './algorithms/dijkstra.js';
 import aStar from './algorithms/aStar.js';
@@ -18,8 +14,39 @@ import {eightDirections, cornerCutting} from './index.js';
 import {removeWeights} from './weights.js';
 
 const ANIMATION_SPEED = 10;
-let directionsToggleButton = document.getElementById('directionsToggleButton');
+let eightDirectionsToggleButton = document.getElementById('eightDirectionsToggleButton');
 let cornerCuttingToggleButton = document.getElementById('cornerCuttingToggleButton');
+
+export default function startAlgorithmAnimation(selectedAlgorithm, startNode, finishNode, gridBoard) {
+    switch (selectedAlgorithm) {
+        case 'dijkstra':
+            animateDijkstra(startNode, finishNode, gridBoard);
+            break;
+        case 'aStar':
+            animateAStar(startNode, finishNode, gridBoard);
+            break;
+        case 'greedyBFS':
+            animateGreedyBFS(startNode, finishNode, gridBoard);
+            break;
+        case 'breadthFirstSearch':
+            animateBreadthFirstSearch(startNode, finishNode, gridBoard);
+            break;
+        case 'bidirectionalDijkstra':
+            animateBidirectionalDijkstra(startNode, finishNode, gridBoard);
+            break;
+        case 'bidirectionalAStar':
+            animateBidirectionalAStar(startNode, finishNode, gridBoard);
+            break;
+        case 'depthFirstSearch':
+            animateDepthFirstSearch(startNode, finishNode, gridBoard);
+            break;
+        case 'jumpPointSearch':
+            animateJumpPointSearch(startNode, finishNode, gridBoard);
+            break;
+        default:
+            break;
+    }
+}
 
 function animateDijkstra(startNode, finishNode, gridBoard) {
     const [visitedNodes, shortestPath] = 
@@ -159,13 +186,13 @@ function animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortes
             enableButtons();
 
             if (allowEightDirections === true) {
-                enableDirections();
+                enableEightDirections();
             }
 
             /* Jump Point Search uses eight directions, but doesn't allow for corner
                 cutting so the extra check is necessary otherwise just enable it if
                 it was set before */
-            if ((directionsToggleButton.checked === true || 
+            if ((eightDirectionsToggleButton.checked === true || 
                 cornerCuttingToggleButton.checked === true) && 
                 jumpPointSearch === false) {
                 enableCornerCutting();
@@ -181,10 +208,10 @@ function animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortes
             enableButtons();
             
             if (allowEightDirections === true) {
-                enableDirections();
+                enableEightDirections();
             }
 
-            if ((directionsToggleButton.checked === true || 
+            if ((eightDirectionsToggleButton.checked === true || 
                 cornerCuttingToggleButton.checked === true) &&
                 jumpPointSearch === false) {
                 enableCornerCutting();

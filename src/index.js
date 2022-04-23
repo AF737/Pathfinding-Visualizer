@@ -6,61 +6,57 @@ import Board from './board.js';
 import {adjustGridDimensions, createGrid} from './grid.js';
 import {openInfoBox, closeInfoBox, handlePrevInfoButton, 
         handleNextInfoButton, mobileFriendlyInfoBox} from './infoBox.js';
-import {disableButtons, removeWalls, resetToggleButtons, disableToggleButtons,
-        enableDirections, removePreviousAlgorithm, resetStartAndFinish, 
-        setAndDisableDirections} from './helperFunctions.js';
+import {DISABLED_COLOR, BUTTON_BACKGROUND_COLOR, disableButtons, removeWalls, resetToggleButtons, disableToggleButtons,
+        enableEightDirections, removePreviousAlgorithm, resetStartAndFinish, 
+        setAndDisableEightDirections} from './helperFunctions.js';
 import {handleLightWeightSlider, handleNormalWeightSlider, handleHeavyWeightSlider, 
         removeWeights} from './weights.js';
-import {animateDijkstra, animateAStar, animateGreedyBFS, animateBreadthFirstSearch,
-        animateBidirectionalDijkstra, animateBidirectionalAStar, animateDepthFirstSearch, 
-        animateJumpPointSearch} from './animateAlgorithms.js';
-import {handleMouseDownAndMove} from './mouseEvents.js';
+import startAlgorithmAnimation from './animateAlgorithms.js';
+import {mouseEvent, handleMouseDownAndMove} from './mouseEvents.js';
 
 let eightDirections = false, cornerCutting = false;
 
 document.addEventListener('DOMContentLoaded', function() {
-    let gridBoard = new Board();
-    let algorithmDropDownButton = document.getElementById('algorithmDropDownButton');
-    let algorithmDropDownMenu = document.getElementById('algorithmDropDownMenu');
-    let weightDropDownButton = document.getElementById('weightDropDownButton');
-    let weightDropDownMenu = document.getElementById('weightDropDownMenu');
-    let lightWeightSlider = document.getElementById('lightWeightSlider');
-    let normalWeightSlider = document.getElementById('normalWeightSlider');
-    let heavyWeightSlider = document.getElementById('heavyWeightSlider');
-    let directionsToggleButton = document.getElementById('directionsToggleButton');
-    let animateAlgorithmButton = document.getElementById('animateAlgorithm');
-    let clearAlgorithmButton = document.getElementById('clearAlgorithm');
-    let clearWallsButton = document.getElementById('clearWalls');
-    let clearWeightsButton = document.getElementById('clearWeights');
-    let resetBoardButton = document.getElementById('resetBoard');
-    let skipInfoBoxButton = document.getElementById('skipInfoBoxButton');
-    let prevInfoBoxButton = document.getElementById('prevInfoBoxButton');
-    let nextInfoButton = document.getElementById('nextInfoBoxButton');
-    let openInfoBoxButton = document.getElementById('openInfoBox');
-    let cornerCuttingToggleButton = document.getElementById('cornerCuttingToggleButton');
-    let cornerCuttingSwitch = document.getElementById('cornerCuttingSwitch');
-    let mobileMenuButton = document.getElementById('mobileMenuButton');
-    let board = document.getElementById('board');
+    const gridBoard = new Board();
+    const algorithmDropDownButton = document.getElementById('algorithmDropDownButton');
+    const algorithmDropDownMenu = document.getElementById('algorithmDropDownMenu');
+    const weightDropDownButton = document.getElementById('weightDropDownButton');
+    const weightDropDownMenu = document.getElementById('weightDropDownMenu');
+    const lightWeightSlider = document.getElementById('lightWeightSlider');
+    const normalWeightSlider = document.getElementById('normalWeightSlider');
+    const heavyWeightSlider = document.getElementById('heavyWeightSlider');
+    const eightDirectionsToggleButton = document.getElementById('eightDirectionsToggleButton');
+    const animateAlgorithmButton = document.getElementById('animateAlgorithm');
+    const clearAlgorithmButton = document.getElementById('clearAlgorithm');
+    const clearWallsButton = document.getElementById('clearWalls');
+    const clearWeightsButton = document.getElementById('clearWeights');
+    const resetBoardButton = document.getElementById('resetBoard');
+    const skipInfoBoxButton = document.getElementById('skipInfoBoxButton');
+    const prevInfoBoxButton = document.getElementById('prevInfoBoxButton');
+    const nextInfoButton = document.getElementById('nextInfoBoxButton');
+    const openInfoBoxButton = document.getElementById('openInfoBox');
+    const cornerCuttingToggleButton = document.getElementById('cornerCuttingToggleButton');
+    const cornerCuttingSwitch = document.getElementById('cornerCuttingSwitch');
+    const mobileMenuButton = document.getElementById('mobileMenuButton');
+    const board = document.getElementById('board');
 
-    function setup() {
+    (function() {
         setupMouseAndTouchInteractions();
         setupAlgorithmRadioButtons();
         adjustGridDimensions();
         createGrid(gridBoard);
-    }
-
-    setup();
+    })();
 
     board.addEventListener('mousedown', function(ev) {
         ev.preventDefault();
 
-        handleMouseDownAndMove(ev, 'mouseDown', gridBoard);
+        handleMouseDownAndMove(ev, mouseEvent.down, gridBoard);
     });
 
     board.addEventListener('mousemove', function(ev) {
         ev.preventDefault();
 
-        handleMouseDownAndMove(ev, 'mouseMove', gridBoard);
+        handleMouseDownAndMove(ev, mouseEvent.move, gridBoard);
     });
 
     board.addEventListener('mouseup', function(ev) {
@@ -140,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
             animateAlgorithmButton.addEventListener(userEvent, function(ev) {
                 ev.preventDefault();
 
-                let selectedAlgorithm = document.querySelector('input[name="algorithmOption"]:checked');
+                const selectedAlgorithm = document.querySelector('input[name="algorithmOption"]:checked');
                 /* If no algorithm has been selected */
                 if (selectedAlgorithm === null) {
                     animateAlgorithmButton.innerHTML = 'Select An Algorithm';
@@ -155,6 +151,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
         
                 else {
+                    /* Hide menus that may overlap with the grid */
                     algorithmDropDownMenu.style.display = 'none';
                     algorithmDropDownButton.innerHTML = 'Animate&#9660;';
                     weightDropDownMenu.style.display = 'none';
@@ -165,42 +162,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     disableToggleButtons();
                     gridBoard.algoIsRunning = true;
         
-                    let startNode = gridBoard.nodesMatrix[gridBoard.startRow][gridBoard.startCol];
-                    let finishNode = gridBoard.nodesMatrix[gridBoard.finishRow][gridBoard.finishCol];
+                    const startNode = gridBoard.nodesMatrix[gridBoard.startRow][gridBoard.startCol];
+                    const finishNode = gridBoard.nodesMatrix[gridBoard.finishRow][gridBoard.finishCol];
         
-                    switch (selectedAlgorithm.value) {
-                        case 'dijkstra':
-                            animateDijkstra(startNode, finishNode, gridBoard);
-                            break;
-                        case 'aStar':
-                            animateAStar(startNode, finishNode, gridBoard);
-                            break;
-                        case 'greedyBFS':
-                            animateGreedyBFS(startNode, finishNode, gridBoard);
-                            break;
-                        case 'breadthFirstSearch':
-                            animateBreadthFirstSearch(startNode, finishNode, gridBoard);
-                            break;
-                        case 'bidirectionalDijkstra':
-                            animateBidirectionalDijkstra(startNode, finishNode, gridBoard);
-                            break;
-                        case 'bidirectionalAStar':
-                            animateBidirectionalAStar(startNode, finishNode, gridBoard);
-                            break;
-                        case 'depthFirstSearch':
-                            animateDepthFirstSearch(startNode, finishNode, gridBoard);
-                            break;
-                        case 'jumpPointSearch':
-                            animateJumpPointSearch(startNode, finishNode, gridBoard);
-                            break;
-                    }
+                    startAlgorithmAnimation(selectedAlgorithm.value, startNode, finishNode, gridBoard);
                 }
             });
         });
     }
 
     function setupAlgorithmRadioButtons() {
-        let radioButtons = document.querySelectorAll('input[name="algorithmOption"]');
+        const radioButtons = document.querySelectorAll('input[name="algorithmOption"]');
 
         for (let i = 0; i < radioButtons.length; i++) {
             radioButtons[i].addEventListener('change', function() {
@@ -215,12 +187,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     case 'aStar':
                         animateButtonText += 'A*';
                         resetToggleButtons();
-                        enableDirections();
+                        enableEightDirections();
                         break;
                     case 'greedyBFS':
                         animateButtonText += 'Greedy';
                         resetToggleButtons();
-                        enableDirections();
+                        enableEightDirections();
                         break;
                     case 'breadthFirstSearch':
                         animateButtonText += 'BFS';
@@ -235,7 +207,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     case 'bidirectionalAStar':
                         animateButtonText += 'Bi. A*';
                         resetToggleButtons();
-                        enableDirections();
+                        enableEightDirections();
                         break;
                     case 'depthFirstSearch':
                         animateButtonText += 'DFS';
@@ -246,7 +218,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         animateButtonText += 'JPS';
                         resetToggleButtons();
                         /* JPS only works with eight directional movement */
-                        setAndDisableDirections();
+                        setAndDisableEightDirections();
+                        break;
+                    default:
                         break;
                 }
 
@@ -271,11 +245,11 @@ document.addEventListener('DOMContentLoaded', function() {
         createGrid(gridBoard);
     });
 
-    directionsToggleButton.addEventListener('change', function() {
+    eightDirectionsToggleButton.addEventListener('change', function() {
         /* Allow corner cutting if eight directions is enabled */
-        if (directionsToggleButton.checked === true) {
+        if (eightDirectionsToggleButton.checked === true) {
             cornerCuttingToggleButton.disabled = false;
-            cornerCuttingSwitch.style.backgroundColor = '#79e082';
+            cornerCuttingSwitch.style.backgroundColor = BUTTON_BACKGROUND_COLOR;
             eightDirections = true;
         }
 
@@ -283,7 +257,7 @@ document.addEventListener('DOMContentLoaded', function() {
         else {
             cornerCuttingToggleButton.checked = false;
             cornerCuttingToggleButton.disabled = true;
-            cornerCuttingSwitch.style.backgroundColor = 'red';
+            cornerCuttingSwitch.style.backgroundColor = DISABLED_COLOR;
             cornerCutting = false;
             eightDirections = false;
         }

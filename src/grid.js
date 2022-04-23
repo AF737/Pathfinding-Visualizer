@@ -4,24 +4,20 @@ export {adjustGridDimensions, createGrid};
 
 import Node from './node.js';
 
-let board = document.getElementById('board');
+const board = document.getElementById('board');
 const NODE_WIDTH = 20;
 const NODE_HEIGHT = 20;
-const MOBILE_MAX_WIDTH = 1050;
-let mobileDesign = false;
 
 function adjustGridDimensions() {
-    let windowWidth = window.innerWidth;
+    const windowWidth = window.innerWidth;
 
-    if (windowWidth <= MOBILE_MAX_WIDTH) {
-        mobileDesign = true;
-    }
-
-    let windowHeight = window.innerHeight;
-    let boardWidth = windowWidth - 40 - 
-        (windowWidth % 100);
-    let boardHeight = windowHeight - 200 -
-        (windowHeight % 100);
+    const windowHeight = window.innerHeight;
+    /* Leave at least one cell worth of space at the left and right edge of the
+        grid */
+    const boardWidth = windowWidth - 40 - (windowWidth % 100);
+    /* 200 = 100 + 50 + 50 (menu bar height + node color legend height + extra
+        margin) */
+    const boardHeight = windowHeight - 200 - (windowHeight % 100);
 
     board.style.width = `${boardWidth}px`;
     board.style.height = `${boardHeight}px`;
@@ -35,10 +31,10 @@ function createGrid(gridBoard) {
     /* Remove all previous children (divs that contain the grid cells)
         in case of resizing */
     board.innerHTML = '';
-    let boardWidth = parseInt(board.style.width, 10);
-    let boardHeight = parseInt(board.style.height, 10);
-    let numOfCols = Math.floor(boardWidth / NODE_WIDTH);
-    let numOfRows = Math.floor(boardHeight / NODE_HEIGHT);
+    const boardWidth = parseInt(board.style.width, 10);
+    const boardHeight = parseInt(board.style.height, 10);
+    const numOfCols = Math.floor(boardWidth / NODE_WIDTH);
+    const numOfRows = Math.floor(boardHeight / NODE_HEIGHT);
 
     gridBoard.rows = numOfRows;
     gridBoard.columns = numOfCols;
@@ -61,7 +57,8 @@ function createGrid(gridBoard) {
     for (let row = 0; row < numOfRows; row++) {
         const newGridArr = [];
         for (let col = 0; col < numOfCols; col++) {
-            let newNodeIndex = `${row}-${col}`, newNodeClass, newNode;
+            const newNodeIndex = `${row}-${col}`;
+            let newNodeClass, newNode;
 
             if (row === gridBoard.startRow && col === gridBoard.startCol) {
                 gridBoard.startIsPlaced = true;
@@ -80,7 +77,7 @@ function createGrid(gridBoard) {
             newNode = new Node(newNodeIndex, row, col, newNodeClass);
             newGridArr.push(newNode);
 
-            let newNodeDiv = document.createElement('div');
+            const newNodeDiv = document.createElement('div');
             newNodeDiv.id = `node-${newNodeIndex}`;
             newNodeDiv.className = `${newNodeClass}`;
             /* CSS Grid Layout starts indexing at 1 instead of 0 */

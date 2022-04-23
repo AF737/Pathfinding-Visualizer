@@ -223,7 +223,7 @@ function diagonalSearch(grid, node, rowChange, colChange, finishNode, visitedNod
 
     child.isVisited = true;
     child.prevNode = node;
-    child.distanceFromStart = node.distanceFromStart + getDirection(node, child);
+    child.distanceFromStart = node.distanceFromStart + getDistance(node, child);
     child.heuristicDistance = getDistance(child, finishNode);
     child.totalDistance = child.distanceFromStart + child.heuristicDistance;
 

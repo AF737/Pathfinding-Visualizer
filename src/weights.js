@@ -27,7 +27,7 @@ function handleNormalWeightSlider() {
     nodeWeightNormal = parseInt(this.value, 10);
     document.getElementById('normalWeightLabel').innerHTML = this.value;
 
-    let normalWeights = document.getElementsByClassName('lightWeight');
+    let normalWeights = document.getElementsByClassName('normalWeight');
 
     for (const normalWeight of normalWeights) {
         changeWeightOfNode(normalWeight.id, nodeWeightNormal, gridBoard);

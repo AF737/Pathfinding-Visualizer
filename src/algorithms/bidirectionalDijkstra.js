@@ -1,5 +1,12 @@
 'use strict';
 
+const Node = {
+    start: 'start',
+    finish: 'finish'
+};
+
+Object.freeze(Node);
+
 export default function bidirectionalDijkstra(grid, startNode, finishNode) {
     const visitedNodesFromStart = [];
     const visitedNodesFromFinish = [];
@@ -54,8 +61,8 @@ export default function bidirectionalDijkstra(grid, startNode, finishNode) {
             return [visitedNodesFromStart, visitedNodesFromFinish, path];
         }
 
-        updateUnvisitedNeighbors(grid, closestNodeFromStart, 'start');
-        updateUnvisitedNeighbors(grid, closestNodeFromFinish, 'finish');
+        updateUnvisitedNeighbors(grid, closestNodeFromStart, Node.start);
+        updateUnvisitedNeighbors(grid, closestNodeFromFinish, Node.finish);
     }
 }
 
@@ -86,7 +93,7 @@ function updateUnvisitedNeighbors(grid, node, initNode) {
     const neighbors = getUnvisitedNeighbors(grid, node);
 
     for (const neighbor of neighbors) {
-        if (initNode === 'start') {
+        if (initNode === Node.start) {
             neighbor.distanceFromStart = node.distanceFromStart + neighbor.weight +
                 getDistance(node, neighbor);
             neighbor.prevNode = node;
@@ -96,7 +103,7 @@ function updateUnvisitedNeighbors(grid, node, initNode) {
             would overwrite the prevNode parameter and we would therefore lose the
             chain of nodes leading to the other initial node (either the start or 
             finish node would be unreachable) */
-        else if (initNode === 'finish') {
+        else if (initNode === Node.finish) {
             neighbor.distanceFromFinish = node.distanceFromFinish + neighbor.weight +
                 getDistance(node, neighbor);
             neighbor.prevNodeFromFinish = node;

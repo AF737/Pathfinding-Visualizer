@@ -6,14 +6,14 @@ export {infoBoxVisible, openInfoBox, closeInfoBox, handlePrevInfoButton,
 import {enableButtons, enableButtonsMobile, disableButtons} 
         from './helperFunctions.js';
 
+const prevInfoBoxButton = document.getElementById('prevInfoBoxButton');
+const nextInfoBoxButton = document.getElementById('nextInfoBoxButton');
+const currInfoBoxPage = document.getElementById('currInfoBoxPage');
+const infoBoxText = document.getElementById('infoBoxText');
+const infoBox = document.getElementById('infoBox');
 const LAST_INFOBOX_PAGE = 7;
 let infoBoxPage = 0;
 let infoBoxVisible = true;
-let prevInfoBoxButton = document.getElementById('prevInfoBoxButton');
-let nextInfoBoxButton = document.getElementById('nextInfoBoxButton');
-let currInfoBoxPage = document.getElementById('currInfoBoxPage');
-let infoBoxText = document.getElementById('infoBoxText');
-let infoBox = document.getElementById('infoBox');
 
 function mobileFriendlyInfoBox() {
     infoBox.style.width = '100vw';
@@ -31,11 +31,11 @@ function openInfoBox() {
 }
 
 function closeInfoBox() {
-    let overlays = document.getElementsByClassName('overlay');
+    const overlays = document.getElementsByClassName('overlay');
     
     /* Remove the white overlay of the background */
-    for (let i = 0; i < overlays.length; i++) {
-        overlays[i].style.opacity = '1';
+    for (const overlay of overlays) {
+        overlay.style.opacity = '1';
     }
 
     /* In the mobile version if the user closes the info box while the 
@@ -73,6 +73,8 @@ function handlePrevInfoButton() {
         prevInfoBoxButton.disabled = true;
     }
 
+    /* If the user was at the last page previously then
+        change the text of the next button from "Finish" */
     nextInfoBoxButton.innerHTML = 'Next';
     displayInfoBoxText(infoBoxPage);
 }

@@ -1,11 +1,20 @@
 'use strict';
 
-export {enableButtons, enableButtonsMobile, disableButtons, changeWallStatus, removeWalls,
-        resetToggleButtons, disableToggleButtons, enableDirections,
-        enableCornerCutting, removePreviousAlgorithm, resetStartAndFinish,
-        setAndDisableDirections};
+const Node = {
+    unvisited: 'unvisited',
+    visited: 'visited',
+    start: 'start',
+    finish: 'finish',
+    shortestPath: 'shortestPath',
+    jumpPoint: 'jumpPoint'
+};
 
-function enableButtons() {
+Object.freeze(Node);
+
+export const DISABLED_COLOR = 'red';
+export const BUTTON_BACKGROUND_COLOR = '#79e082';
+
+export function enableButtons() {
     const dropDownButtons = document.getElementsByClassName('dropDownButton');
     const mobileMenuButton = document.getElementById('mobileMenuButton');
     const bars = document.getElementsByClassName('bar');
@@ -27,7 +36,7 @@ function enableButtons() {
     }
 }
 
-function enableButtonsMobile() {
+export function enableButtonsMobile() {
     const menuButtons = document.getElementsByClassName('menuButton');
     
     for (const button of menuButtons) {
@@ -39,7 +48,7 @@ function enableButtonsMobile() {
     }
 }
 
-function disableButtons() {
+export function disableButtons() {
     const dropDownButtons = document.getElementsByClassName('dropDownButton');
     const menuButtons = document.getElementsByClassName('menuButton');
     const mobileMenuButton = document.getElementById('mobileMenuButton');
@@ -56,36 +65,36 @@ function disableButtons() {
     mobileMenuButton.style.pointerEvents = 'none';
 
     for (const bar of bars) {
-        bar.style.backgroundColor = 'red';
+        bar.style.backgroundColor = DISABLED_COLOR;
     }
 }
 
-function changeWallStatus(id, newWallStatus, gridBoard) {
+export function changeWallStatus(id, newWallStatus, gridBoard) {
     const [descriptor, row, col] = id.split('-');
     
     gridBoard.nodesMatrix[row][col].isWall = newWallStatus;
 }
 
-function removeWalls(gridBoard) {
+export function removeWalls(gridBoard) {
     for (let row = 0; row < gridBoard.rows; row++) {
         for (let col = 0; col < gridBoard.columns; col++) {
             if (gridBoard.nodesMatrix[row][col].isWall === true) {
                 gridBoard.nodesMatrix[row][col].isWall = false;
-                document.getElementById(`node-${row}-${col}`).className = 'unvisited';
+                document.getElementById(`node-${row}-${col}`).className = Node.unvisited;
             } 
         }
     }
 }
 
-function removePreviousAlgorithm(gridBoard) {
+export function removePreviousAlgorithm(gridBoard) {
     for (let row = 0; row < gridBoard.rows; row++) {
         for (let col = 0; col < gridBoard.columns; col++) {
             let node = document.getElementById(`node-${row}-${col}`);
 
             /* Leave start, finish, walls and weights as they are */
-            if (node.className === 'visited' || node.className === 'shortestPath' ||
-                node.className === 'jumpPoint') {
-                node.className = 'unvisited';
+            if (node.className === Node.visited || node.className === Node.shortestPath ||
+                node.className === Node.jumpPoint) {
+                node.className = Node.unvisited;
             }
 
             /* Reset each element in the nodesMatrix so that the next algorithm
@@ -103,18 +112,18 @@ function removePreviousAlgorithm(gridBoard) {
     }
     
     document.getElementById(`node-${gridBoard.startRow}-${gridBoard.startCol}`)
-        .className = 'start';
+        .className = Node.start;
     document.getElementById(`node-${gridBoard.finishRow}-${gridBoard.finishCol}`)
-    .className = 'finish';
+    .className = Node.finish;
 }
 
 /* Place start and finish at their original positions from when the grid was first
     created */
-function resetStartAndFinish(gridBoard) {
+export function resetStartAndFinish(gridBoard) {
     document.getElementById(`node-${gridBoard.startRow}-${gridBoard.startCol}`)
-        .className = 'unvisited';
+        .className = Node.unvisited;
     document.getElementById(`node-${gridBoard.finishRow}-${gridBoard.finishCol}`)
-        .className = 'unvisited';
+        .className = Node.unvisited;
     
     if (gridBoard.columns >= gridBoard.rows) {
         gridBoard.startRow = Math.floor(gridBoard.rows / 2);
@@ -132,36 +141,36 @@ function resetStartAndFinish(gridBoard) {
     }
 
     document.getElementById(`node-${gridBoard.startRow}-${gridBoard.startCol}`)
-        .className = 'start';
+        .className = Node.start;
     document.getElementById(`node-${gridBoard.finishRow}-${gridBoard.finishCol}`)
-        .className = 'finish';
+        .className = Node.finish;
 }
 
-function resetToggleButtons() {
-    document.getElementById('directionsToggleButton').checked = false;
+export function resetToggleButtons() {
+    document.getElementById('eightDirectionsToggleButton').checked = false;
     document.getElementById('cornerCuttingToggleButton').checked = false;
 }
 
-function disableToggleButtons() {
-    document.getElementById('directionsToggleButton').disabled = true;
-    document.getElementById('directionsSwitch').style.backgroundColor = 'red';
+export function disableToggleButtons() {
+    document.getElementById('eightDirectionsToggleButton').disabled = true;
+    document.getElementById('directionsSwitch').style.backgroundColor = DISABLED_COLOR;
     document.getElementById('cornerCuttingToggleButton').disabled = true;
-    document.getElementById('cornerCuttingSwitch').style.backgroundColor = 'red';
+    document.getElementById('cornerCuttingSwitch').style.backgroundColor = DISABLED_COLOR;
 }
 
-function enableDirections() {
-    document.getElementById('directionsToggleButton').disabled = false;
-    document.getElementById('directionsSwitch').style.backgroundColor = '#79e082';
+export function enableEightDirections() {
+    document.getElementById('eightDirectionsToggleButton').disabled = false;
+    document.getElementById('directionsSwitch').style.backgroundColor = BUTTON_BACKGROUND_COLOR;
 }
 
 /* Used for Jump Point Search where eight directions are necessary */
-function setAndDisableDirections() {
-    document.getElementById('directionsToggleButton').checked = true;
-    document.getElementById('directionsToggleButton').disabled = true;
-    document.getElementById('directionsToggleButton').style.backgroundColor = 'red';
+export function setAndDisableEightDirections() {
+    document.getElementById('eightDirectionsToggleButton').checked = true;
+    document.getElementById('eightDirectionsToggleButton').disabled = true;
+    document.getElementById('eightDirectionsToggleButton').style.backgroundColor = DISABLED_COLOR;
 }
 
-function enableCornerCutting() {
+export function enableCornerCutting() {
     document.getElementById('cornerCuttingToggleButton').disabled = false;
-    document.getElementById('cornerCuttingSwitch').style.backgroundColor = '#79e082';
+    document.getElementById('cornerCuttingSwitch').style.backgroundColor = BUTTON_BACKGROUND_COLOR;
 }

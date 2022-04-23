@@ -14,7 +14,9 @@ export default class Node {
         this.heuristicDistance = Infinity;
         this.totalDistance = Infinity;
         this.prevNode = null;
+        /* Used for bidirectional algorithms */
         this.prevNodeFromFinish = null;
+        /* Used for Jump Point Search */
         this.direction = null;
         this.isJumpPoint = false;
     }

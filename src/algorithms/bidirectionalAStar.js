@@ -1,5 +1,12 @@
 'use strict';
 
+const Node = {
+    start: 'start',
+    finish: 'finish'
+};
+
+Object.freeze(Node);
+
 export default function bidirectionalAStar(grid, startNode, finishNode, eightDirections, cornerCutting) {
     const closedListFromStart = [];
     const closedListFromFinish = [];
@@ -45,9 +52,9 @@ export default function bidirectionalAStar(grid, startNode, finishNode, eightDir
         }
 
         updateNeighbors(grid, closestNodeFromStart, finishNode, openListFromStart,
-            closedListFromStart, 'start', eightDirections, cornerCutting);
+            closedListFromStart, Node.start, eightDirections, cornerCutting);
         updateNeighbors(grid, closestNodeFromFinish, startNode, openListFromFinish,
-            closedListFromFinish, 'finish', eightDirections, cornerCutting);
+            closedListFromFinish, Node.finish, eightDirections, cornerCutting);
     }
 
     /* If we exited the while loop then the start and/or finish node is completely
@@ -76,12 +83,12 @@ function updateNeighbors(grid, node, goalNode, openList, closedList, initNode,
         }
 
         /* Calculate the shortest path to the current node */
-        if (initNode === 'start') {
+        if (initNode === Node.start) {
             shortestPathToNode = node.distanceFromStart + neighbor.weight +
                 getDistance(node, neighbor);
         }
 
-        else if (initNode === 'finish') {
+        else if (initNode === Node.finish) {
             shortestPathToNode = node.distanceFromFinish + neighbor.weight +
                 getDistance(node, neighbor);
         }
@@ -101,14 +108,14 @@ function updateNeighbors(grid, node, goalNode, openList, closedList, initNode,
         }
 
         if (shortestPathFound === true) {
-            if (initNode === 'start') {
+            if (initNode === Node.start) {
                 neighbor.prevNode = node;
                 /* Overwrite the longer path with the new shorter one */
                 neighbor.distanceFromStart = shortestPathToNode;
                 neighbor.totalDistance = neighbor.distanceFromStart + neighbor.heuristicDistance;
             }
 
-            else if (initNode === 'finish') {
+            else if (initNode === Node.finish) {
                 neighbor.prevNodeFromFinish = node;
                 neighbor.distanceFromFinish = shortestPathToNode;
                 neighbor.totalDistance = neighbor.distanceFromFinish + neighbor.heuristicDistance;
