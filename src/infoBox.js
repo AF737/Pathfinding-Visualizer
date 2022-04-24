@@ -17,8 +17,8 @@ let infoBoxVisible = true;
 
 function openInfoBox() {
     disableButtons();
-    infoBoxVisible = true;
 
+    infoBoxVisible = true;
     infoBox.style.display = 'inline';
 }
 
@@ -46,24 +46,21 @@ function closeInfoBox() {
     }
 
     infoBoxVisible = false;
-
     infoBox.style.display = 'none';
 }
 
 function updateCurrPage(currPage) {
-    currInfoBoxPage.innerHTML = 
-        `${currPage + 1}/${LAST_INFOBOX_PAGE + 1}`;
+    currInfoBoxPage.innerHTML = `${currPage + 1}/${LAST_INFOBOX_PAGE + 1}`;
 }
 
 function handlePrevInfoButton() {
-    if (infoBoxPage > 0) {
-        infoBoxPage--;
-        updateCurrPage(infoBoxPage);
-    }
+    infoBoxPage--;
 
-    else if (infoBoxPage === 0) {
+    if (infoBoxPage === 0) {
         prevInfoBoxButton.disabled = true;
     }
+
+    updateCurrPage(infoBoxPage);
 
     /* If the user was at the last page previously then
         change the text of the next button from "Finish" */
@@ -72,7 +69,7 @@ function handlePrevInfoButton() {
 }
 
 function handleNextInfoButton() {
-    if (infoBoxPage === (LAST_INFOBOX_PAGE - 1)) {
+    if (infoBoxPage === LAST_INFOBOX_PAGE - 1) {
         nextInfoBoxButton.innerHTML = 'Finish';
         nextInfoBoxPage();
     }
@@ -88,10 +85,8 @@ function handleNextInfoButton() {
 }
 
 function nextInfoBoxPage() {
-    if (infoBoxPage < (LAST_INFOBOX_PAGE)) {
-        infoBoxPage++;
-        updateCurrPage(infoBoxPage);
-    }
+    infoBoxPage++;
+    updateCurrPage(infoBoxPage);
 
     if (infoBoxPage > 0) {
         prevInfoBoxButton.disabled = false;
