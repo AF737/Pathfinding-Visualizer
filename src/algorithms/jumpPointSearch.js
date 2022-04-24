@@ -218,7 +218,18 @@ function diagonalSearch(grid, node, rowChange, colChange, finishNode, visitedNod
     const child = grid.nodesMatrix[node.row + rowChange][node.column + colChange];
 
     if (child.isWall === true) {
-        return newJumpNodes;
+        // return newJumpNodes;
+        const horizontalJumpNode = JSON.parse(JSON.stringify(node));
+        horizontalJumpNode.direction = [0, colChange];
+        horizontalJumpNode.isJumpPoint = true;
+
+        newJumpNodes.push(horizontalJumpNode);
+
+        const verticalJumpNode = JSON.parse(JSON.stringify(node));
+        verticalJumpNode.direction = [rowChange, 0];
+        verticalJumpNode.isJumpPoint = true;
+        
+        newJumpNodes.push(verticalJumpNode);
     }
 
     child.isVisited = true;
@@ -237,11 +248,10 @@ function diagonalSearch(grid, node, rowChange, colChange, finishNode, visitedNod
         return newJumpNodes;
     }
 
-    let horizontalSearchDone = false, verticalSearchDone = false;
-
-    /* If there's a wall directly left or right of the current node, but not behind it then
-        create a jump node at the position of the child node, but invert the vertical
-        movement because that empty spot can't be reached any other way */ 
+    /* If there's a wall directly left or right of the current node, but there isn't another
+        wall directly behind the first one then create a jump node at the position of the 
+        child node, but invert the vertical movement because that empty spot can't be 
+        reached any other way */ 
     if (grid.nodesMatrix[node.row][child.column].isWall === true &&
         grid.nodesMatrix[node.row][child.column + colChange].isWall === false &&
         grid.nodesMatrix[node.row][child.column + colChange].isVisited === false) {
@@ -262,6 +272,8 @@ function diagonalSearch(grid, node, rowChange, colChange, finishNode, visitedNod
 
             newJumpNodes.push(jumpNode);
     }
+
+    let horizontalSearchDone = false, verticalSearchDone = false;
 
     /* Do a horizontal search if no jump points were found */
     if (newJumpNodes.length === 0) {
@@ -335,19 +347,23 @@ function getNeighbors(grid, startNode) {
         right = true;
     }
 
-    if (up === true && left === true) {
+    if (up === true && left === true &&
+        cornerCutting(grid, row, col, -1, -1) === false) {
         neighbors.push(grid.nodesMatrix[row - 1][col - 1]);
     }
 
-    if (up === true && right === true) {
+    if (up === true && right === true &&
+        cornerCutting(grid, row, col, -1, 1) === false) {
         neighbors.push(grid.nodesMatrix[row - 1][col + 1]);
     }
 
-    if (down === true && left === true) {
+    if (down === true && left === true &&
+        cornerCutting(grid, row, col, 1, -1) === false) {
         neighbors.push(grid.nodesMatrix[row + 1][col - 1]);
     }
 
-    if (down === true && right === true) {
+    if (down === true && right === true &&
+        cornerCutting(grid, row, col, 1, 1) === false) {
         neighbors.push(grid.nodesMatrix[row + 1][col + 1]);
     }
 
@@ -365,4 +381,17 @@ function getDistance(parentNode, node) {
 
 function getDirection(parentNode, node) {
     return[node.row - parentNode.row, node.column - parentNode.column];
+}
+
+/* Prohibit diagonal movement in that direction if there's a wall directly next to it
+    vertically and horizontally and corner cutting is disabled */
+function cornerCutting(grid, row, col, rowChange, colChange) {
+    if (grid.nodesMatrix[row + rowChange][col].isWall === true &&
+        grid.nodesMatrix[row][col + colChange].isWall === true) {
+            return true;
+    }
+
+    else {
+        return false;
+    }
 }

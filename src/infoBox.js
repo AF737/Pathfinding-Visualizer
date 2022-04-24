@@ -1,7 +1,7 @@
 'use strict';
 
 export {infoBoxVisible, openInfoBox, closeInfoBox, handlePrevInfoButton, 
-        handleNextInfoButton, mobileFriendlyInfoBox};
+        handleNextInfoButton};
         
 import {enableButtons, enableButtonsMobile, disableButtons} 
         from './helperFunctions.js';
@@ -14,14 +14,6 @@ const infoBox = document.getElementById('infoBox');
 const LAST_INFOBOX_PAGE = 7;
 let infoBoxPage = 0;
 let infoBoxVisible = true;
-
-function mobileFriendlyInfoBox() {
-    infoBox.style.width = '100vw';
-    infoBox.style.height = '80vh';
-    infoBox.style.top = '10vh';
-    infoBox.style.left = '0';
-    infoBox.style.transform = 'translate(0, 0)';
-}
 
 function openInfoBox() {
     disableButtons();

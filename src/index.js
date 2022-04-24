@@ -5,7 +5,7 @@ export {eightDirections, cornerCutting};
 import Board from './board.js';
 import {adjustGridDimensions, createGrid} from './grid.js';
 import {openInfoBox, closeInfoBox, handlePrevInfoButton, 
-        handleNextInfoButton, mobileFriendlyInfoBox} from './infoBox.js';
+        handleNextInfoButton} from './infoBox.js';
 import {DISABLED_COLOR, BUTTON_BACKGROUND_COLOR, disableButtons, removeWalls, resetToggleButtons, disableToggleButtons,
         enableEightDirections, removePreviousAlgorithm, resetStartAndFinish, 
         setAndDisableEightDirections} from './helperFunctions.js';
@@ -125,10 +125,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
             openInfoBoxButton.addEventListener(userEvent, function(ev) {
                 ev.preventDefault();
-
-                if (userEvent === 'touchstart') {
-                    mobileFriendlyInfoBox();
-                }
 
                 openInfoBox();
             });

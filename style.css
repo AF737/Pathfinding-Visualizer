@@ -981,6 +981,18 @@ div.jumpPoint {
         transform: translate(0%, -15%);
     }
 
+    h2.h2InfoBox {
+        font-size: 1.5rem;
+    }
+    
+    h3.h3InfoBox {
+        font-size: 1.2rem;
+    }
+    
+    p.pInfoBox {
+        font-size: 1.0rem;
+    }
+
     button.infoBoxButton {
         width: 15vw;
     }
