@@ -218,19 +218,20 @@ function diagonalSearch(grid, node, rowChange, colChange, finishNode, visitedNod
     const child = grid.nodesMatrix[node.row + rowChange][node.column + colChange];
 
     if (child.isWall === true) {
-        // return newJumpNodes;
-        const horizontalJumpNode = JSON.parse(JSON.stringify(node));
-        horizontalJumpNode.direction = [0, colChange];
-        horizontalJumpNode.isJumpPoint = true;
-
-        newJumpNodes.push(horizontalJumpNode);
-
-        const verticalJumpNode = JSON.parse(JSON.stringify(node));
-        verticalJumpNode.direction = [rowChange, 0];
-        verticalJumpNode.isJumpPoint = true;
-        
-        newJumpNodes.push(verticalJumpNode);
+        return newJumpNodes;
     }
+
+    const horizontalJumpNode = JSON.parse(JSON.stringify(node));
+    horizontalJumpNode.direction = [0, colChange];
+    horizontalJumpNode.isJumpPoint = true;
+
+    newJumpNodes.push(horizontalJumpNode);
+
+    const verticalJumpNode = JSON.parse(JSON.stringify(node));
+    verticalJumpNode.direction = [rowChange, 0];
+    verticalJumpNode.isJumpPoint = true;
+    
+    newJumpNodes.push(verticalJumpNode);
 
     child.isVisited = true;
     child.prevNode = node;

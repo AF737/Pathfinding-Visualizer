@@ -64,7 +64,7 @@ function updateNeighbors(grid, node, finishNode, openList, closedList,
             continue;
         }
 
-        let shortestPathToNode = node.distanceFromStart + neighbor.weight + 
+        const shortestPathToNode = node.distanceFromStart + neighbor.weight + 
             getDistance(node, neighbor);
         let shortestPathFound = false;
 

@@ -10,6 +10,7 @@ import bidirectionalDijkstra from './algorithms/bidirectionalDijkstra.js';
 import bidirectionalAStar from './algorithms/bidirectionalAStar.js';
 import depthFirstSearch from './algorithms/depthFirstSearch.js';
 import jumpPointSearch from './algorithms/jumpPointSearch.js';
+import jps2 from './algorithms/jps2.js';
 import {eightDirections, cornerCutting} from './index.js';
 import {removeWeights} from './weights.js';
 
@@ -107,8 +108,9 @@ function animateJumpPointSearch(startNode, finishNode, gridBoard) {
     removeWeights(gridBoard);
 
     const [visitedNodesFromStart, shortestPath] = 
-    jumpPointSearch(gridBoard, startNode, finishNode, gridBoard);
-
+    // jumpPointSearch(gridBoard, startNode, finishNode);
+    jps2(gridBoard, startNode, finishNode);
+    console.log(shortestPath);
     animateAlgorithm(visitedNodesFromStart, null, shortestPath, gridBoard,
         false, true);
 }
