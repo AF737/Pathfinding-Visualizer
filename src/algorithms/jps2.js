@@ -28,7 +28,7 @@ export default function jps2(grid, startNode, finishNode) {
                 shortestPath.unshift(currentNode);
                 currentNode = currentNode.prevNode;
             }
-            console.log(closedList);
+            console.log(shortestPath);
             return [closedList, shortestPath];
         }
 
@@ -69,8 +69,8 @@ function identifySuccessors(grid, currentNode, startNode, finishNode, closedList
             jumpPoint.heuristicDistance = getDistance(jumpPoint, finishNode);
             jumpPoint.totalDistance = jumpPoint.distanceFromStart + 
                 jumpPoint.heuristicDistance;
-
-            setPrevNodes(jumpPoint, neighbor);
+            
+            setPrevNodes(grid, jumpPoint, neighbor);
             successors.push(jumpPoint);
         }
     }
@@ -206,11 +206,12 @@ function jump(grid, currentNode, rowChange, colChange, finishNode)
     return newJumpPoints = newJumpPoints.concat(jump(grid, nextNode, rowChange, colChange, finishNode));
 }
 
-function setPrevNodes (startNode, endNode)
+function setPrevNodes (grid, startNode, endNode)
 {
     const rowDiff = endNode.row - startNode.row;
     const colDiff = endNode.column - startNode.column;
     let rowStep = 0, colStep = 0;
+    let row = endNode.row, col = endNode.column;
     /* endNode is above startNode */
     if (rowDiff < 0)
         rowStep = -1;
@@ -223,9 +224,11 @@ function setPrevNodes (startNode, endNode)
     else 
         colStep = 1;
 
-    if (rowStep !== 0 && colStep !== 0)
+    while (grid.nodesMatrix[row][col] !== endNode)
     {
-        
+        grid.nodesMatrix[row][col].prevNode = grid.nodesMatrix[row + rowStep][col + colStep];
+        row += rowStep;
+        col += colStep;
     }
 }
 
