@@ -69,6 +69,8 @@ function identifySuccessors(grid, currentNode, startNode, finishNode, closedList
             jumpPoint.heuristicDistance = getDistance(jumpPoint, finishNode);
             jumpPoint.totalDistance = jumpPoint.distanceFromStart + 
                 jumpPoint.heuristicDistance;
+
+            setPrevNodes(jumpPoint, neighbor);
             successors.push(jumpPoint);
         }
     }
@@ -202,6 +204,29 @@ function jump(grid, currentNode, rowChange, colChange, finishNode)
 
     /* No forced neighbor was found so continue searching */
     return newJumpPoints = newJumpPoints.concat(jump(grid, nextNode, rowChange, colChange, finishNode));
+}
+
+function setPrevNodes (startNode, endNode)
+{
+    const rowDiff = endNode.row - startNode.row;
+    const colDiff = endNode.column - startNode.column;
+    let rowStep = 0, colStep = 0;
+    /* endNode is above startNode */
+    if (rowDiff < 0)
+        rowStep = -1;
+    /* endNode is below startNode */
+    else
+        rowStep = 1;
+
+    if (colDiff < 0)
+        colStep = -1;
+    else 
+        colStep = 1;
+
+    if (rowStep !== 0 && colStep !== 0)
+    {
+        
+    }
 }
 
 function getNeighbors(grid, node) {
