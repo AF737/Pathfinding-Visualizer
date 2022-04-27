@@ -2,7 +2,7 @@
 
 export default function jps2(grid, startNode, finishNode) {
     const closedList = [];
-    let openList = [];
+    const openList = [];
     startNode.distanceFromStart = 0;
     startNode.heuristicDistance = getDistance(startNode, finishNode);
     startNode.totalDistance = startNode.distanceFromStart + startNode.heuristicDistance;
@@ -18,13 +18,33 @@ export default function jps2(grid, startNode, finishNode) {
             continue;
         }
 
-        if (closestNode.id === finishNode.id)
+        if (closestNode === finishNode)
         {
+            // console.log(closedList);
+            // return [closedList, null];
+            // console.log('X');
             let currentNode = finishNode;
             const shortestPath = [];
-
-            while (currentNode !== null)
+            let c = 0;
+            while (currentNode !== null && c < 30)
             {
+                // const rowChange = currentNode.direction[0];
+                // const colChange = currentNode.direction[1];
+                // const revRow = rowChange * -1;
+                // const revCol = colChange * -1;
+                // console.log(`currNode: ${currentNode}`);
+
+                // currentNode = grid.nodesMatrix[currentNode.row + revRow][currentNode.column + revCol];
+
+                // while (currentNode.direction === null ||
+                //     currentNode.direction === [rowChange, colChange])
+                // {
+                //     console.log(currentNode);
+                //     shortestPath.unshift(currentNode);
+                //     currentNode.prevNode = grid.nodesMatrix[currentNode.row + revRow][currentNode.column + revCol];
+                //     currentNode = currentNode.prevNode;
+                // }
+                c++;
                 shortestPath.unshift(currentNode);
                 currentNode = currentNode.prevNode;
             }
@@ -32,7 +52,7 @@ export default function jps2(grid, startNode, finishNode) {
             return [closedList, shortestPath];
         }
 
-        openList = openList.concat(identifySuccessors(grid, closestNode, startNode, finishNode, closedList));
+        identifySuccessors(grid, closestNode, startNode, finishNode, closedList, openList);
     }
 
     return [closedList, null];
@@ -43,7 +63,7 @@ function sortNodesByDistance(openList) {
         firstNode.totalDistance - secondNode.totalDistance);
 }
 
-function identifySuccessors(grid, currentNode, startNode, finishNode, closedList) {
+function identifySuccessors(grid, currentNode, startNode, finishNode, closedList, openList) {
     const successors = [];
     const neighbors = getNeighbors(grid, currentNode);
 
@@ -52,30 +72,82 @@ function identifySuccessors(grid, currentNode, startNode, finishNode, closedList
             continue;
         }
 
+        neighbor.distanceFromStart = currentNode.distanceFromStart + getDistance(currentNode, neighbor);
+        neighbor.prevNode = currentNode;
+
         const rowChange = neighbor.row - currentNode.row;
         const colChange = neighbor.column - currentNode.column;
+        neighbor.direction = [rowChange, colChange];
 
-        const jumpPoints = jump(grid, neighbor, rowChange, colChange, finishNode);
+        // const jumpPoints = jump(grid, neighbor, rowChange, colChange, finishNode);
 
-        for (const jumpPoint of jumpPoints)
+        // for (const jumpPoint of jumpPoints)
+        // {
+        //     if (jumpPoint === '')
+        //     {
+        //         continue;
+        //     }
+
+        //     jumpPoint.isJumpPoint = true;
+        //     jumpPoint.distanceFromStart = getDistance(currentNode, jumpPoint);
+        //     jumpPoint.heuristicDistance = getDistance(jumpPoint, finishNode);
+        //     jumpPoint.totalDistance = jumpPoint.distanceFromStart + 
+        //         jumpPoint.heuristicDistance;
+            
+        //     setPrevNodes(grid, jumpPoint, neighbor);
+        //     successors.push(jumpPoint);
+        // }
+        const destination = jump2(grid, neighbor.row, neighbor.column, rowChange, colChange, finishNode);
+        console.log(destination);
+
+        if (destination !== null)
         {
-            if (jumpPoint === '')
+            const node = grid.nodesMatrix[ destination[0] ][ destination[1] ];
+            const jumpPoint = JSON.parse(JSON.stringify(node));
+            // console.log(`${neighbor.id}, ${jumpPoint.id}`); 
+            // console.log(`${neighbor.row}, ${neighbor.column}, ${jumpPoint[0]}, ${jumpPoint[1]}`);
+            const shortestPath = neighbor.distanceFromStart + getDistance(neighbor, jumpPoint);
+            let shortestPathFound = false;
+
+            if (openList.includes(jumpPoint) === false)
             {
-                continue;
+                shortestPathFound = true;
+                jumpPoint.heuristicDistance = getDistance(jumpPoint, finishNode);
+                openList.push(jumpPoint);
             }
 
-            jumpPoint.isJumpPoint = true;
-            jumpPoint.distanceFromStart = getDistance(currentNode, jumpPoint);
-            jumpPoint.heuristicDistance = getDistance(jumpPoint, finishNode);
-            jumpPoint.totalDistance = jumpPoint.distanceFromStart + 
-                jumpPoint.heuristicDistance;
-            
-            setPrevNodes(grid, jumpPoint, neighbor);
-            successors.push(jumpPoint);
+            else if (shortestPath < jumpPoint.distanceFromStart)
+            {
+                shortestPathFound = true;
+            }
+
+            if (shortestPathFound === true)
+            {
+                jumpPoint.direction = [destination[2], destination[3]];
+                jumpPoint.distanceFromStart = shortestPath;
+                jumpPoint.totalDistance = jumpPoint.distanceFromStart + jumpPoint.heuristicDistance;
+                jumpPoint.isJumpPoint = true;
+                
+                setPrevNodes(grid, neighbor, jumpPoint);
+                // jumpPoint.prevNode = neighbor;
+            }
+
+            // let currentNode = jumpPoint;
+            // const revRow = rowChange * -1;
+            // const revCol = colChange * -1;
+
+            // while (currentNode !== neighbor)
+            // {
+            //     console.log(currentNode);
+            //     currentNode.prevNode = grid.nodesMatrix[currentNode.row + revRow][currentNode.column + revCol];
+            //     currentNode = currentNode.prevNode;
+            // }
+            // grid.nodesMatrix[ jumpPoint[0] ][ jumpPoint[1] ].direction = [ rowChange, colChange ];
+            // successors.push(grid.nodesMatrix[ jumpPoint[0] ][ jumpPoint[1] ]);
         }
     }
 
-    return successors;
+    // return successors;
 }
 
 function jump(grid, currentNode, rowChange, colChange, finishNode) 
@@ -95,7 +167,7 @@ function jump(grid, currentNode, rowChange, colChange, finishNode)
         return newJumpPoints;
     }
 
-    nextNode.prevNode = currentNode;
+    // nextNode.prevNode = currentNode;
 
     if (nextNode.row === finishNode.row && nextNode.column === finishNode.column) 
     {
@@ -126,7 +198,7 @@ function jump(grid, currentNode, rowChange, colChange, finishNode)
             return newJumpPoints;
         }
 
-        newJumpPoints = newJumpPoints.concat(jump(grid, currentNode, 0, colChange, finishNode));
+        newJumpPoints = newJumpPoints.concat(jump(grid, nextNode, 0, colChange, finishNode));
         
         if (newJumpPoints.length > 0)
         {
@@ -134,7 +206,7 @@ function jump(grid, currentNode, rowChange, colChange, finishNode)
             return newJumpPoints;
         }
 
-        newJumpPoints = newJumpPoints.concat(jump(grid, currentNode, rowChange, 0, finishNode));
+        newJumpPoints = newJumpPoints.concat(jump(grid, nextNode, rowChange, 0, finishNode));
         
         if (newJumpPoints.length > 0)
         {
@@ -151,8 +223,8 @@ function jump(grid, currentNode, rowChange, colChange, finishNode)
         // {
         //     return newJumpPoints;
         // }
-        if (currentNode.row - 1 < 0 || currentNode.row + 1 > grid.rows - 1 ||
-            currentNode.column - 1 < 0 || currentNode.column + 1 > grid.columns - 1)
+        if (nextNode.row - 1 < 0 || nextNode.row + 1 > grid.rows - 1 ||
+            nextNode.column - 1 < 0 || nextNode.column + 1 > grid.columns - 1)
         {
             return newJumpPoints;
         }
@@ -161,19 +233,19 @@ function jump(grid, currentNode, rowChange, colChange, finishNode)
         if (colChange !== 0)
         {
             /* Check directly above */
-            if (grid.nodesMatrix[currentNode.row - 1][currentNode.column].isWall === true &&
-                grid.nodesMatrix[currentNode.row - 1][currentNode.column + colChange].isWall === false)
+            if (grid.nodesMatrix[nextNode.row - 1][nextNode.column].isWall === true &&
+                grid.nodesMatrix[nextNode.row - 1][nextNode.column + colChange].isWall === false)
             {
-                newJumpPoints.push(currentNode);
+                newJumpPoints.push(nextNode);
                 // newJumpPoints.push(grid.nodesMatrix[currentNode.row - 1][currentNode.column + colChange]);
                 return newJumpPoints;
             }
         
             /* Check directly below */
-            if (grid.nodesMatrix[currentNode.row + 1][currentNode.column].isWall === true &&
-                grid.nodesMatrix[currentNode.row + 1][currentNode.column + colChange].isWall === false)
+            if (grid.nodesMatrix[nextNode.row + 1][nextNode.column].isWall === true &&
+                grid.nodesMatrix[nextNode.row + 1][nextNode.column + colChange].isWall === false)
             {
-                newJumpPoints.push(currentNode);
+                newJumpPoints.push(nextNode);
                 // newJumpPoints.push(grid.nodesMatrix[currentNode.row + 1][currentNode.column + colChange]);
                 return newJumpPoints;
             }
@@ -183,19 +255,19 @@ function jump(grid, currentNode, rowChange, colChange, finishNode)
         else 
         {
             /* Check directly left */
-            if (grid.nodesMatrix[currentNode.row][currentNode.column - 1].isWall === true &&
-                grid.nodesMatrix[currentNode.row + rowChange][currentNode.column - 1].isWall === false)
+            if (grid.nodesMatrix[nextNode.row][nextNode.column - 1].isWall === true &&
+                grid.nodesMatrix[nextNode.row + rowChange][nextNode.column - 1].isWall === false)
             {
-                newJumpPoints.push(currentNode);
+                newJumpPoints.push(nextNode);
                 // newJumpPoints.push(grid.nodesMatrix[currentNode.row + rowChange][currentNode.column - 1]);
                 return newJumpPoints;
             }
 
             /* Check directly right */
-            if (grid.nodesMatrix[currentNode.row][currentNode.column + 1].isWall === true &&
-                grid.nodesMatrix[currentNode.row + rowChange][currentNode.column + 1].isWall === false)
+            if (grid.nodesMatrix[nextNode.row][nextNode.column + 1].isWall === true &&
+                grid.nodesMatrix[nextNode.row + rowChange][nextNode.column + 1].isWall === false)
             {
-                newJumpPoints.push(currentNode);
+                newJumpPoints.push(nextNode);
                 // newJumpPoints.push(grid.nodesMatrix[currentNode.row + rowChange][currentNode.column - 1]);
                 return newJumpPoints;
             }
@@ -206,29 +278,110 @@ function jump(grid, currentNode, rowChange, colChange, finishNode)
     return newJumpPoints = newJumpPoints.concat(jump(grid, nextNode, rowChange, colChange, finishNode));
 }
 
-function setPrevNodes (grid, startNode, endNode)
+function jump2(grid, row, col, rowChange, colChange, finishNode)
 {
-    const rowDiff = endNode.row - startNode.row;
-    const colDiff = endNode.column - startNode.column;
-    let rowStep = 0, colStep = 0;
-    let row = endNode.row, col = endNode.column;
-    /* endNode is above startNode */
-    if (rowDiff < 0)
-        rowStep = -1;
-    /* endNode is below startNode */
-    else
-        rowStep = 1;
+    if (row < 0 || row > grid.rows - 1 || col < 0 || col > grid.columns - 1)
+        return null;
 
-    if (colDiff < 0)
-        colStep = -1;
-    else 
-        colStep = 1;
+    if (grid.nodesMatrix[row][col] === finishNode)
+        return [row, col, rowChange, colChange];
 
-    while (grid.nodesMatrix[row][col] !== endNode)
+    const nextRow = row + rowChange;
+    const nextCol = col + colChange;
+
+    if (nextRow < 0 || nextRow > grid.rows - 1 || nextCol < 0 || nextCol > grid.columns - 1)
+        return null;
+
+    if (grid.nodesMatrix[nextRow][nextCol].isWall === true)
+        return null;
+
+    // grid.nodesMatrix[nextRow][nextCol].prevNode = grid.nodesMatrix[row][col];
+
+    if (rowChange !== 0 && colChange !== 0)
     {
-        grid.nodesMatrix[row][col].prevNode = grid.nodesMatrix[row + rowStep][col + colStep];
-        row += rowStep;
-        col += colStep;
+        if (grid.nodesMatrix[row - rowChange][col + colChange].isWall === true &&
+            grid.nodesMatrix[row - rowChange][col].isWall === false)
+            return [row, col, -rowChange, colChange];
+            // return [nextRow, nextCol];
+
+        if (grid.nodesMatrix[row + rowChange][col - colChange].isWall === true &&
+            grid.nodesMatrix[row][col - colChange].isWall === false)
+            return [row, col, rowChange, -colChange];
+            // return [nextRow, nextCol];
+
+        if (jump2(grid, row, nextCol, 0, colChange, finishNode) !== null)
+            return [row, col, 0, colChange];
+
+        if (jump2(grid, nextRow, col, rowChange, 0, finishNode) !== null)
+            return [row, col, rowChange, 0];
+    }
+
+    else 
+    {
+        if (colChange !== 0)
+        {
+            if (row + 1 > grid.rows - 1)
+                return null;
+
+            if (grid.nodesMatrix[row + 1][col].isWall === true &&
+                grid.nodesMatrix[row + 1][nextCol].isWall === false)
+                return [row, col, rowChange, colChange];
+
+            if (row - 1 < 0)
+                return null;
+
+            if (grid.nodesMatrix[row - 1][col].isWall === true &&
+                grid.nodesMatrix[row - 1][nextCol].isWall === false)
+                return [row, col, rowChange, colChange];
+        }
+
+        else
+        {
+            if (col + 1 > grid.columns - 1)
+                return null;
+
+            if (grid.nodesMatrix[row][col + 1].isWall === true &&
+                grid.nodesMatrix[nextRow][col + 1].isWall === false)
+                return [row, col, rowChange, colChange];
+
+            if (col - 1 < 0)
+                return null;
+
+            if (grid.nodesMatrix[row][col - 1].isWall === true &&
+                grid.nodesMatrix[nextRow][col - 1].isWall === false)
+                return [row, col, rowChange, colChange];
+        }
+    }
+
+    return jump2(grid, nextRow, nextCol, rowChange, colChange, finishNode);
+}
+
+function setPrevNodes(grid, startNode, endNode)
+{
+    // const rowDiff = endNode.row - startNode.row;
+    // const colDiff = endNode.column - startNode.column;
+    // const rowStep = rowDiff / Math.abs(rowDiff);
+    // const colStep = colDiff / Math.abs(colDiff);
+    // let row = endNode.row, col = endNode.column;
+
+    // while (grid.nodesMatrix[row][col] !== endNode)
+    // {
+    //     grid.nodesMatrix[row][col].prevNode = grid.nodesMatrix[row + rowStep][col + colStep];
+    //     row += rowStep;
+    //     col += colStep;
+    // }
+    const rowChange = startNode.direction[0];
+    const colChange = startNode.direction[1];
+    const revRow = rowChange * -1;
+    const revCol = colChange * -1;
+    let currentNode = endNode;
+    // console.log(startNode);
+    // console.log(endNode);
+    // console.log(grid.nodesMatrix[currentNode.row + revRow][currentNode.column + revCol]);
+    while (currentNode !== startNode)
+    {
+        currentNode.prevNode = grid.nodesMatrix[currentNode.row + revRow][currentNode.column + revCol];
+        currentNode = currentNode.prevNode;
     }
 }
 
