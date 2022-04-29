@@ -24,7 +24,8 @@ export default function jps2(grid, startNode, finishNode) {
             // return [closedList, null];
             // console.log('X');
             let currentNode = finishNode;
-            const shortestPath = [];
+            console.log(finishNode);
+            const shortestPath = getPath(grid, finishNode);
             let c = 0;
             while (currentNode !== null && c < 30)
             {
@@ -44,12 +45,46 @@ export default function jps2(grid, startNode, finishNode) {
                 //     currentNode.prevNode = grid.nodesMatrix[currentNode.row + revRow][currentNode.column + revCol];
                 //     currentNode = currentNode.prevNode;
                 // }
+                // const prevNode = currentNode.prevNode;
+                // console.log(currentNode);
+                // const rowDiff = prevNode.row - currentNode.row;
+                // const colDiff = prevNode.column - currentNode.column;
+                // let rowChange = 0, colChange = 0;
+                // console.log(prevNode);
+                // if (rowDiff !== 0)
+                // {
+                //     rowChange = rowDiff / Math.abs(rowDiff);
+                // }
+
+                // if (colDiff !== 0)
+                // {
+                //     colChange = colDiff / Math.abs(colDiff);
+                // }
+
+                // while (currentNode.id !== prevNode.id)
+                // {
+                //     // console.log(currentNode === prevNode);
+                //     // console.log('x');
+                //     // console.log(prevNode);
+                //     // console.log(currentNode);
+                //     shortestPath.push(currentNode);
+                //     currentNode = grid.nodesMatrix[currentNode.row + rowChange][currentNode.column + colChange];
+                //     // console.log('inner loop');
+                //     // console.log(currentNode);
+                // }
+
+                // console.log('outer loop');
+                // console.log(currentNode);
+
+                // currentNode = prevNode;
+                // console.log(currentNode);
+                
                 c++;
-                shortestPath.unshift(currentNode);
-                currentNode = currentNode.prevNode;
+                // currentNode = currentNode.prevNode;
             }
             console.log(shortestPath);
             return [closedList, shortestPath];
+            // return [closedList, null];
         }
 
         identifySuccessors(grid, closestNode, startNode, finishNode, closedList, openList);
@@ -103,7 +138,8 @@ function identifySuccessors(grid, currentNode, startNode, finishNode, closedList
         if (destination !== null)
         {
             const node = grid.nodesMatrix[ destination[0] ][ destination[1] ];
-            const jumpPoint = JSON.parse(JSON.stringify(node));
+            // const jumpPoint = JSON.parse(JSON.stringify(node));
+            const jumpPoint = node;
             // console.log(`${neighbor.id}, ${jumpPoint.id}`); 
             // console.log(`${neighbor.row}, ${neighbor.column}, ${jumpPoint[0]}, ${jumpPoint[1]}`);
             const shortestPath = neighbor.distanceFromStart + getDistance(neighbor, jumpPoint);
@@ -127,8 +163,8 @@ function identifySuccessors(grid, currentNode, startNode, finishNode, closedList
                 jumpPoint.distanceFromStart = shortestPath;
                 jumpPoint.totalDistance = jumpPoint.distanceFromStart + jumpPoint.heuristicDistance;
                 jumpPoint.isJumpPoint = true;
-                
-                setPrevNodes(grid, neighbor, jumpPoint);
+                jumpPoint.prevNode = JSON.parse(JSON.stringify(currentNode));
+                // setPrevNodes(grid, neighbor, jumpPoint);
                 // jumpPoint.prevNode = neighbor;
             }
 
@@ -383,6 +419,49 @@ function setPrevNodes(grid, startNode, endNode)
         currentNode.prevNode = grid.nodesMatrix[currentNode.row + revRow][currentNode.column + revCol];
         currentNode = currentNode.prevNode;
     }
+}
+
+function getPath(grid, finishNode)
+{
+    let currentNode = finishNode;
+    const jumpPoints = [];
+    const shortestPath = [];
+
+    while (currentNode !== null)
+    {
+        jumpPoints.unshift(currentNode);
+        currentNode = currentNode.prevNode;
+    }
+
+    currentNode = jumpPoints.shift();
+
+    while (jumpPoints.length > 0)
+    {
+        const jumpPoint = jumpPoints.shift();
+        const rowDiff = jumpPoint.row - currentNode.row;
+        const colDiff = jumpPoint.column - currentNode.column;
+        let rowChange = 0, colChange = 0;
+
+        if (rowDiff !== 0)
+        {
+            rowChange = rowDiff / Math.abs(rowDiff);
+        }
+
+        if (colDiff !== 0)
+        {
+            colChange = colDiff / Math.abs(colDiff);
+        }
+
+        while (currentNode.id !== jumpPoint.id)
+        {
+            shortestPath.push(currentNode);
+            currentNode = grid.nodesMatrix[currentNode.row + rowChange][currentNode.column + colChange];
+        }
+    }
+
+    shortestPath.push(finishNode);
+
+    return shortestPath;
 }
 
 function getNeighbors(grid, node) {
