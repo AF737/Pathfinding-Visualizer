@@ -25,10 +25,11 @@ export default function jps2(grid, startNode, finishNode) {
             // console.log('X');
             let currentNode = finishNode;
             console.log(finishNode);
+            return [closedList, null];
             const shortestPath = getPath(grid, finishNode);
             let c = 0;
-            while (currentNode !== null && c < 30)
-            {
+            // while (currentNode !== null && c < 30)
+            // {
                 // const rowChange = currentNode.direction[0];
                 // const colChange = currentNode.direction[1];
                 // const revRow = rowChange * -1;
@@ -79,9 +80,9 @@ export default function jps2(grid, startNode, finishNode) {
                 // currentNode = prevNode;
                 // console.log(currentNode);
                 
-                c++;
+                // c++;
                 // currentNode = currentNode.prevNode;
-            }
+            // }
             console.log(shortestPath);
             return [closedList, shortestPath];
             // return [closedList, null];
@@ -103,7 +104,12 @@ function identifySuccessors(grid, currentNode, startNode, finishNode, closedList
     const neighbors = getNeighbors(grid, currentNode);
 
     for (const neighbor of neighbors) {
-        if (closedList.includes(neighbor) || neighbor.isWall === true) {
+        // if (closedList.includes(neighbor) || neighbor.isWall === true) {
+        //     continue;
+        // }
+
+        if (neighbor.isWall === true)
+        {
             continue;
         }
 
@@ -132,17 +138,22 @@ function identifySuccessors(grid, currentNode, startNode, finishNode, closedList
         //     setPrevNodes(grid, jumpPoint, neighbor);
         //     successors.push(jumpPoint);
         // }
-        const destination = jump2(grid, neighbor.row, neighbor.column, rowChange, colChange, finishNode);
-        console.log(destination);
+        const destination = jump2(grid, currentNode.row, currentNode.column, rowChange, colChange, finishNode);
+        // console.log(destination);
+
 
         if (destination !== null)
         {
             const node = grid.nodesMatrix[ destination[0] ][ destination[1] ];
             // const jumpPoint = JSON.parse(JSON.stringify(node));
             const jumpPoint = node;
+
+            if (closedList.includes(jumpPoint) === true)
+                continue;
+
             // console.log(`${neighbor.id}, ${jumpPoint.id}`); 
             // console.log(`${neighbor.row}, ${neighbor.column}, ${jumpPoint[0]}, ${jumpPoint[1]}`);
-            const shortestPath = neighbor.distanceFromStart + getDistance(neighbor, jumpPoint);
+            const shortestPath = currentNode.distanceFromStart + getDistance(currentNode, jumpPoint);
             let shortestPathFound = false;
 
             if (openList.includes(jumpPoint) === false)
@@ -163,7 +174,8 @@ function identifySuccessors(grid, currentNode, startNode, finishNode, closedList
                 jumpPoint.distanceFromStart = shortestPath;
                 jumpPoint.totalDistance = jumpPoint.distanceFromStart + jumpPoint.heuristicDistance;
                 jumpPoint.isJumpPoint = true;
-                jumpPoint.prevNode = JSON.parse(JSON.stringify(currentNode));
+                // jumpPoint.prevNode = JSON.parse(JSON.stringify(currentNode));
+                jumpPoint.prevNode = currentNode;
                 // setPrevNodes(grid, neighbor, jumpPoint);
                 // jumpPoint.prevNode = neighbor;
             }
@@ -335,57 +347,115 @@ function jump2(grid, row, col, rowChange, colChange, finishNode)
 
     if (rowChange !== 0 && colChange !== 0)
     {
-        if (grid.nodesMatrix[row - rowChange][col + colChange].isWall === true &&
-            grid.nodesMatrix[row - rowChange][col].isWall === false)
-            return [row, col, -rowChange, colChange];
-            // return [nextRow, nextCol];
+        // Prevent corner cutting
+        // if (grid.nodesMatrix[row - rowChange][col + colChange].isWall === true &&
+        //     grid.nodesMatrix[row - rowChange][col].isWall === false &&
+        //     grid.nodesMatrix[row][col + colChange].isWall === false)
+        //     return [nextRow, nextCol, -rowChange, colChange];
+        //     // return [nextRow, nextCol];
 
-        if (grid.nodesMatrix[row + rowChange][col - colChange].isWall === true &&
-            grid.nodesMatrix[row][col - colChange].isWall === false)
-            return [row, col, rowChange, -colChange];
+        // if (grid.nodesMatrix[row + rowChange][col - colChange].isWall === true &&
+        //     grid.nodesMatrix[row][col - colChange].isWall === false)
+        //     return [nextRow, nextCol, rowChange, -colChange];
             // return [nextRow, nextCol];
+        // JPS doesn't allow for corner cutting
+        // if (grid.nodesMatrix[nextRow][col].isWall === true &&
+        //     grid.nodesMatrix[row][nextCol].isWall === true)
+        //     return null;
+
+        // if (grid.nodesMatrix[nextRow][col].isWall === true &&
+        //     grid.nodesMatrix[row][nextCol].isWall === false &&
+        //     grid.nodesMatrix[nextRow + rowChange][col].isWall === false &&
+        //     grid.nodesMatrix[nextRow + rowChange][nextCol].isWall === false)
+        // {
+        //     return [nextRow, nextCol, rowChange, -colChange];
+        // }
+
+        // if (grid.nodesMatrix[row][nextCol].isWall === true &&
+        //     grid.nodesMatrix[nextRow][col].isWall === false &&
+        //     grid.nodesMatrix[row][nextCol + colChange].isWall === false &&
+        //     grid.nodesMatrix[nextRow][nextCol + colChange].isWall === false)
+        // {
+        //     return [nextRow, nextCol, -rowChange, colChange];
+        // }
+
+        if (grid.nodesMatrix[row][nextCol].isWall === true &&
+            grid.nodesMatrix[row][nextCol + colChange].isWall === false)
+            return [nextRow, nextCol, -rowChange, colChange];
+
+        if (grid.nodesMatrix[nextRow][col].isWall === true &&
+            grid.nodesMatrix[nextRow + rowChange][col].isWall === false)
+            return [nextRow, nextCol, rowChange, -colChange];
 
         if (jump2(grid, row, nextCol, 0, colChange, finishNode) !== null)
-            return [row, col, 0, colChange];
+            return [row, nextCol, 0, colChange];
 
         if (jump2(grid, nextRow, col, rowChange, 0, finishNode) !== null)
-            return [row, col, rowChange, 0];
+            return [nextRow, col, rowChange, 0];
     }
 
     else 
     {
+        /* Moving horizontally */
         if (colChange !== 0)
         {
+            if (grid.nodesMatrix[row][nextCol].isWall === true)
+                return null;
+
             if (row + 1 > grid.rows - 1)
                 return null;
 
+            /* Check for forced neighbors above the node */
             if (grid.nodesMatrix[row + 1][col].isWall === true &&
                 grid.nodesMatrix[row + 1][nextCol].isWall === false)
+            {
+                console.log('A');
+                console.log(grid.nodesMatrix[row][col]);
                 return [row, col, rowChange, colChange];
+            }
 
             if (row - 1 < 0)
                 return null;
 
+            /* Check for forced neighbors below the node */
             if (grid.nodesMatrix[row - 1][col].isWall === true &&
                 grid.nodesMatrix[row - 1][nextCol].isWall === false)
+            {
+                console.log('B');
+                console.log(grid.nodesMatrix[row][col]);
                 return [row, col, rowChange, colChange];
+            }
         }
 
+        /* Moving vertically */
         else
         {
+            if (grid.nodesMatrix[nextRow][col].isWall === true)
+                return null;
+
             if (col + 1 > grid.columns - 1)
                 return null;
 
+            /* Check for forced neighbors right of the node */
             if (grid.nodesMatrix[row][col + 1].isWall === true &&
                 grid.nodesMatrix[nextRow][col + 1].isWall === false)
+            {
+                console.log('C');
+                console.log(grid.nodesMatrix[row][col]);
                 return [row, col, rowChange, colChange];
+            }
 
             if (col - 1 < 0)
                 return null;
 
+            /* Check for forced neighbors left of the node */
             if (grid.nodesMatrix[row][col - 1].isWall === true &&
                 grid.nodesMatrix[nextRow][col - 1].isWall === false)
+            {
+                console.log('D');
+                console.log(grid.nodesMatrix[row][col]);
                 return [row, col, rowChange, colChange];
+            }
         }
     }
 
