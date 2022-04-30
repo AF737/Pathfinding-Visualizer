@@ -138,7 +138,7 @@ function identifySuccessors(grid, currentNode, startNode, finishNode, closedList
         //     setPrevNodes(grid, jumpPoint, neighbor);
         //     successors.push(jumpPoint);
         // }
-        const destination = jump2(grid, currentNode.row, currentNode.column, rowChange, colChange, finishNode);
+        const destination = jump2(grid, neighbor.row, neighbor.column, rowChange, colChange, finishNode);
         // console.log(destination);
 
 
@@ -153,7 +153,7 @@ function identifySuccessors(grid, currentNode, startNode, finishNode, closedList
 
             // console.log(`${neighbor.id}, ${jumpPoint.id}`); 
             // console.log(`${neighbor.row}, ${neighbor.column}, ${jumpPoint[0]}, ${jumpPoint[1]}`);
-            const shortestPath = currentNode.distanceFromStart + getDistance(currentNode, jumpPoint);
+            const shortestPath = neighbor.distanceFromStart + getDistance(neighbor, jumpPoint);
             let shortestPathFound = false;
 
             if (openList.includes(jumpPoint) === false)
@@ -175,7 +175,7 @@ function identifySuccessors(grid, currentNode, startNode, finishNode, closedList
                 jumpPoint.totalDistance = jumpPoint.distanceFromStart + jumpPoint.heuristicDistance;
                 jumpPoint.isJumpPoint = true;
                 // jumpPoint.prevNode = JSON.parse(JSON.stringify(currentNode));
-                jumpPoint.prevNode = currentNode;
+                jumpPoint.prevNode = neighbor;
                 // setPrevNodes(grid, neighbor, jumpPoint);
                 // jumpPoint.prevNode = neighbor;
             }
@@ -331,6 +331,9 @@ function jump2(grid, row, col, rowChange, colChange, finishNode)
     if (row < 0 || row > grid.rows - 1 || col < 0 || col > grid.columns - 1)
         return null;
 
+    if (grid.nodesMatrix[row][col].isWall === true)
+        return null;
+
     if (grid.nodesMatrix[row][col] === finishNode)
         return [row, col, rowChange, colChange];
 
@@ -340,8 +343,8 @@ function jump2(grid, row, col, rowChange, colChange, finishNode)
     if (nextRow < 0 || nextRow > grid.rows - 1 || nextCol < 0 || nextCol > grid.columns - 1)
         return null;
 
-    if (grid.nodesMatrix[nextRow][nextCol].isWall === true)
-        return null;
+    // if (grid.nodesMatrix[nextRow][nextCol].isWall === true)
+    //     return null;
 
     // grid.nodesMatrix[nextRow][nextCol].prevNode = grid.nodesMatrix[row][col];
 
@@ -379,19 +382,27 @@ function jump2(grid, row, col, rowChange, colChange, finishNode)
         //     return [nextRow, nextCol, -rowChange, colChange];
         // }
 
-        if (grid.nodesMatrix[row][nextCol].isWall === true &&
-            grid.nodesMatrix[row][nextCol + colChange].isWall === false)
-            return [nextRow, nextCol, -rowChange, colChange];
+        // if (grid.nodesMatrix[row][nextCol].isWall === true &&
+        //     grid.nodesMatrix[row][nextCol + colChange].isWall === false)
+        //     return [row, col, -rowChange, colChange];
 
-        if (grid.nodesMatrix[nextRow][col].isWall === true &&
-            grid.nodesMatrix[nextRow + rowChange][col].isWall === false)
-            return [nextRow, nextCol, rowChange, -colChange];
+        // if (grid.nodesMatrix[nextRow][col].isWall === true &&
+        //     grid.nodesMatrix[nextRow + rowChange][col].isWall === false)
+        //     return [row, col, rowChange, -colChange];
+
+        if (grid.nodesMatrix[row - rowChange][col + colChange].isWall === false &&
+            grid.nodesMatrix[row - rowChange][col].isWall === true)
+            return [row, col, -rowChange, colChange];
+
+        if (grid.nodesMatrix[row + rowChange][col - colChange].isWall === false &&
+            grid.nodesMatrix[row][col - colChange].isWall === true)
+            return [row, col, rowChange, -colChange];
 
         if (jump2(grid, row, nextCol, 0, colChange, finishNode) !== null)
-            return [row, nextCol, 0, colChange];
+            return [row, col, 0, colChange];
 
         if (jump2(grid, nextRow, col, rowChange, 0, finishNode) !== null)
-            return [nextRow, col, rowChange, 0];
+            return [row, col, rowChange, 0];
     }
 
     else 
