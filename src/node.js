@@ -1,7 +1,9 @@
 'use strict';
 
-export default class Node {
-    constructor(id, row, col, currClass) {
+export default class Node 
+{
+    constructor(id, row, col, currClass) 
+    {
         this.id = id;
         this.class = currClass;
         this.row = row;

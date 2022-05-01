@@ -8,7 +8,8 @@ const board = document.getElementById('board');
 const NODE_WIDTH = 20;
 const NODE_HEIGHT = 20;
 
-function adjustGridDimensions() {
+function adjustGridDimensions() 
+{
     const windowWidth = window.innerWidth;
 
     const windowHeight = window.innerHeight;
@@ -27,7 +28,8 @@ function adjustGridDimensions() {
     board.style.gridTemplateRows = `${Math.floor(boardHeight / NODE_HEIGHT)}`;
 }
 
-function createGrid(gridBoard) {
+function createGrid(gridBoard) 
+{
     /* Remove all previous children (divs that contain the grid cells)
         in case of resizing */
     board.innerHTML = '';
@@ -39,7 +41,8 @@ function createGrid(gridBoard) {
     gridBoard.rows = numOfRows;
     gridBoard.columns = numOfCols;
 
-    if (gridBoard.columns >= gridBoard.rows) {
+    if (gridBoard.columns >= gridBoard.rows) 
+    {
         gridBoard.startRow = Math.floor(numOfRows / 2);
         gridBoard.startCol = Math.floor(numOfCols / 4);
         gridBoard.finishRow = Math.floor(numOfRows / 2);
@@ -47,32 +50,36 @@ function createGrid(gridBoard) {
     }
 
     /* Place them under each other for the mobile version */
-    else {
+    else 
+    {
         gridBoard.startRow = Math.floor(numOfRows / 4);
         gridBoard.startCol = Math.floor(numOfCols / 2);
         gridBoard.finishRow = Math.floor((numOfRows / 4) * 3);
         gridBoard.finishCol = Math.floor(numOfCols / 2);
     }
 
-    for (let row = 0; row < numOfRows; row++) {
+    for (let row = 0; row < numOfRows; row++) 
+    {
         const newGridArr = [];
-        for (let col = 0; col < numOfCols; col++) {
+        for (let col = 0; col < numOfCols; col++) 
+        {
             const newNodeIndex = `${row}-${col}`;
             let newNodeClass, newNode;
 
-            if (row === gridBoard.startRow && col === gridBoard.startCol) {
+            if (row === gridBoard.startRow && col === gridBoard.startCol) 
+            {
                 gridBoard.startIsPlaced = true;
                 newNodeClass = 'start';
             }
 
-            else if (row === gridBoard.finishRow && col === gridBoard.finishCol) {
+            else if (row === gridBoard.finishRow && col === gridBoard.finishCol) 
+            {
                 gridBoard.finishIsPlaced = true;
                 newNodeClass = 'finish';
             }
 
-            else {
+            else 
                 newNodeClass = 'unvisited';
-            }
 
             newNode = new Node(newNodeIndex, row, col, newNodeClass);
             newGridArr.push(newNode);

@@ -1,28 +1,31 @@
 'use strict';
 
-export default function greedyBFS(grid, startNode, finishNode, eightDirections, cornerCutting) {
+export default function greedyBestFirstSearch(grid, startNode, finishNode, eightDirections, cornerCutting) 
+{
     const visitedNodes = [];
     const nodesToCheck = [];
     startNode.heuristicDistance = getHeuristicDistance(startNode, finishNode);
     nodesToCheck.push(startNode);
 
-    while (nodesToCheck.length > 0) {
+    while (nodesToCheck.length > 0) 
+    {
         sortNodesByDistance(nodesToCheck);
         const closestNode = nodesToCheck.shift();
         
-        if (closestNode.isWall === true) {
+        if (closestNode.isWall === true) 
             continue;
-        }
 
         closestNode.isVisited = true;
         visitedNodes.push(closestNode);
 
-        if (closestNode === finishNode) {
+        if (closestNode === finishNode) 
+        {
             let currentNode = finishNode;
             const path = [];
 
             /* Backtrack the path from finish node to start node */
-            while (currentNode !== null) {
+            while (currentNode !== null) 
+            {
                 path.unshift(currentNode);
                 currentNode = currentNode.prevNode;
             }
@@ -42,16 +45,18 @@ export default function greedyBFS(grid, startNode, finishNode, eightDirections, 
 
 /* The node with the estimated shortest path to the finish node will be at
     the first place of this array */
-function sortNodesByDistance(nodesToCheck) {
+function sortNodesByDistance(nodesToCheck) 
+{
     nodesToCheck.sort((firstNode, secondNode) =>
         firstNode.heuristicDistance - secondNode.heuristicDistance);
 }
 
-function updateUnvisitedNeighbors(grid, node, finishNode, nodesToCheck, 
-    eightDirections, cornerCutting) {
+function updateUnvisitedNeighbors(grid, node, finishNode, nodesToCheck, eightDirections, cornerCutting) 
+{
     const neighbors = getUnvisitedNeighbors(grid, node, eightDirections, cornerCutting);
 
-    for (const neighbor of neighbors) {
+    for (const neighbor of neighbors) 
+    {
         neighbor.isVisited = true;
         neighbor.heuristicDistance = neighbor.weight + getHeuristicDistance(neighbor, finishNode);
         neighbor.prevNode = node;
@@ -59,65 +64,69 @@ function updateUnvisitedNeighbors(grid, node, finishNode, nodesToCheck,
     }
 }
 
-function getUnvisitedNeighbors(grid, node, eightDirections, cornerCutting) {
+function getUnvisitedNeighbors(grid, node, eightDirections, cornerCutting) 
+{
     const neighbors = [];
     const row = node.row;
     const col = node.column;
     let up = false, down = false, left = false, right = false;
 
-    if (row > 0) {
+    if (row > 0) 
+    {
         neighbors.push(grid.nodesMatrix[row - 1][col]);
         up = true;
     }
 
-    if (row < (grid.rows - 1)) {
+    if (row < (grid.rows - 1)) 
+    {
         neighbors.push(grid.nodesMatrix[row + 1][col]);
         down = true;
     }
 
-    if (col > 0) {
+    if (col > 0)
+    {
         neighbors.push(grid.nodesMatrix[row][col - 1]);
         left = true;
     }
 
-    if (col < (grid.columns - 1)) {
+    if (col < (grid.columns - 1)) 
+    {
         neighbors.push(grid.nodesMatrix[row][col + 1]);
         right = true;
     }
 
-    if (eightDirections === true) {
+    if (eightDirections === true) 
+    {
         if (up === true && left === true &&
-            checkCornerCutting(grid, cornerCutting, row, col, -1, -1) === true) {
-                neighbors.push(grid.nodesMatrix[row - 1][col - 1]);
-        }
+            checkCornerCutting(grid, cornerCutting, row, col, -1, -1) === true) 
+            neighbors.push(grid.nodesMatrix[row - 1][col - 1]);
 
         if (up === true && right === true &&
-            checkCornerCutting(grid, cornerCutting, row, col, -1, 1) === true) {
-                neighbors.push(grid.nodesMatrix[row - 1][col + 1]);
-        }
+            checkCornerCutting(grid, cornerCutting, row, col, -1, 1) === true)
+            neighbors.push(grid.nodesMatrix[row - 1][col + 1]);
 
         if (down === true && left === true &&
-            checkCornerCutting(grid, cornerCutting, row, col, 1, -1) === true) {
-                neighbors.push(grid.nodesMatrix[row + 1][col - 1]);
-        }
+            checkCornerCutting(grid, cornerCutting, row, col, 1, -1) === true) 
+            neighbors.push(grid.nodesMatrix[row + 1][col - 1]);
 
         if (down === true && right === true &&
-            checkCornerCutting(grid, cornerCutting, row, col, 1, 1) === true) {
-                neighbors.push(grid.nodesMatrix[row + 1][col + 1]);
-        }
+            checkCornerCutting(grid, cornerCutting, row, col, 1, 1) === true)
+            neighbors.push(grid.nodesMatrix[row + 1][col + 1]);
     }
 
     /* Only retun the neighbors that haven't been visited yet */
     return neighbors.filter(checkUnvisited);
 }
 
-function checkUnvisited(neighbor) {
+function checkUnvisited(neighbor) 
+{
     return neighbor.isVisited === false;
 }
 
 /* Octile distance is used to check if moving diagonally has a smaller cost
     than moving in only four directions */
-function getHeuristicDistance(node, finishNode) {
+function getHeuristicDistance(node, finishNode) 
+{
     const rowChange = Math.abs(node.row - finishNode.row);
     const colChange = Math.abs(node.column - finishNode.column);
     
@@ -126,19 +135,17 @@ function getHeuristicDistance(node, finishNode) {
 
 /* Prohibit diagonal movement in that direction if there's a wall directly next to it
     vertically and horizontally and corner cutting is disabled */
-function checkCornerCutting(grid, cornerCutting, row, col, rowChange, colChange) {
-    if (cornerCutting === true) {
+function checkCornerCutting(grid, cornerCutting, row, col, rowChange, colChange) 
+{
+    if (cornerCutting === true) 
         return true;
-    }
 
     else {
         if (grid.nodesMatrix[row + rowChange][col].isWall === true &&
-            grid.nodesMatrix[row][col + colChange].isWall === true) {
-                return false;
-        }
+            grid.nodesMatrix[row][col + colChange].isWall === true) 
+            return false;
 
-        else {
+        else 
             return true;
-        }
     }
 }
