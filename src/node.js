@@ -18,8 +18,6 @@ export default class Node
         this.prevNode = null;
         /* Used for bidirectional algorithms */
         this.prevNodeFromFinish = null;
-        /* Used for Jump Point Search */
-        this.direction = null;
         this.isJumpPoint = false;
     }
 }

@@ -1,6 +1,6 @@
 'use strict';
 
-export {eightDirections, cornerCutting};
+export {eightDirections, cornerCutting, unweightedAlgorithm};
 
 import Board from './board.js';
 import {adjustGridDimensions, createGrid} from './grid.js';
@@ -14,7 +14,7 @@ import {handleLightWeightSlider, handleNormalWeightSlider, handleHeavyWeightSlid
 import startAlgorithmAnimation from './animateAlgorithms.js';
 import {mouseEvent, handleMouseDownAndMove} from './mouseEvents.js';
 
-let eightDirections = false, cornerCutting = false;
+let eightDirections = false, cornerCutting = false, unweightedAlgorithm = false;
 
 document.addEventListener('DOMContentLoaded', function() 
 {
@@ -199,41 +199,49 @@ document.addEventListener('DOMContentLoaded', function()
                 {
                     case 'dijkstra':
                         animateButtonText += 'Dijkstra';
+                        unweightedAlgorithm = false;
                         resetToggleButtons();
                         disableToggleButtons();
                         break;
                     case 'aStar':
                         animateButtonText += 'A*';
+                        unweightedAlgorithm = false;
                         resetToggleButtons();
                         enableEightDirections();
                         break;
                     case 'greedyBFS':
                         animateButtonText += 'Greedy';
+                        unweightedAlgorithm = false;
                         resetToggleButtons();
                         enableEightDirections();
                         break;
                     case 'breadthFirstSearch':
                         animateButtonText += 'BFS';
+                        unweightedAlgorithm = true;
                         resetToggleButtons();
                         disableToggleButtons();
                         break;
                     case 'bidirectionalDijkstra':
                         animateButtonText += 'Bi. Dijkstra';
+                        unweightedAlgorithm = false;
                         resetToggleButtons();
                         disableToggleButtons();
                         break;
                     case 'bidirectionalAStar':
                         animateButtonText += 'Bi. A*';
+                        unweightedAlgorithm = false;
                         resetToggleButtons();
                         enableEightDirections();
                         break;
                     case 'depthFirstSearch':
                         animateButtonText += 'DFS';
+                        unweightedAlgorithm = true;
                         resetToggleButtons();
                         disableToggleButtons();
                         break;
                     case 'jumpPointSearch':
                         animateButtonText += 'JPS';
+                        unweightedAlgorithm = true;
                         resetToggleButtons();
                         /* JPS only works with eight directional movement */
                         setAndDisableEightDirections();

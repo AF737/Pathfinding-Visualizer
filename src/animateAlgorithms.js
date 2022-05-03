@@ -4,7 +4,7 @@ import {enableButtons, enableEightDirections, enableCornerCutting}
         from './helperFunctions.js';
 import dijkstra from './algorithms/dijkstra.js';
 import aStar from './algorithms/aStar.js';
-import greedyBFS from './algorithms/greedyBestFirstSearch';
+import greedyBFS from './algorithms/greedyBestFirstSearch.js';
 import breadthFirstSearch from './algorithms/breadthFirstSearch.js';
 import bidirectionalDijkstra from './algorithms/bidirectionalDijkstra.js';
 import bidirectionalAStar from './algorithms/bidirectionalAStar.js';

@@ -98,7 +98,7 @@ function jump(grid, row, col, rowChange, colChange, finishNode)
         return null;
 
     if (grid.nodesMatrix[row][col] === finishNode)
-        return [row, col, rowChange, colChange];
+        return [row, col];
 
     const nextRow = row + rowChange;
     const nextCol = col + colChange;
@@ -119,22 +119,22 @@ function jump(grid, row, col, rowChange, colChange, finishNode)
             jump point, because that's the only way to access the empty node */
         if (grid.nodesMatrix[row - rowChange][col + colChange].isWall === false &&
             grid.nodesMatrix[row - rowChange][col].isWall === true)
-            return [row, col, -rowChange, colChange];
+            return [row, col];
 
         /* Check if there's a wall directly left (when moving right) or right
             (when moving left) the current node, but not above (when moving up)
             or below (when moving down) of the wall */
         if (grid.nodesMatrix[row + rowChange][col - colChange].isWall === false &&
             grid.nodesMatrix[row][col - colChange].isWall === true)
-            return [row, col, rowChange, -colChange];
+            return [row, col];
 
         if (grid.nodesMatrix[row][col + colChange].isWall === true)
 
         if (jump(grid, row, nextCol, 0, colChange, finishNode) !== null)
-            return [row, col, 0, colChange];
+            return [row, col];
 
         if (jump(grid, nextRow, col, rowChange, 0, finishNode) !== null)
-            return [row, col, rowChange, 0];
+            return [row, col];
     }
 
     else 
@@ -148,7 +148,7 @@ function jump(grid, row, col, rowChange, colChange, finishNode)
             /* Check for forced neighbors above the node */
             if (grid.nodesMatrix[row + 1][col].isWall === true &&
                 grid.nodesMatrix[row + 1][nextCol].isWall === false)
-                return [row, col, rowChange, colChange];
+                return [row, col];
 
             if (row - 1 < 0)
                 return null;
@@ -156,7 +156,7 @@ function jump(grid, row, col, rowChange, colChange, finishNode)
             /* Check for forced neighbors below the node */
             if (grid.nodesMatrix[row - 1][col].isWall === true &&
                 grid.nodesMatrix[row - 1][nextCol].isWall === false)
-                return [row, col, rowChange, colChange];
+                return [row, col];
         }
 
         /* Moving vertically */
@@ -168,7 +168,7 @@ function jump(grid, row, col, rowChange, colChange, finishNode)
             /* Check for forced neighbors right of the node */
             if (grid.nodesMatrix[row][col + 1].isWall === true &&
                 grid.nodesMatrix[nextRow][col + 1].isWall === false)
-                return [row, col, rowChange, colChange];
+                return [row, col];
 
             if (col - 1 < 0)
                 return null;
@@ -176,7 +176,7 @@ function jump(grid, row, col, rowChange, colChange, finishNode)
             /* Check for forced neighbors left of the node */
             if (grid.nodesMatrix[row][col - 1].isWall === true &&
                 grid.nodesMatrix[nextRow][col - 1].isWall === false)
-                return [row, col, rowChange, colChange];
+                return [row, col];
         }
     }
 
@@ -284,6 +284,8 @@ function checkCornerCutting(grid, row, col, rowChange, colChange)
         return false;
 }
 
+/* Octile distance is used to check if moving diagonally has a smaller cost
+    than moving in only four directions */
 function getDistance(firstNode, secondNode) 
 {
     const rowChange = Math.abs(firstNode.row - secondNode.row);

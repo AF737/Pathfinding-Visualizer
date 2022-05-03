@@ -2,6 +2,7 @@
 
 export {mouseEvent, handleMouseDownAndMove};
 
+import {unweightedAlgorithm} from './index.js';
 import {infoBoxVisible} from './infoBox.js';
 import {changeWallStatus} from './helperFunctions.js';
 import {NODE_WEIGHT_NONE, nodeWeightLight, nodeWeightNormal, nodeWeightHeavy, 
@@ -162,6 +163,9 @@ function handleMouseDownAndMove(ev, mouseEv, gridBoard)
         while left-clicking */
     else if (gridBoard.pressedKey === Key.lightWeight) 
     {
+        if (unweightedAlgorithm === true)
+            return;
+
         if (ev.target.className == Node.lightWeight) 
         {
             ev.target.className = Node.unvisited;
@@ -177,6 +181,9 @@ function handleMouseDownAndMove(ev, mouseEv, gridBoard)
 
     else if (gridBoard.pressedKey === Key.normalWeight) 
     {
+        if (unweightedAlgorithm === true)
+            return;
+
         if (ev.target.className == Node.normalWeight) 
         {
             ev.target.className = Node.unvisited;
@@ -192,6 +199,9 @@ function handleMouseDownAndMove(ev, mouseEv, gridBoard)
 
     else if (gridBoard.pressedKey === Key.heavyWeight) 
     {
+        if (unweightedAlgorithm === true)
+            return;
+
         if (ev.target.className == Node.heavyWeight) 
         {
             ev.target.className = Node.unvisited;
