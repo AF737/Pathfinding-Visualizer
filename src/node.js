@@ -1,7 +1,9 @@
 'use strict';
 
-export default class Node {
-    constructor(id, row, col, currClass) {
+export default class Node 
+{
+    constructor(id, row, col, currClass) 
+    {
         this.id = id;
         this.class = currClass;
         this.row = row;
@@ -16,8 +18,6 @@ export default class Node {
         this.prevNode = null;
         /* Used for bidirectional algorithms */
         this.prevNodeFromFinish = null;
-        /* Used for Jump Point Search */
-        this.direction = null;
         this.isJumpPoint = false;
     }
 }

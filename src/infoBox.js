@@ -15,50 +15,52 @@ const LAST_INFOBOX_PAGE = 7;
 let infoBoxPage = 0;
 let infoBoxVisible = true;
 
-function openInfoBox() {
+function openInfoBox() 
+{
     disableButtons();
 
     infoBoxVisible = true;
     infoBox.style.display = 'inline';
 }
 
-function closeInfoBox() {
+function closeInfoBox() 
+{
     const overlays = document.getElementsByClassName('overlay');
     
     /* Remove the white overlay of the background */
-    for (const overlay of overlays) {
+    for (const overlay of overlays) 
         overlay.style.opacity = '1';
-    }
 
     /* In the mobile version if the user closes the info box while the 
         menu's open then don't enable the algorithm dropdown menu and 
         animate algorithm button in the upper bar */
     const menuStyles = document.getElementsByClassName('menuStyle');
 
-    for (const menuStyle of menuStyles) {
+    for (const menuStyle of menuStyles) 
+    {
         if (menuStyle.style.display === 'flex') {
             enableButtonsMobile();
         }
 
-        else {
+        else 
             enableButtons();
-        }
     }
 
     infoBoxVisible = false;
     infoBox.style.display = 'none';
 }
 
-function updateCurrPage(currPage) {
+function updateCurrPage(currPage) 
+{
     currInfoBoxPage.innerHTML = `${currPage + 1}/${LAST_INFOBOX_PAGE + 1}`;
 }
 
-function handlePrevInfoButton() {
+function handlePrevInfoButton() 
+{
     infoBoxPage--;
 
-    if (infoBoxPage === 0) {
+    if (infoBoxPage === 0) 
         prevInfoBoxButton.disabled = true;
-    }
 
     updateCurrPage(infoBoxPage);
 
@@ -68,35 +70,39 @@ function handlePrevInfoButton() {
     displayInfoBoxText(infoBoxPage);
 }
 
-function handleNextInfoButton() {
-    if (infoBoxPage === LAST_INFOBOX_PAGE - 1) {
+function handleNextInfoButton() 
+{
+    if (infoBoxPage === LAST_INFOBOX_PAGE - 1) 
+    {
         nextInfoBoxButton.innerHTML = 'Finish';
         nextInfoBoxPage();
     }
 
-    else if (infoBoxPage === LAST_INFOBOX_PAGE) {
+    else if (infoBoxPage === LAST_INFOBOX_PAGE) 
         closeInfoBox();
-    }
 
-    else {
+    else 
+    {
         nextInfoBoxButton.innerHTML = 'Next';
         nextInfoBoxPage();
     }
 }
 
-function nextInfoBoxPage() {
+function nextInfoBoxPage() 
+{
     infoBoxPage++;
     updateCurrPage(infoBoxPage);
 
-    if (infoBoxPage > 0) {
+    if (infoBoxPage > 0) 
         prevInfoBoxButton.disabled = false;
-    }
 
     displayInfoBoxText(infoBoxPage);
 }
 
-function displayInfoBoxText(currentPage) {
-    switch (currentPage) {
+function displayInfoBoxText(currentPage) 
+{
+    switch (currentPage) 
+    {
         case 0:
             infoBoxText.innerHTML = `<h2 class="h2InfoBox">Welcome to my Pathfinding
             Visualizer</h2>

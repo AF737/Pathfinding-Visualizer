@@ -1,6 +1,7 @@
 @charset "utf-8";
 
-:root {
+:root 
+{
     --main-background-color: #1db82a;
     --button-background-color: #79e082;
     --main-font-color: white;
@@ -17,7 +18,8 @@
 }
 
 /* These settings apply to all elements */
-* {
+* 
+{
 	/* Includes padding and border size in an element's total width and height */
     box-sizing: border-box;
     margin: 0;
@@ -25,11 +27,13 @@
     font-family: "Roboto", sans-serif;
 }
 
-div.overlay {
+div.overlay 
+{
     opacity: 0.3;
 }
 
-div.menuBar {
+div.menuBar 
+{
     width: 100vw;
     height: 100px;
     background-color: var(--main-background-color);
@@ -37,7 +41,8 @@ div.menuBar {
     justify-content: center;
 }
 
-div.menuStyle {
+div.menuStyle 
+{
     width: 75vw;
     background-color: inherit;
     display: flex;
@@ -46,7 +51,8 @@ div.menuStyle {
     z-index: 1;
 }
 
-div.dropDownWrapper {
+div.dropDownWrapper 
+{
     display: inline-block;
     /* Top and bottom margin of 25px are necessary so that the wrapper has the same
         size as the button so that the hover pseudo class only triggers if the cursor
@@ -57,7 +63,8 @@ div.dropDownWrapper {
     z-index: 1;
 }
 
-button.dropDownButton {
+button.dropDownButton 
+{
     width: inherit;
     height: 50px;
     background-color: var(--button-background-color);
@@ -69,11 +76,13 @@ button.dropDownButton {
     cursor: pointer;
 }
 
-button.dropDownButton:disabled {
+button.dropDownButton:disabled 
+{
     background-color: red;
 }
 
-div.dropDownMenu {
+div.dropDownMenu 
+{
     display: none;
     width: inherit;
     background-color: var(--main-background-color);
@@ -81,7 +90,8 @@ div.dropDownMenu {
     border-top: none;
 }
 
-div.radioButtonWrapper {
+div.radioButtonWrapper 
+{
     width: inherit;
     /* Enable inline-flex in Safari */
     -webkit-display: inline-flex;
@@ -91,27 +101,32 @@ div.radioButtonWrapper {
     padding: 0.5vh 0.5vw;
 }
 
-div.radioButtonWrapper:hover {
+div.radioButtonWrapper:hover 
+{
     background-color: #3b423c;
 }
 
-div.radioButtonWrapper input {
+div.radioButtonWrapper input 
+{
     width: 0;
     visibility: hidden;
 }
 
-div.radioButtonWrapper input:checked + label {
+div.radioButtonWrapper input:checked + label 
+{
     font-weight: bold;
 }
 
-div.radioButtonWrapper label {
+div.radioButtonWrapper label 
+{
     width: inherit;
     color: var(--main-font-color);
     font-size: 1.2rem;
     cursor: pointer;
 }
 
-div.weightWrapper {
+div.weightWrapper 
+{
     width: 15vw;
     height: 5vh;
     background-color: inherit;
@@ -119,7 +134,8 @@ div.weightWrapper {
     display: inline-flex;
 }
 
-div.nodeColorSquare {
+div.nodeColorSquare 
+{
     width: 2vw;
     height: 4vh;
     content: "";
@@ -128,27 +144,33 @@ div.nodeColorSquare {
     margin-left: 0.5vw;
 }
 
-input.weightSlider {
+input.weightSlider 
+{
     width: 8vw;
 }
 
-div#lightWeightSquare {
+div#lightWeightSquare 
+{
     background-color: var(--light-weight-node-color);
 }
 
-div#normalWeightSquare {
+div#normalWeightSquare
+{
     background-color: var(--normal-weight-node-color);
 }
 
-div#heavyWeightSquare {
+div#heavyWeightSquare 
+{
     background-color: var(--heavy-weight-node-color);
 }
 
-input.weightSlider {
+input.weightSlider
+{
     margin-left: 1.5vw;
 }
 
-div.weightWrapper label {
+div.weightWrapper label 
+{
     width: 3vw;
     height: inherit;
     color: var(--main-font-color);
@@ -157,7 +179,8 @@ div.weightWrapper label {
     padding-top: 1.5vh;
 }
 
-label.switch {
+label.switch 
+{
     width: 10vw;
     height: 50px;
     display: inline-block;
@@ -173,42 +196,50 @@ label.switch {
 }
 
 /* Hide default checkbox */
-label.switch input {
+label.switch input 
+{
     display: none;
 }
 
-span#directionsText {
+span#directionsText 
+{
     cursor: pointer;
     /* Centers the text of the switch vertically */
     position: relative;
     top: 2px;
 }
 
-span#directionsText:after {
+span#directionsText:after 
+{
     content: "Four Directions";
     font-size: 1.2rem;
 }
 
-label.switch input:checked + span#directionsText:after {
+label.switch input:checked + span#directionsText:after 
+{
     content: "Eight Directions";
 }
 
-span#cornerCuttingText {
+span#cornerCuttingText
+{
     cursor: pointer;
     position: relative;
     top: 2px;
 }
 
-span#cornerCuttingText:after {
+span#cornerCuttingText:after 
+{
     content: "No Corner Cutting";
     font-size: 1.2rem;
 }
 
-label.switch input:checked + span#cornerCuttingText:after {
+label.switch input:checked + span#cornerCuttingText:after 
+{
     content: "Corner Cutting";
 }
 
-button.menuButton {
+button.menuButton 
+{
     width: 10vw;
     height: 50px;
     margin: 25px 0.625vw;
@@ -221,11 +252,13 @@ button.menuButton {
     cursor: pointer;
 }
 
-button.menuButton:disabled {
+button.menuButton:disabled 
+{
     background-color: red;
 }
 
-div#mobileMenuButton {
+div#mobileMenuButton 
+{
     width: 33px;
     height: 33px;
     top: 8.5px;
@@ -234,7 +267,8 @@ div#mobileMenuButton {
     display: none;
 }
 
-div#mobileMenuButton .bar {
+div#mobileMenuButton .bar 
+{
     width: 25px;
     height: 3px;
     margin: 5px auto;
@@ -242,7 +276,8 @@ div#mobileMenuButton .bar {
     display: block;
 }
 
-div.descriptionBar {
+div.descriptionBar 
+{
     width: 100vw;
     height: 50px;
     display: flex;
@@ -253,7 +288,8 @@ div.descriptionBar {
     border-bottom-color: black;
 }
 
-div.nodeExplanationWrapper {
+div.nodeExplanationWrapper 
+{
     height: inherit;
     background-color: inherit;
     -webkit-display: inline-flex;
@@ -263,55 +299,67 @@ div.nodeExplanationWrapper {
     margin-left: 1vw;
 }
 
-div.nodeExplanationWrapper label {
+div.nodeExplanationWrapper label 
+{
     margin-left: 0.5vw;
     font-size: 1.2rem;
 }
 
-div.nodeColor {
+div.nodeColor 
+{
     width: 40px;
     height: 40px;
     content: "";
     margin-left: 0.5vw;
 }
 
-div#startNode {
+div#startNode 
+{
     background-color: var(--start-node-color);
 }
 
-div#finishNode {
+div#finishNode 
+{
     background-color: var(--finish-node-color);
 }
 
-div#visitedNode {
+div#visitedNode 
+{
     background-color: var(--visited-node-color);
 }
 
-div#shortestPathNode {
+div#shortestPathNode 
+{
     background-color: var(--shortest-path-node-color);
 }
 
-div#wallNode {
+div#wallNode 
+{
     background-color: var(--wall-node-color);
 }
 
-div#lightWeightNode {
+div#lightWeightNode 
+{
     background-color: var(--light-weight-node-color);
 }
 
-div#normalWeightNode {
+div#normalWeightNode 
+{
     background-color: var(--normal-weight-node-color);
 }
 
-div#heavyWeightNode {
+div#heavyWeightNode 
+{
     background-color: var(--heavy-weight-node-color);
 }
 
-div#jumpPointNode {
+div#jumpPointNode
+{
     background-color: var(--jump-point-node-color);
 }
 
-div#infoBox {
+div#infoBox 
+{
     width: 50vw;
     height: 70vh;
     border: 5px solid black;
@@ -326,7 +374,8 @@ div#infoBox {
     text-align: center;
 }
 
-div#currInfoBoxPage {
+div#currInfoBoxPage 
+{
     color: black;
     font-size: 1.1rem;
     top: 1vh;
@@ -334,7 +383,8 @@ div#currInfoBoxPage {
     position: fixed;
 }
 
-button.infoBoxButton {
+button.infoBoxButton 
+{
     width: 6vw;
     height: 4vh;
     background-color: var(--main-background-color);
@@ -346,58 +396,69 @@ button.infoBoxButton {
     cursor: pointer;
 }
 
-button.infoBoxButton:disabled {
+button.infoBoxButton:disabled 
+{
     background-color: red;
 }
 
-h2.h2InfoBox {
+h2.h2InfoBox 
+{
     font-size: 3rem;
     margin-top: 1vh;
 }
 
-h3.h3InfoBox {
+h3.h3InfoBox 
+{
     font-size: 2rem;
     margin-top: 1vh;
 }
 
-p.pInfoBox {
+p.pInfoBox 
+{
     font-size: 1.5rem;
     margin: 3vh 2vw 0 2vw;
 }
 
-button#skipInfoBoxButton {
+button#skipInfoBoxButton 
+{
     left: 1vw;
     bottom: 1vh;
 }
 
-button#prevInfoBoxButton {
+button#prevInfoBoxButton 
+{
     right: 8vw;
     bottom: 1vh;
 }
 
-button#nextInfoBoxButton {
+button#nextInfoBoxButton 
+{
     right: 1vw;
     bottom: 1vh;
 }
 
-div#board {
+div#board 
+{
     display: grid;
     grid-gap: 0;
 }
 
-div.unvisited {
+div.unvisited 
+{
     cursor: pointer;
     background-color: white;
     border: 1px solid black;
 }
 
-div.start {
+div.start 
+{
     cursor: pointer;
     background-color: var(--start-node-color);
     border: 1px solid black;
 }
 
-div.startVisited {
+div.startVisited 
+{
     cursor: pointer;
     border: 1px solid black;
     /* Create a blue border inside the square so that the red background color still
@@ -412,37 +473,44 @@ div.startVisited {
     animation-timing-function: ease-out;
 }
 
-@keyframes startVisitedAnimation {
-    0% {
+@keyframes startVisitedAnimation 
+{
+    0% 
+    {
         background-color: white;
         transform: scale(0.3);
         border-radius: 100%;
     }
 
-    25% {
+    25% 
+    {
         background-color: #c94b4b;
         outline: 1px solid var(--visited-node-color);
     }
 
-    50% {
+    50% 
+    {
         background-color: #eb4949;
         transform: scale(1.20);
         outline: 2px solid var(--visited-node-color);
     }
 
-    75% {
+    75% 
+    {
         background-color: #d43d3d;
         outline: 3px solid var(--visited-node-color);
     }
 
-    100% {
+    100% 
+    {
         background-color: var(--start-node-color);
         transform: scale(1.0);
         outline: 4px solid var(--visited-node-color);
     }
 }
 
-div.startShortestPath {
+div.startShortestPath 
+{
     cursor: pointer;
     border: 1px solid black;
     outline-offset: -5px;
@@ -455,43 +523,51 @@ div.startShortestPath {
     animation-timing-function: ease-out;
 }
 
-@keyframes startShortestPathAnimation {
-    0% {
+@keyframes startShortestPathAnimation 
+{
+    0% 
+    {
         background-color: white;
         transform: scale(0.3);
         border-radius: 100%;
     }
 
-    25% {
+    25% 
+    {
         background-color: #c94b4b;
         outline: 1px solid var(--shortest-path-node-color);
     }
 
-    50% {
+    50% 
+    {
         background-color: #eb4949;
         transform: scale(1.20);
         outline: 2px solid var(--shortest-path-node-color);
     }
 
-    75% {
+    75% 
+    {
         background-color: #d43d3d;
         outline: 3px solid var(--shortest-path-node-color);
     }
 
-    100% {
+    100% 
+    {
         background-color: var(--start-node-color);
         transform: scale(1.0);
         outline: 4px solid var(--shortest-path-node-color);
     }
 }
 
-div.finish {
+div.finish 
+{
     cursor: pointer;
     background-color: var(--finish-node-color);
     border: 1px solid black;
 }
 
-div.finishVisited {
+div.finishVisited 
+{
     cursor: pointer;
     border: 1px solid black;
     outline-offset: -5px;
@@ -504,37 +580,44 @@ div.finishVisited {
     animation-timing-function: ease-out;
 }
 
-@keyframes finishVisitedAnimation {
-    0% {
+@keyframes finishVisitedAnimation 
+{
+    0% 
+    {
         background-color: white;
         transform: scale(0.3);
         border-radius: 100%;
     }
 
-    25% {
+    25% 
+    {
         background-color: #87ed8e;
         outline: 1px solid var(--visited-node-color);
     }
 
-    50% {
+    50% 
+    {
         background-color: #64f56e;
         transform: scale(1.20);
         outline: 2px solid var(--visited-node-color);
     }
 
-    75% {
+    75% 
+    {
         background-color: #2ae836;
         outline: 3px solid var(--visited-node-color);
     }
 
-    100% {
+    100% 
+    {
         background-color: var(--finish-node-color);
         transform: scale(1.0);
         outline: 4px solid var(--visited-node-color);
     }
 }
 
-div.finishShortestPath {
+div.finishShortestPath 
+{
     cursor: pointer;
     border: 1px solid black;
     outline-offset: -5px;
@@ -547,37 +630,44 @@ div.finishShortestPath {
     animation-timing-function: ease-out;
 }
 
-@keyframes finishShortestPathAnimation {
-    0% {
+@keyframes finishShortestPathAnimation 
+{
+    0% 
+    {
         background-color: white;
         transform: scale(0.3);
         border-radius: 100%;
     }
 
-    25% {
+    25% 
+    {
         background-color: #87ed8e;
         outline: 1px solid var(--shortest-path-node-color);
     }
 
-    50% {
+    50% 
+    {
         background-color: #64f56e;
         transform: scale(1.20);
         outline: 2px solid var(--shortest-path-node-color);
     }
 
-    75% {
+    75% 
+    {
         background-color: #2ae836;
         outline: 3px solid var(--shortest-path-node-color);
     }
 
-    100% {
+    100% 
+    {
         background-color: var(--finish-node-color);
         transform: scale(1.0);
         outline: 4px solid var(--shortest-path-node-color);
     }
 }
 
-div.visited {
+div.visited 
+{
     cursor: pointer;
     border: 1px solid black;
     animation-name: visitedAnimation;
@@ -589,33 +679,40 @@ div.visited {
     animation-timing-function: ease-out;
 }
 
-@keyframes visitedAnimation {
-    0% {
+@keyframes visitedAnimation 
+{
+    0% 
+    {
         background-color: white;
         transform: scale(0.3);
         border-radius: 100%;
     }
 
-    25% {
+    25% 
+    {
         background-color: turquoise;
     }
 
-    50% {
+    50% 
+    {
         background-color: darkcyan;
         transform: scale(1.20);
     }
 
-    75% {
+    75% 
+    {
         background-color: royalblue;
     }
 
-    100% {
+    100% 
+    {
         background-color: var(--visited-node-color);
         transform: scale(1.0);
     }
 }
 
-div.shortestPath {
+div.shortestPath 
+{
     cursor: pointer;
     border: 1px solid black;
     animation-name: shortestPathAnimation;
@@ -627,57 +724,68 @@ div.shortestPath {
     animation-timing-function: ease-out;
 }
 
-@keyframes shortestPathAnimation {
-    0% {
+@keyframes shortestPathAnimation 
+{
+    0% 
+    {
         background-color: white;
         transform: scale(0.3);
         border-radius: 100%;
     }
 
-    25% {
+    25% 
+    {
         background-color: #f73bde;
     }
 
-    50% {
+    50% 
+    {
         background-color: #ce1cb6;
         transform: scale(1.20);
     }
 
-    75% {
+    75% 
+    {
         background-color: #dd4089;
     }
 
-    100% {
+    100% 
+    {
         background-color: var(--shortest-path-node-color);
         transform: scale(1.0);
     }
 }
 
-div.wall {
+div.wall 
+{
     cursor: pointer;
     background-color: var(--wall-node-color);
     border: 1px solid black;
 }
 
-div.lightWeight {
+div.lightWeight 
+{
     cursor: pointer;
     background-color: var(--light-weight-node-color);
     border: 1px solid black;
 }
 
-div.normalWeight {
+div.normalWeight 
+{
     cursor: pointer;
     background-color: var(--normal-weight-node-color);
     border: 1px solid black;
 }
 
-div.heavyWeight {
+div.heavyWeight 
+{
     cursor: pointer;
     background-color: var(--heavy-weight-node-color);
     border: 1px solid black;
 }
 
-div.jumpPoint {
+div.jumpPoint 
+{
     cursor: pointer;
     border: 1px solid black;
     animation-name: jumpPointAnimation;
@@ -689,125 +797,156 @@ div.jumpPoint {
     animation-timing-function: ease-out;
 }
 
-@keyframes jumpPointAnimation {
-    0% {
+@keyframes jumpPointAnimation 
+{
+    0% 
+    {
         background-color: white;
         transform: scale(0.3);
         border-radius: 100%;
     }
 
-    25% {
+    25%
+    {
         background-color: #615f5f;
     }
 
-    50% {
+    50% 
+    {
         background-color: #424242;
         transform: scale(1.20);
     }
 
-    75% {
+    75% 
+    {
         background-color: #242424;
     }
 
-    100% {
+    100% 
+    {
         background-color: var(--jump-point-node-color);
         transform: scale(1.0);
     }
 }
 
-@media screen and (max-width: 1900px) {
-    button.dropDownButton {
+@media screen and (max-width: 1900px) 
+{
+    button.dropDownButton 
+    {
         font-size: 1.0rem;
     }
 
-    div.radioButtonWrapper label {
+    div.radioButtonWrapper label 
+    {
         font-size: 1.0rem;
     }
 
-    button.menuButton {
+    button.menuButton 
+    {
         font-size: 1.0rem;
     }
 
-    label.switch {
+    label.switch 
+    {
         font-size: 1.0rem;
     }
 
-    span#directionsText {
+    span#directionsText 
+    {
         top: 5px;
     }
 
-    span#directionsText:after {
+    span#directionsText:after 
+    {
         font-size: 1.0rem;
     }
 
-    span#cornerCuttingText {
+    span#cornerCuttingText 
+    {
         top: 5px;
     }
 
-    span#cornerCuttingText:after {
+    span#cornerCuttingText:after 
+    {
         font-size: 1.0rem;
     }
 }
 
-@media screen and (max-width: 1300px) {
-    button.dropDownButton {
+@media screen and (max-width: 1300px) 
+{
+    button.dropDownButton 
+    {
         font-size: 0.9rem;
     }
 
-    div.radioButtonWrapper label {
+    div.radioButtonWrapper label 
+    {
         font-size: 0.9rem;
     }
 
-    button.menuButton {
+    button.menuButton 
+    {
         font-size: 0.9rem;
     }
 
-    label.switch {
+    label.switch 
+    {
         font-size: 0.9rem;
     }
 
-    span#directionsText:after {
+    span#directionsText:after 
+    {
         font-size: 0.9rem;
     }
 
-    span#cornerCuttingText:after {
+    span#cornerCuttingText:after 
+    {
         font-size: 0.9rem;
     }
 
-    div.weightWrapper label {
+    div.weightWrapper label 
+    {
         font-size: 0.9rem;
     }
 
-    div.nodeExplanationWrapper label {
+    div.nodeExplanationWrapper label 
+    {
         font-size: 0.9rem;
     }
 
-    div.nodeColor {
+    div.nodeColor 
+    {
         width: 30px;
         height: 30px;
     }
 
-    h2.h2InfoBox {
+    h2.h2InfoBox 
+    {
         font-size: 2.5rem;
     }
     
-    h3.h3InfoBox {
+    h3.h3InfoBox 
+    {
         font-size: 1.5rem;
     }
     
-    p.pInfoBox {
+    p.pInfoBox 
+    {
         font-size: 1.3rem;
     }
 
-    img#cornerCuttingGif {
+    img#cornerCuttingGif 
+    {
         width: 500px;
     }
 }
 
 /* Enable desktop menu again if the user switched from mobile version
     to a higher resolution */
-@media screen and (min-width: 1051px) {
-    div.menuStyle {
+@media screen and (min-width: 1051px) 
+{
+    div.menuStyle 
+    {
         /* This overwrites the html-style attribute of display
             that's set by clicking the mobile menu button and 
             displays the entire menu if the user resizes the screen
@@ -819,15 +958,18 @@ div.jumpPoint {
         position: inline;
     }
 
-    div#weightDropDownWrapper {
+    div#weightDropDownWrapper 
+    {
         display: inline;
     }
 
-    div#mobileMenuButton {
+    div#mobileMenuButton 
+    {
         display: none;
     }
 
-    div#infoBox {
+    div#infoBox 
+    {
         width: 50vw;
         height: 70vh;
         top: 50%;
@@ -835,84 +977,105 @@ div.jumpPoint {
         transform: translate(-50%, -50%);
     }
 
-    button.infoBoxButton {
+    button.infoBoxButton 
+    {
         width: 6vw;
     }
 
-    button#prevInfoBoxButton {
+    button#prevInfoBoxButton 
+    {
         right: 8vw;
     }
 
-    img#movementGif {
+    img#movementGif 
+    {
         display: inline;
     }
 
-    img#cornerCuttingGif {
+    img#cornerCuttingGif 
+    {
         display: inline;
     }
 
-    img#directionsImg {
+    img#directionsImg 
+    {
         display: inline;
     }
 }
 
-@media screen and (min-width: 1051px) and (max-width: 1150px) {
-    button.dropDownButton {
+@media screen and (min-width: 1051px) and (max-width: 1150px) 
+{
+    button.dropDownButton 
+    {
         font-size: 0.8rem;
     }
 
-    div.radioButtonWrapper label {
+    div.radioButtonWrapper label 
+    {
         font-size: 0.8rem;
     }
 
-    button.menuButton {
+    button.menuButton 
+    {
         font-size: 0.8rem;
     }
 
-    label.switch {
+    label.switch 
+    {
         font-size: 0.8rem;
     }
 
-    span#directionsText {
+    span#directionsText 
+    {
         top: 7px;
     }
 
-    span#directionsText:after {
+    span#directionsText:after 
+    {
         font-size: 0.8rem;
     }
 
-    span#cornerCuttingText {
+    span#cornerCuttingText 
+    {
         top: 7px;
     }
 
-    span#cornerCuttingText:after {
+    span#cornerCuttingText:after 
+    {
         font-size: 0.8rem;
     }
 
-    h2.h2InfoBox {
+    h2.h2InfoBox 
+    {
         font-size: 2.0rem;
     }
     
-    h3.h3InfoBox {
+    h3.h3InfoBox 
+    {
         font-size: 1.25rem;
     }
     
-    p.pInfoBox {
+    p.pInfoBox 
+    {
         font-size: 1.1rem;
     }
 
-    img#cornerCuttingGif {
+    img#cornerCuttingGif 
+    {
         width: 400px;
     }
 }
 
 /* Switch to mobile design */
-@media screen and (max-width: 1050px) {
-    div.menuBar {
+@media screen and (max-width: 1050px) 
+{
+    div.menuBar 
+    {
         height: 50px;
     }
 
-    div.menuStyle {
+    div.menuStyle 
+    {
         width: 100vw;
         height: 50vh;
         top: 50px;
@@ -923,28 +1086,33 @@ div.jumpPoint {
         z-index: 1;
     } 
 
-    div#mobileMenuButton {
+    div#mobileMenuButton 
+    {
         display: block;
     }
 
     /* Each button now occupies 1/3 of the screen */
     label.switch,
-    button.menuButton {
+    button.menuButton 
+    {
         width: 30vw;
         margin: 20px 1.66vw;
     }
 
-    div.dropDownWrapper {
+    div.dropDownWrapper 
+    {
         width: 30vw;
         height: 33px;
         margin: 8.5px 20px;
     }
 
-    button.dropDownButton {
+    button.dropDownButton 
+    {
         height: 33px;
     }
 
-    button#animateAlgorithm {
+    button#animateAlgorithm 
+    {
         width: 30vw;
         height: 33px;
         margin: 8.5px 20px;
@@ -952,90 +1120,112 @@ div.jumpPoint {
     
     /* Hide dropdown button because no weights can be placed while in
         mobile mode */
-    div#weightDropDownWrapper {
+    div#weightDropDownWrapper 
+    {
         display: none;
     }
 
-    div.descriptionBar {
+    div.descriptionBar 
+    {
         height: 40px;
     }
 
     /* No weights can be added while on mobile */
-    div#weightsWrapper {
+    div#weightsWrapper 
+    {
         display: none;
     }
 
-    div.nodeColor {
+    div.nodeColor 
+    {
         width: 20px;
         height: 20px;
     }
 
-    div.nodeExplanationWrapper {
+    div.nodeExplanationWrapper 
+    {
         font-size: 1rem;
     }
 
-    div#infoBox {
+    div#infoBox 
+    {
         width: 100vw;
         top: 15%;
         left: 0%;
         transform: translate(0%, -15%);
     }
 
-    h2.h2InfoBox {
+    h2.h2InfoBox 
+    {
         font-size: 1.5rem;
     }
     
-    h3.h3InfoBox {
+    h3.h3InfoBox 
+    {
         font-size: 1.2rem;
     }
     
-    p.pInfoBox {
+    p.pInfoBox 
+    {
         font-size: 0.9rem;
     }
 
-    button.infoBoxButton {
+    button.infoBoxButton 
+    {
         width: 15vw;
     }
 
-    button#prevInfoBoxButton {
+    button#prevInfoBoxButton
+    {
         right: 20vw;
     }
 
-    img#movementGif {
+    img#movementGif 
+    {
         display: none;
     }
 
-    img#cornerCuttingGif {
+    img#cornerCuttingGif 
+    {
         display: none;
     }
 
-    img#directionsImg {
+    img#directionsImg 
+    {
         display: none;
     }
 }
 
-@media screen and (max-height: 800px) {
-    img#movementGif {
+@media screen and (max-height: 800px) 
+{
+    img#movementGif 
+    {
         height: 150px;
     }
 }
 
-@media screen and (max-height: 700px) {
-    img#movementGif {
+@media screen and (max-height: 700px) 
+{
+    img#movementGif 
+    {
         height: 120px;
     }
 
-    img#directionsImg {
+    img#directionsImg 
+    {
         height: 130px;
     }
 }
 
-@media screen and (max-height: 600px) {
-    img#movementGif {
+@media screen and (max-height: 600px) 
+{
+    img#movementGif 
+    {
         height: 100px;
     }
 
-    img#directionsImg {
+    img#directionsImg 
+    {
         height: 100px;
     }
 }

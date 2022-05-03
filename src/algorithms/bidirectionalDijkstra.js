@@ -1,13 +1,16 @@
 'use strict';
 
-const Node = {
+const Node = 
+{
     start: 'start',
     finish: 'finish'
 };
 
+/* Make Node attributes immutable */
 Object.freeze(Node);
 
-export default function bidirectionalDijkstra(grid, startNode, finishNode) {
+export default function bidirectionalDijkstra(grid, startNode, finishNode) 
+{
     const visitedNodesFromStart = [];
     const visitedNodesFromFinish = [];
     startNode.distanceFromStart = 0;
@@ -15,8 +18,8 @@ export default function bidirectionalDijkstra(grid, startNode, finishNode) {
     const unvisitedNodesFromStart = getUnvisitedNodes(grid);
     const unvisitedNodesFromFinish = getUnvisitedNodes(grid);
 
-    while (unvisitedNodesFromStart.length > 0 &&
-            unvisitedNodesFromFinish.length > 0) {
+    while (unvisitedNodesFromStart.length > 0 && unvisitedNodesFromFinish.length > 0) 
+    {
         sortNodesByDistanceFromStart(unvisitedNodesFromStart);
         sortNodesByDistanceFromFinish(unvisitedNodesFromFinish);
         let closestNodeFromStart = unvisitedNodesFromStart.shift();
@@ -24,22 +27,17 @@ export default function bidirectionalDijkstra(grid, startNode, finishNode) {
         
         /* We can't use continue because then we would lose the value of
             closestNodeFromFinish as it's removed from the array */
-        while (closestNodeFromStart.isWall === true
-                && unvisitedNodesFromStart.length > 0) {
+        while (closestNodeFromStart.isWall === true && unvisitedNodesFromStart.length > 0)
             closestNodeFromStart = unvisitedNodesFromStart.shift();
-        }
 
-        while (closestNodeFromFinish.isWall === true
-                && unvisitedNodesFromFinish.length > 0) {
+        while (closestNodeFromFinish.isWall === true && unvisitedNodesFromFinish.length > 0)
             closestNodeFromFinish = unvisitedNodesFromFinish.shift();
-        }
 
         /* If either the start or the finish node is completely surrounded by
             walls then terminate, because no path can be found */
         if (closestNodeFromStart.distanceFromStart === Infinity
-            || closestNodeFromFinish.distanceFromFinish === Infinity) {
-                return [visitedNodesFromStart, visitedNodesFromFinish, null];
-        }
+            || closestNodeFromFinish.distanceFromFinish === Infinity)
+            return [visitedNodesFromStart, visitedNodesFromFinish, null];
 
         closestNodeFromStart.isVisited = true;
         visitedNodesFromStart.push(closestNodeFromStart);
@@ -49,13 +47,15 @@ export default function bidirectionalDijkstra(grid, startNode, finishNode) {
         /* If the current node has already been visited by the other
             dijkstra algorithm then a path can connect start and finish
             node through the current node */
-        if (visitedNodesFromStart.includes(closestNodeFromFinish)) {
+        if (visitedNodesFromStart.includes(closestNodeFromFinish)) 
+        {
             const path = getPath(closestNodeFromFinish);
 
             return [visitedNodesFromStart, visitedNodesFromFinish, path];
         }
 
-        else if (visitedNodesFromFinish.includes(closestNodeFromStart)) {
+        else if (visitedNodesFromFinish.includes(closestNodeFromStart)) 
+        {
             const path = getPath(closestNodeFromStart)
 
             return [visitedNodesFromStart, visitedNodesFromFinish, path];
@@ -66,34 +66,40 @@ export default function bidirectionalDijkstra(grid, startNode, finishNode) {
     }
 }
 
-function getUnvisitedNodes(grid) {
+function getUnvisitedNodes(grid) 
+{
     const unvisitedNodes = [];
 
-    for (let row = 0; row < grid.rows; row++) {
-        for (let col = 0; col < grid.columns; col++) {
+    for (let row = 0; row < grid.rows; row++) 
+    {
+        for (let col = 0; col < grid.columns; col++) 
             unvisitedNodes.push(grid.nodesMatrix[row][col]);
-        }
     }
 
     return unvisitedNodes;
 }
 
-function sortNodesByDistanceFromStart(unvisitedNodesFromStart) {
+function sortNodesByDistanceFromStart(unvisitedNodesFromStart) 
+{
     unvisitedNodesFromStart.sort((firstNode, secondNode) =>
         firstNode.distanceFromStart - secondNode.distanceFromStart);
 }
 
-function sortNodesByDistanceFromFinish(unvisitedNodesFromFinish) {
+function sortNodesByDistanceFromFinish(unvisitedNodesFromFinish) 
+{
     unvisitedNodesFromFinish.sort((firstNode, secondNode) =>
         firstNode.distanceFromFinish - secondNode.distanceFromFinish);
 }
 
 /* initNode is the node that the current dijkstra algorithm originated from */
-function updateUnvisitedNeighbors(grid, node, initNode) {
+function updateUnvisitedNeighbors(grid, node, initNode)
+{
     const neighbors = getUnvisitedNeighbors(grid, node);
 
-    for (const neighbor of neighbors) {
-        if (initNode === Node.start) {
+    for (const neighbor of neighbors) 
+    {
+        if (initNode === Node.start) 
+        {
             neighbor.distanceFromStart = node.distanceFromStart + neighbor.weight +
                 getDistance(node, neighbor);
             neighbor.prevNode = node;
@@ -103,7 +109,8 @@ function updateUnvisitedNeighbors(grid, node, initNode) {
             would overwrite the prevNode parameter and we would therefore lose the
             chain of nodes leading to the other initial node (either the start or 
             finish node would be unreachable) */
-        else if (initNode === Node.finish) {
+        else if (initNode === Node.finish) 
+        {
             neighbor.distanceFromFinish = node.distanceFromFinish + neighbor.weight +
                 getDistance(node, neighbor);
             neighbor.prevNodeFromFinish = node;
@@ -111,49 +118,50 @@ function updateUnvisitedNeighbors(grid, node, initNode) {
     }
 }
 
-function getUnvisitedNeighbors(grid, node) {
+function getUnvisitedNeighbors(grid, node) 
+{
     const neighbors = [];
     const row = node.row;
     const col = node.column;
 
-    if (row > 0) {
+    if (row > 0) 
         neighbors.push(grid.nodesMatrix[row - 1][col]);
-    }
 
-    if (row < (grid.rows - 1)) {
+    if (row < (grid.rows - 1))
         neighbors.push(grid.nodesMatrix[row + 1][col]);
-    }
 
-    if (col > 0) {
+    if (col > 0)
         neighbors.push(grid.nodesMatrix[row][col - 1]);
-    }
 
-    if (col < (grid.columns - 1)) {
+    if (col < (grid.columns - 1))
         neighbors.push(grid.nodesMatrix[row][col + 1]);
-    }
 
     /* Only return unvisited neighbors */
     return neighbors.filter(checkUnvisited);
 }
 
-function checkUnvisited(neighbor) {
+function checkUnvisited(neighbor) 
+{
     return neighbor.isVisited === false;
 }
 
 /* Manhattan distance */
-function getDistance(parentNode, node) {
+function getDistance(parentNode, node) 
+{
     return (Math.abs(parentNode.row - node.row) +
             Math.abs(parentNode.column - node.column));
 }
 
 /* This path doesn't have to be the shortest one */
-function getPath(startingNode) {
+function getPath(startingNode) 
+{
     let currentNode = startingNode;
     const path = [];
 
     /* Backtrack from the node that both algorithms have in common to
         the start node */
-    while (currentNode !== null) {
+    while (currentNode !== null) 
+    {
         path.unshift(currentNode);
         currentNode = currentNode.prevNode;
     }
@@ -164,7 +172,8 @@ function getPath(startingNode) {
 
     /* Now start to backtrack from the node that connects both algorithms
         to the finish node */
-    while (currentNode !== null) {
+    while (currentNode !== null) 
+    {
         path.push(currentNode);
         currentNode = currentNode.prevNodeFromFinish;
     }

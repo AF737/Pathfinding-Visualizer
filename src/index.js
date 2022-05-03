@@ -1,6 +1,6 @@
 'use strict';
 
-export {eightDirections, cornerCutting};
+export {eightDirections, cornerCutting, unweightedAlgorithm};
 
 import Board from './board.js';
 import {adjustGridDimensions, createGrid} from './grid.js';
@@ -14,9 +14,10 @@ import {handleLightWeightSlider, handleNormalWeightSlider, handleHeavyWeightSlid
 import startAlgorithmAnimation from './animateAlgorithms.js';
 import {mouseEvent, handleMouseDownAndMove} from './mouseEvents.js';
 
-let eightDirections = false, cornerCutting = false;
+let eightDirections = false, cornerCutting = false, unweightedAlgorithm = false;
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() 
+{
     const gridBoard = new Board();
     const algorithmDropDownButton = document.getElementById('algorithmDropDownButton');
     const algorithmDropDownMenu = document.getElementById('algorithmDropDownMenu');
@@ -40,63 +41,75 @@ document.addEventListener('DOMContentLoaded', function() {
     const mobileMenuButton = document.getElementById('mobileMenuButton');
     const board = document.getElementById('board');
 
-    (function() {
+    (function() 
+    {
         setupMouseAndTouchInteractions();
         setupAlgorithmRadioButtons();
         adjustGridDimensions();
         createGrid(gridBoard);
     })();
 
-    board.addEventListener('mousedown', function(ev) {
+    board.addEventListener('mousedown', function(ev) 
+    {
         ev.preventDefault();
 
         handleMouseDownAndMove(ev, mouseEvent.down, gridBoard);
     });
 
-    board.addEventListener('mousemove', function(ev) {
+    board.addEventListener('mousemove', function(ev) 
+    {
         ev.preventDefault();
 
         handleMouseDownAndMove(ev, mouseEvent.move, gridBoard);
     });
 
-    board.addEventListener('mouseup', function(ev) {
+    board.addEventListener('mouseup', function(ev) 
+    {
         ev.preventDefault();
 
         gridBoard.mouseIsPressed = false;
     });
 
-    function setupMouseAndTouchInteractions() {
-        ['touchstart', 'click'].forEach(function(userEvent) {
-            algorithmDropDownButton.addEventListener(userEvent, function(ev) {
+    function setupMouseAndTouchInteractions() 
+    {
+        ['touchstart', 'click'].forEach(function(userEvent) 
+        {
+            algorithmDropDownButton.addEventListener(userEvent, function(ev) 
+            {
                 ev.preventDefault();
 
                 /* Display the menu if the button is clicked */
                 if (algorithmDropDownMenu.style.display === '' || 
-                        algorithmDropDownMenu.style.display === 'none') {
+                    algorithmDropDownMenu.style.display === 'none') 
+                {
                     algorithmDropDownMenu.style.display = 'block';
                     algorithmDropDownButton.innerHTML = 'Algorithms&#9650;'
                 }
         
                 /* Hide it if the button is clicked again while it's open */
-                else {
+                else 
+                {
                     algorithmDropDownMenu.style.display = 'none';
                     algorithmDropDownButton.innerHTML = 'Algorithms&#9660;'
                 }
             });
 
-            clearWallsButton.addEventListener(userEvent, function(ev) {
+            clearWallsButton.addEventListener(userEvent, function(ev) 
+            {
                 ev.preventDefault();
 
                 removeWalls(gridBoard);
             });
         
-            clearWeightsButton.addEventListener(userEvent, function(ev) {
+            clearWeightsButton.addEventListener(userEvent, function(ev) 
+            {
                 ev.preventDefault();
 
                 removeWeights(gridBoard);
             });
         
-            resetBoardButton.addEventListener(userEvent, function(ev) {
+            resetBoardButton.addEventListener(userEvent, function(ev) 
+            {
                 ev.preventDefault();
 
                 removeWalls(gridBoard);
@@ -105,36 +118,42 @@ document.addEventListener('DOMContentLoaded', function() {
                 removePreviousAlgorithm(gridBoard);
             });
         
-            skipInfoBoxButton.addEventListener(userEvent, function(ev) {
+            skipInfoBoxButton.addEventListener(userEvent, function(ev) 
+            {
                 ev.preventDefault();
                 
                 closeInfoBox();
             });
         
-            prevInfoBoxButton.addEventListener(userEvent, function(ev) {
+            prevInfoBoxButton.addEventListener(userEvent, function(ev) 
+            {
                 ev.preventDefault();
 
                 handlePrevInfoButton();
             });
         
-            nextInfoButton.addEventListener(userEvent, function(ev) {
+            nextInfoButton.addEventListener(userEvent, function(ev) 
+            {
                 ev.preventDefault();
 
                 handleNextInfoButton();
             });
         
-            openInfoBoxButton.addEventListener(userEvent, function(ev) {
+            openInfoBoxButton.addEventListener(userEvent, function(ev) 
+            {
                 ev.preventDefault();
 
                 openInfoBox();
             });
         
-            animateAlgorithmButton.addEventListener(userEvent, function(ev) {
+            animateAlgorithmButton.addEventListener(userEvent, function(ev) 
+            {
                 ev.preventDefault();
 
                 const selectedAlgorithm = document.querySelector('input[name="algorithmOption"]:checked');
                 /* If no algorithm has been selected */
-                if (selectedAlgorithm === null) {
+                if (selectedAlgorithm === null) 
+                {
                     animateAlgorithmButton.innerHTML = 'Select An Algorithm';
                     /* Get user's attention with a red border around the dropdown menu to select
                         an algorithm */
@@ -142,11 +161,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
         
                 /* Only start the algorithm if both start and finish are placed */
-                else if (gridBoard.startIsPlaced === false || gridBoard.finishIsPlaced === false) {
+                else if (gridBoard.startIsPlaced === false || gridBoard.finishIsPlaced === false) 
                     return;
-                }
         
-                else {
+                else 
+                {
                     /* Hide menus that may overlap with the grid */
                     algorithmDropDownMenu.style.display = 'none';
                     algorithmDropDownButton.innerHTML = 'Animate&#9660;';
@@ -167,51 +186,62 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    function setupAlgorithmRadioButtons() {
+    function setupAlgorithmRadioButtons() 
+    {
         const radioButtons = document.querySelectorAll('input[name="algorithmOption"]');
 
         for (let i = 0; i < radioButtons.length; i++) {
-            radioButtons[i].addEventListener('change', function() {
+            radioButtons[i].addEventListener('change', function() 
+            {
                 let animateButtonText = 'Animate ';
 
-                switch(radioButtons[i].value) {
+                switch(radioButtons[i].value) 
+                {
                     case 'dijkstra':
                         animateButtonText += 'Dijkstra';
+                        unweightedAlgorithm = false;
                         resetToggleButtons();
                         disableToggleButtons();
                         break;
                     case 'aStar':
                         animateButtonText += 'A*';
+                        unweightedAlgorithm = false;
                         resetToggleButtons();
                         enableEightDirections();
                         break;
                     case 'greedyBFS':
                         animateButtonText += 'Greedy';
+                        unweightedAlgorithm = false;
                         resetToggleButtons();
                         enableEightDirections();
                         break;
                     case 'breadthFirstSearch':
                         animateButtonText += 'BFS';
+                        unweightedAlgorithm = true;
                         resetToggleButtons();
                         disableToggleButtons();
                         break;
                     case 'bidirectionalDijkstra':
                         animateButtonText += 'Bi. Dijkstra';
+                        unweightedAlgorithm = false;
                         resetToggleButtons();
                         disableToggleButtons();
                         break;
                     case 'bidirectionalAStar':
                         animateButtonText += 'Bi. A*';
+                        unweightedAlgorithm = false;
                         resetToggleButtons();
                         enableEightDirections();
                         break;
                     case 'depthFirstSearch':
                         animateButtonText += 'DFS';
+                        unweightedAlgorithm = true;
                         resetToggleButtons();
                         disableToggleButtons();
                         break;
                     case 'jumpPointSearch':
                         animateButtonText += 'JPS';
+                        unweightedAlgorithm = true;
                         resetToggleButtons();
                         /* JPS only works with eight directional movement */
                         setAndDisableEightDirections();
@@ -227,30 +257,36 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    document.addEventListener('keydown', function(ev) {
+    document.addEventListener('keydown', function(ev) 
+    {
         gridBoard.pressedKey = ev.key;
     });
 
-    document.addEventListener('keyup', function() {
+    document.addEventListener('keyup', function() 
+    {
         gridBoard.pressedKey = null;
     });
 
     /* Create a new grid if the user resized the window */
-    window.addEventListener('resize', function() {
+    window.addEventListener('resize', function() 
+    {
         adjustGridDimensions();
         createGrid(gridBoard);
     });
 
-    eightDirectionsToggleButton.addEventListener('change', function() {
+    eightDirectionsToggleButton.addEventListener('change', function() 
+    {
         /* Allow corner cutting if eight directions is enabled */
-        if (eightDirectionsToggleButton.checked === true) {
+        if (eightDirectionsToggleButton.checked === true) 
+        {
             cornerCuttingToggleButton.disabled = false;
             cornerCuttingSwitch.style.backgroundColor = BUTTON_BACKGROUND_COLOR;
             eightDirections = true;
         }
 
         /* Disallow corner cutting when eight directions is disabled */
-        else {
+        else 
+        {
             cornerCuttingToggleButton.checked = false;
             cornerCuttingToggleButton.disabled = true;
             cornerCuttingSwitch.style.backgroundColor = DISABLED_COLOR;
@@ -259,69 +295,81 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    cornerCuttingToggleButton.addEventListener('change', function() {
-        if (cornerCuttingToggleButton.checked === true) {
+    cornerCuttingToggleButton.addEventListener('change', function() 
+    {
+        if (cornerCuttingToggleButton.checked === true) 
             cornerCutting = true;
-        }
 
-        else {
+        else 
             cornerCutting = false;
-        }
     });
 
     /* Close the menu if the user's mouse leaves it */
-    algorithmDropDownMenu.addEventListener('mouseleave', function() {
+    algorithmDropDownMenu.addEventListener('mouseleave', function() 
+    {
         algorithmDropDownMenu.style.display = 'none';
         algorithmDropDownButton.innerHTML = 'Algorithms&#9660;'
     });
 
-    weightDropDownButton.addEventListener('click', function() {
+    weightDropDownButton.addEventListener('click', function() 
+    {
         if (weightDropDownMenu.style.display === '' || 
-                weightDropDownMenu.style.display === 'none') {
+            weightDropDownMenu.style.display === 'none') 
+        {
             weightDropDownMenu.style.display = 'block';
             weightDropDownButton.innerHTML = 'Adjust Weights&#9650;';
         }
 
-        else {
+        else 
+        {
             weightDropDownMenu.style.display = 'none';
             weightDropDownButton.innerHTML = 'Adjust Weights&#9660;';
         }
     });
 
-    weightDropDownMenu.addEventListener('mouseleave', function() {
+    weightDropDownMenu.addEventListener('mouseleave', function() 
+    {
         weightDropDownMenu.style.display = 'none';
         weightDropDownButton.innerHTML = 'Adjust Weights&#9660;';
     });
 
-    lightWeightSlider.addEventListener('input', function() {
+    lightWeightSlider.addEventListener('input', function() 
+    {
         handleLightWeightSlider.call(this);
     });
 
-    normalWeightSlider.addEventListener('input', function() {
+    normalWeightSlider.addEventListener('input', function() 
+    {
         handleNormalWeightSlider.call(this);
     });
 
-    heavyWeightSlider.addEventListener('input', function() {
+    heavyWeightSlider.addEventListener('input', function() 
+    {
         handleHeavyWeightSlider.call(this);
     });
 
-    clearAlgorithmButton.addEventListener('click', function() {
+    clearAlgorithmButton.addEventListener('click', function() 
+    {
         removePreviousAlgorithm(gridBoard);
     });
 
-    mobileMenuButton.addEventListener('click', function(ev) {
+    mobileMenuButton.addEventListener('click', function(ev) 
+    {
         ev.preventDefault();
 
         const menuStyles = document.getElementsByClassName('menuStyle');
 
-        for (const menuStyle of menuStyles) {
-            if (menuStyle.style.display === 'flex') {
+        for (const menuStyle of menuStyles) 
+        {
+            if (menuStyle.style.display === 'flex') 
+            {
                 menuStyle.style.display = 'none';
                 algorithmDropDownButton.disabled = false;
                 animateAlgorithmButton.disabled = false;
             }
 
-            else {
+            else 
+            {
                 menuStyle.style.display = 'flex';
                 algorithmDropDownButton.disabled = true;
                 animateAlgorithmButton.disabled = true;
