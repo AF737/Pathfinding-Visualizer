@@ -53,12 +53,12 @@ div.menuStyle
 
 div.dropDownWrapper 
 {
+    width: 10vw;
     display: inline-block;
     /* Top and bottom margin of 25px are necessary so that the wrapper has the same
         size as the button so that the hover pseudo class only triggers if the cursor
         is actually above the button */
     margin: 25px 0.625vw; 
-    width: 10vw;
     /* Ensures that the dropdown menu is above the 2d-grid */
     z-index: 1;
 }
@@ -83,11 +83,11 @@ button.dropDownButton:disabled
 
 div.dropDownMenu 
 {
-    display: none;
     width: inherit;
     background-color: var(--main-background-color);
     border: 1px solid var(--main-border-color);
     border-top: none;
+    display: none;
 }
 
 div.radioButtonWrapper 
@@ -106,6 +106,7 @@ div.radioButtonWrapper:hover
     background-color: #3b423c;
 }
 
+/* Hide radio button */
 div.radioButtonWrapper input 
 {
     width: 0;
@@ -1103,7 +1104,7 @@ div.jumpPoint
     {
         width: 30vw;
         height: 33px;
-        margin: 8.5px 20px;
+        margin: 8.5px 2.5vw;
     }
 
     button.dropDownButton 
@@ -1144,7 +1145,7 @@ div.jumpPoint
 
     div.nodeExplanationWrapper 
     {
-        font-size: 1rem;
+        font-size: 0.7rem;
     }
 
     div#infoBox 
