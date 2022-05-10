@@ -7,23 +7,39 @@ import Node from './node.js';
 const board = document.getElementById('board');
 const NODE_WIDTH = 20;
 const NODE_HEIGHT = 20;
+const MOBILE_MAX_WIDTH = 1050;
 
 function adjustGridDimensions() 
 {
     const windowWidth = window.innerWidth;
-
     const windowHeight = window.innerHeight;
-    /* Leave at least one cell worth of space at the left and right edge of the
-        grid */
-    const boardWidth = windowWidth - 40 - (windowWidth % 100);
-    /* 200 = 100 + 50 + 50 (menu bar height + node color legend height + extra
-        margin) */
-    const boardHeight = windowHeight - 200 - (windowHeight % 100);
+    let boardWidth = 0;
+    let boardHeight = 0;
+
+    /* Desktop version */
+    if (windowWidth > MOBILE_MAX_WIDTH)
+    {
+        /* Leave at least one cell worth of space at the left and right edge of the
+            grid */
+        boardWidth = windowWidth - (2 * NODE_WIDTH) - (windowWidth % 100);
+        /* 200 = 100 + 50 + 50 (menu bar height + node color legend height + extra
+            margin) */
+        boardHeight = windowHeight - 200 - (windowHeight % 100);
+        board.style.marginTop = '50px';
+    }
+
+    else
+    {
+        boardWidth = windowWidth - (2 * NODE_WIDTH) - (windowWidth % NODE_WIDTH);
+        boardHeight = windowHeight - parseInt(document.getElementById('menuBar').height, 10)
+            - parseInt(document.getElementById('descriptionBar').height, 10)
+            - (windowHeight % NODE_HEIGHT);
+        board.style.marginTop = `${NODE_HEIGHT}px`;
+    }
 
     board.style.width = `${boardWidth}px`;
     board.style.height = `${boardHeight}px`;
     board.style.marginLeft = `${(windowWidth - boardWidth) / 2}px`;
-    board.style.marginTop = '50px';
     board.style.gridTemplateColumns = `${Math.floor(boardWidth / NODE_WIDTH)}`;
     board.style.gridTemplateRows = `${Math.floor(boardHeight / NODE_HEIGHT)}`;
 }
