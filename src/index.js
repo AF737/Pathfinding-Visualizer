@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', function()
                         resetToggleButtons();
                         enableEightDirections();
                         break;
-                    case 'greedyBFS':
+                    case 'greedyBestFirstSearch':
                         animateButtonText += 'Greedy';
                         unweightedAlgorithm = false;
                         resetToggleButtons();

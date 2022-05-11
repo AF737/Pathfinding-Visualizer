@@ -27,7 +27,7 @@ export default function startAlgorithmAnimation(selectedAlgorithm, startNode, fi
         case 'aStar':
             animateAStar(startNode, finishNode, gridBoard);
             break;
-        case 'greedyBFS':
+        case 'greedyBestFirstSearch':
             animateGreedyBFS(startNode, finishNode, gridBoard);
             break;
         case 'breadthFirstSearch':

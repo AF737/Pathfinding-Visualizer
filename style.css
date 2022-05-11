@@ -1002,6 +1002,12 @@ div.jumpPoint
     {
         display: inline;
     }
+
+    div.nodeColor 
+    {
+        width: 30px;
+        height: 30px;
+    }
 }
 
 @media screen and (min-width: 1051px) and (max-width: 1150px) 
@@ -1139,13 +1145,13 @@ div.jumpPoint
 
     div.nodeColor 
     {
-        width: 20px;
+        width: 5vw;
         height: 20px;
     }
 
     div.nodeExplanationWrapper 
     {
-        font-size: 0.7rem;
+        font-size: 0.5rem;
     }
 
     div#infoBox 

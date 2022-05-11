@@ -21,7 +21,9 @@ export default function jumpPointSearch(grid, startNode, finishNode)
 
         if (closestNode === finishNode)
         {
-            const shortestPath = getPath(grid, finishNode);
+            console.log(finishNode);
+            // const shortestPath = getPath(grid, finishNode);
+            const shortestPath = null;
 
             return [closedList, shortestPath];
         }
@@ -44,7 +46,7 @@ function identifySuccessors(grid, currentNode, finishNode, closedList, openList)
 
     for (const neighbor of neighbors) 
     {
-        if (neighbor.isWall === true)
+        if (neighbor.isWall === true && neighbor.isJumpPoint === true)
             continue;
 
         neighbor.distanceFromStart = currentNode.distanceFromStart + getDistance(currentNode, neighbor);
@@ -58,8 +60,10 @@ function identifySuccessors(grid, currentNode, finishNode, closedList, openList)
 
         if (destination !== null)
         {
-            const node = grid.nodesMatrix[ destination[0] ][ destination[1] ];
-            const jumpPoint = node;
+            const jumpPoint = grid.nodesMatrix[ destination[0] ][ destination[1] ];
+
+            if (jumpPoint.isJumpPoint === true)
+                continue;
 
             if (closedList.includes(jumpPoint) === true)
                 continue;
@@ -109,8 +113,8 @@ function jump(grid, row, col, rowChange, colChange, finishNode)
     if (rowChange !== 0 && colChange !== 0)
     {
         /* Prevent corner cutting */
-        if (grid.nodesMatrix[row + rowChange][col].isWall === true &&
-            grid.nodesMatrix[row][col + colChange].isWall === true)
+        if (grid.nodesMatrix[nextRow][col].isWall === true &&
+            grid.nodesMatrix[row][nextCol].isWall === true)
             return null;
 
         /* Check if there's a wall directly below (when moving up) or above
@@ -118,6 +122,7 @@ function jump(grid, row, col, rowChange, colChange, finishNode)
             or right (when moving right) of the wall. Return current node as a 
             jump point, because that's the only way to access the empty node */
         if (grid.nodesMatrix[row - rowChange][col + colChange].isWall === false &&
+            grid.nodesMatrix[row][col + colChange].isWall === false &&
             grid.nodesMatrix[row - rowChange][col].isWall === true)
             return [row, col];
 
@@ -125,10 +130,9 @@ function jump(grid, row, col, rowChange, colChange, finishNode)
             (when moving left) the current node, but not above (when moving up)
             or below (when moving down) of the wall */
         if (grid.nodesMatrix[row + rowChange][col - colChange].isWall === false &&
+            grid.nodesMatrix[row + rowChange][col].isWall === false &&
             grid.nodesMatrix[row][col - colChange].isWall === true)
             return [row, col];
-
-        if (grid.nodesMatrix[row][col + colChange].isWall === true)
 
         if (jump(grid, row, nextCol, 0, colChange, finishNode) !== null)
             return [row, col];
