@@ -28,12 +28,16 @@ function adjustGridDimensions()
         board.style.marginTop = '50px';
     }
 
+    /* Mobile version */
     else
     {
+        /* Leaves at least the widht of a node from the grid as space on both sides */
         boardWidth = windowWidth - (2 * NODE_WIDTH) - (windowWidth % NODE_WIDTH);
-        boardHeight = windowHeight - parseInt(document.getElementById('menuBar').height, 10)
-            - parseInt(document.getElementById('descriptionBar').height, 10)
-            - (windowHeight % NODE_HEIGHT);
+        /* Leaves at least the height of a node from the grid as space above and below
+            the grid */
+        boardHeight = windowHeight - document.getElementsByClassName('menuBar')[0].clientHeight
+            - document.getElementsByClassName('descriptionBar')[0].clientHeight
+            - (2 * NODE_HEIGHT) - (windowHeight % NODE_HEIGHT);
         board.style.marginTop = `${NODE_HEIGHT}px`;
     }
 
