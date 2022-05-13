@@ -46,7 +46,7 @@ function identifySuccessors(grid, currentNode, finishNode, closedList, openList)
 
     for (const neighbor of neighbors) 
     {
-        if (neighbor.isWall === true && neighbor.isJumpPoint === true)
+        if (neighbor.isWall === true) 
             continue;
 
         neighbor.distanceFromStart = currentNode.distanceFromStart + getDistance(currentNode, neighbor);
@@ -54,16 +54,12 @@ function identifySuccessors(grid, currentNode, finishNode, closedList, openList)
 
         const rowChange = neighbor.row - currentNode.row;
         const colChange = neighbor.column - currentNode.column;
-        neighbor.direction = [rowChange, colChange];
 
         const destination = jump(grid, neighbor.row, neighbor.column, rowChange, colChange, finishNode);
 
         if (destination !== null)
         {
             const jumpPoint = grid.nodesMatrix[ destination[0] ][ destination[1] ];
-
-            if (jumpPoint.isJumpPoint === true)
-                continue;
 
             if (closedList.includes(jumpPoint) === true)
                 continue;
@@ -83,7 +79,6 @@ function identifySuccessors(grid, currentNode, finishNode, closedList, openList)
 
             if (shortestPathFound === true)
             {
-                jumpPoint.direction = [destination[2], destination[3]];
                 jumpPoint.distanceFromStart = shortestPath;
                 jumpPoint.totalDistance = jumpPoint.distanceFromStart + jumpPoint.heuristicDistance;
                 jumpPoint.isJumpPoint = true;
@@ -104,6 +99,20 @@ function jump(grid, row, col, rowChange, colChange, finishNode)
     if (grid.nodesMatrix[row][col] === finishNode)
         return [row, col];
 
+    if (rowChange !== 0 && colChange !== 0 && ((row === 0 || row === grid.rows - 1)
+        || (col === 0 || col === grid.columns - 1)))
+    {
+        const horizontalJumpPoint = jump(grid, row, col, 0, colChange, finishNode);
+
+        if (horizontalJumpPoint !== null)
+            return horizontalJumpPoint;
+
+        const verticalJumpPoint = jump(grid, row, col, rowChange, 0, finishNode);
+
+        if (verticalJumpPoint !== null)
+            return verticalJumpPoint;
+    }
+
     const nextRow = row + rowChange;
     const nextCol = col + colChange;
 
@@ -117,28 +126,35 @@ function jump(grid, row, col, rowChange, colChange, finishNode)
             grid.nodesMatrix[row][nextCol].isWall === true)
             return null;
 
+        const prevRow = row - rowChange;
+        const prevCol = col - colChange;
+
         /* Check if there's a wall directly below (when moving up) or above
             (when moving down) the current node, but not left (when moving left)
             or right (when moving right) of the wall. Return current node as a 
             jump point, because that's the only way to access the empty node */
-        if (grid.nodesMatrix[row - rowChange][col + colChange].isWall === false &&
-            grid.nodesMatrix[row][col + colChange].isWall === false &&
-            grid.nodesMatrix[row - rowChange][col].isWall === true)
+        if (grid.nodesMatrix[prevRow][nextCol].isWall === false &&
+            grid.nodesMatrix[row][nextCol].isWall === false &&
+            grid.nodesMatrix[prevRow][col].isWall === true)
             return [row, col];
 
         /* Check if there's a wall directly left (when moving right) or right
             (when moving left) the current node, but not above (when moving up)
             or below (when moving down) of the wall */
-        if (grid.nodesMatrix[row + rowChange][col - colChange].isWall === false &&
-            grid.nodesMatrix[row + rowChange][col].isWall === false &&
-            grid.nodesMatrix[row][col - colChange].isWall === true)
+        if (grid.nodesMatrix[nextRow][prevCol].isWall === false &&
+            grid.nodesMatrix[nextRow][col].isWall === false &&
+            grid.nodesMatrix[row][nextCol].isWall === true)
             return [row, col];
 
-        if (jump(grid, row, nextCol, 0, colChange, finishNode) !== null)
-            return [row, col];
+        const horizontalJumpPoint = jump(grid, row, col, 0, colChange, finishNode);
 
-        if (jump(grid, nextRow, col, rowChange, 0, finishNode) !== null)
-            return [row, col];
+        if (horizontalJumpPoint !== null)
+            return horizontalJumpPoint;
+
+        const verticalJumpPoint = jump(grid, row, col, rowChange, 0, finishNode);
+
+        if (verticalJumpPoint !== null)
+            return verticalJumpPoint;
     }
 
     else 
@@ -146,19 +162,21 @@ function jump(grid, row, col, rowChange, colChange, finishNode)
         /* Moving horizontally */
         if (colChange !== 0)
         {
-            if (row + 1 > grid.rows - 1)
-                return null;
+            // if (row + 1 > grid.rows - 1)
+            //     return null;
 
             /* Check for forced neighbors above the node */
-            if (grid.nodesMatrix[row + 1][col].isWall === true &&
+            if (row + 1 <= grid.rows - 1 &&
+                grid.nodesMatrix[row + 1][col].isWall === true &&
                 grid.nodesMatrix[row + 1][nextCol].isWall === false)
                 return [row, col];
 
-            if (row - 1 < 0)
-                return null;
+            // if (row - 1 < 0)
+            //     return null;
 
             /* Check for forced neighbors below the node */
-            if (grid.nodesMatrix[row - 1][col].isWall === true &&
+            if (row - 1 >= 0 &&
+                grid.nodesMatrix[row - 1][col].isWall === true &&
                 grid.nodesMatrix[row - 1][nextCol].isWall === false)
                 return [row, col];
         }
@@ -166,19 +184,21 @@ function jump(grid, row, col, rowChange, colChange, finishNode)
         /* Moving vertically */
         else
         {
-            if (col + 1 > grid.columns - 1)
-                return null;
+            // if (col + 1 > grid.columns - 1)
+            //     return null;
 
             /* Check for forced neighbors right of the node */
-            if (grid.nodesMatrix[row][col + 1].isWall === true &&
+            if (col + 1 <= grid.columns - 1 &&
+                grid.nodesMatrix[row][col + 1].isWall === true &&
                 grid.nodesMatrix[nextRow][col + 1].isWall === false)
                 return [row, col];
 
-            if (col - 1 < 0)
-                return null;
+            // if (col - 1 < 0)
+            //     return null;
 
             /* Check for forced neighbors left of the node */
-            if (grid.nodesMatrix[row][col - 1].isWall === true &&
+            if (col - 1 >= 0 &&
+                grid.nodesMatrix[row][col - 1].isWall === true &&
                 grid.nodesMatrix[nextRow][col - 1].isWall === false)
                 return [row, col];
         }
@@ -192,9 +212,10 @@ function getPath(grid, finishNode)
     let currentNode = finishNode;
     const jumpPoints = [];
     const shortestPath = [];
-
-    while (currentNode !== null)
+    let c = 0;
+    while (currentNode !== null && c < 100)
     {
+        c++;
         jumpPoints.unshift(currentNode);
         currentNode = currentNode.prevNode;
     }
