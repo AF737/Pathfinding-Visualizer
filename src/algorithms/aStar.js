@@ -158,7 +158,11 @@ function getDistance(firstNode, secondNode)
     const rowChange = Math.abs(firstNode.row - secondNode.row);
     const colChange = Math.abs(firstNode.column - secondNode.column);
 
-    return ((rowChange + colChange) + ((Math.SQRT2 - 2) * Math.min(rowChange, colChange)));
+    if (rowChange > colChange)
+        return ((rowChange - colChange) + (Math.SQRT2 * colChange));
+
+    else 
+        return ((colChange - rowChange) + (Math.SQRT2 * rowChange));
 }
 
 /* Prohibit diagonal movement in that direction if there's a wall directly next to it
@@ -170,11 +174,10 @@ function checkCornerCutting(grid, cornerCutting, row, col, rowChange, colChange)
 
     else 
     {
-        if (grid.nodesMatrix[row + rowChange][col].isWall === true &&
-            grid.nodesMatrix[row][col + colChange].isWall === true) 
+        if (grid.isAccessibleAt(row + rowChange, col) === false &&
+            grid.isAccessibleAt(row, col + colChange) === false) 
             return false;
 
-        else 
-            return true;
+        return true;
     }
 }

@@ -53,6 +53,9 @@ function getUnivistedNodes(grid)
 
 function sortNodesByDistanceFromStart(unvisitedNodes) 
 {
+    /* The node with the lowest total distance (distance from start to it and 
+        from it to the finish node) will be the first element in the array, 
+        because it's the most promising one */
     unvisitedNodes.sort((firstNode, secondNode) =>
         firstNode.distanceFromStart - secondNode.distanceFromStart);
 }

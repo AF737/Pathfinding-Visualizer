@@ -47,6 +47,9 @@ export default function greedyBestFirstSearch(grid, startNode, finishNode, eight
     the first place of this array */
 function sortNodesByDistance(nodesToCheck) 
 {
+    /* The node with the lowest total distance (distance from start to it and 
+        from it to the finish node) will be the first element in the array, 
+        because it's the most promising one */
     nodesToCheck.sort((firstNode, secondNode) =>
         firstNode.heuristicDistance - secondNode.heuristicDistance);
 }
@@ -141,11 +144,10 @@ function checkCornerCutting(grid, cornerCutting, row, col, rowChange, colChange)
         return true;
 
     else {
-        if (grid.nodesMatrix[row + rowChange][col].isWall === true &&
-            grid.nodesMatrix[row][col + colChange].isWall === true) 
+        if (grid.isAccessibleAt(row + rowChange, col) === false &&
+            grid.isAccessibleAt(row, col + colChange) === false) 
             return false;
 
-        else 
-            return true;
+        return true;
     }
 }

@@ -66,6 +66,9 @@ export default function bidirectionalAStar(grid, startNode, finishNode, eightDir
 
 function sortNodesByDistance(openList) 
 {
+    /* The node with the lowest total distance (distance from start to it and 
+        from it to the finish node) will be the first element in the array, 
+        because it's the most promising one */
     openList.sort((firstNode, secondNode) =>
         firstNode.totalDistance - secondNode.totalDistance);
 }
@@ -192,7 +195,11 @@ function getDistance(node, goalNode)
     const rowChange = Math.abs(node.row - goalNode.row);
     const colChange = Math.abs(node.column - goalNode.column);
 
-    return ((rowChange + colChange) + ((Math.SQRT2 - 2) * Math.min(rowChange, colChange)));
+    if (rowChange > colChange)
+        return ((rowChange - colChange) + (Math.SQRT2 * colChange));
+
+    else 
+        return ((colChange - rowChange) + (Math.SQRT2 * rowChange));
 }
 
 /* Prohibit diagonal movement in that direction if there's a wall directly next to it
@@ -203,13 +210,11 @@ function checkCornerCutting(grid, cornerCutting, row, col, rowChange, colChange)
 
     else 
     {
-        if (grid.nodesMatrix[row + rowChange][col].isWall === true &&
-            grid.nodesMatrix[row][col + colChange].isWall === true) 
+        if (grid.isAccessibleAt(row + rowChange, col) === false &&
+            grid.isAccessibleAt(row, col + colChange) === false) 
                 return false;
         
-
-        else 
-            return true;
+        return true;
         
     }
 }

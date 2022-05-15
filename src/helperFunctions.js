@@ -81,7 +81,7 @@ export function removeWalls(gridBoard)
     {
         for (let col = 0; col < gridBoard.columns; col++) 
         {
-            if (gridBoard.nodesMatrix[row][col].isWall === true) 
+            if (gridBoard.isAccessibleAt(row, col) === false) 
             {
                 gridBoard.nodesMatrix[row][col].isWall = false;
                 document.getElementById(`node-${row}-${col}`).className = Node.unvisited;
@@ -158,6 +158,8 @@ export function resetToggleButtons()
 {
     document.getElementById('eightDirectionsToggleButton').checked = false;
     document.getElementById('cornerCuttingToggleButton').checked = false;
+    document.getElementById('cornerCuttingToggleButton').disabled = true;
+    document.getElementById('cornerCuttingSwitch').style.background = DISABLED_COLOR;
 }
 
 export function disableToggleButtons() 
