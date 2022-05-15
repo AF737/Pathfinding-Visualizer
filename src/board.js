@@ -17,4 +17,22 @@ export default class Board
         this.finishIsPlaced = false;
         this.algoIsRunning = false;
     }
+
+    isOnGrid(row, col)
+    {
+        if (row >= 0 && row <= this.rows - 1 &&
+            col >= 0 && col <= this.columns - 1)
+            return true;
+        
+        return false;
+    }
+
+    isAccessibleAt(row, col)
+    {
+        if (this.isOnGrid(row, col) === false ||
+            this.nodesMatrix[row][col].isWall === true)
+            return false;
+        
+        return true;
+    }
 }
