@@ -281,9 +281,10 @@ div#mobileMenuButton .bar
 div.descriptionBar 
 {
     width: 100vw;
-    /* height: 50px; */
     display: flex;
     justify-content: center;
+    /* Allow elements that don't fit on the same line
+        to be placed in a new line below */
     flex-wrap: wrap;
     /* Create a black border at the bottom */
     border-bottom-width: 1px;
@@ -310,8 +311,8 @@ div.nodeExplanationWrapper label
 
 div.nodeColor 
 {
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    height: 30px;
     content: "";
     margin-left: 0.5vw;
 }
@@ -966,6 +967,11 @@ div.jumpPoint
         display: inline;
     }
 
+    button#clearWeights
+    {
+        display: inline;
+    }
+
     div#mobileMenuButton 
     {
         display: none;
@@ -1003,6 +1009,11 @@ div.jumpPoint
     img#directionsImg 
     {
         display: inline;
+    }
+
+    div.nodeExplanationWrapper
+    {
+        height: 50px;
     }
 
     div.nodeColor 
@@ -1134,21 +1145,25 @@ div.jumpPoint
         display: none;
     }
 
-    /* div.descriptionBar 
-    {
-        height: 40px;
-    } */
-
-    /* No weights can be added while on mobile */
     div#weightsWrapper 
+    {
+        display: none;
+    }
+
+    button#clearWeights
     {
         display: none;
     }
 
     div.nodeColor 
     {
-        width: 5vw;
+        width: 20px;
         height: 20px;
+    }
+
+    div.nodeExplanationWrapper
+    {
+        height: 30px;
     }
 
     div.nodeExplanationWrapper  label
