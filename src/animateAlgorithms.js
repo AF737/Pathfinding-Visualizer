@@ -1,10 +1,28 @@
 'use strict';
 
+const Node = 
+{
+    unvisited: 'unvisited',
+    visited: 'visited',
+    start: 'start',
+    startVisited: 'startVisited',
+    startShortestPath: 'startShortestPath',
+    finish: 'finish',
+    finishVisited: 'finishVisited',
+    finishShortestPath: 'finishShortestPath',
+    shortestPath: 'shortestPath',
+    jumpPoint: 'jumpPoint',
+    visitedByPreviousAlgorithm: 'visitedByPreviousAlgorithm'
+};
+
+/* Make Node attributes immutable */
+Object.freeze(Node);
+
 import {enableButtons, enableEightDirections, enableCornerCutting} 
         from './helperFunctions.js';
 import dijkstra from './algorithms/dijkstra.js';
 import aStar from './algorithms/aStar.js';
-import greedyBFS from './algorithms/greedyBestFirstSearch.js';
+import greedyBestFirstSearch from './algorithms/greedyBestFirstSearch.js';
 import breadthFirstSearch from './algorithms/breadthFirstSearch.js';
 import bidirectionalDijkstra from './algorithms/bidirectionalDijkstra.js';
 import bidirectionalAStar from './algorithms/bidirectionalAStar.js';
@@ -19,108 +37,66 @@ let cornerCuttingToggleButton = document.getElementById('cornerCuttingToggleButt
 
 export default function startAlgorithmAnimation(selectedAlgorithm, startNode, finishNode, gridBoard) 
 {
+    let visitedNodes, visitedNodesFromFinish, shortestPath, path;
+    let timeToWait = 0;
+
     switch (selectedAlgorithm) 
     {
         case 'dijkstra':
-            animateDijkstra(startNode, finishNode, gridBoard);
+            [visitedNodes, shortestPath] = dijkstra(gridBoard, startNode, finishNode);
+
+            timeToWait = animateAlgorithm(visitedNodes, null, shortestPath, gridBoard, false, false);
             break;
         case 'aStar':
-            animateAStar(startNode, finishNode, gridBoard);
+            [visitedNodes, shortestPath] = 
+                aStar(gridBoard, startNode, finishNode, eightDirections, cornerCutting);
+    
+            timeToWait = animateAlgorithm(visitedNodes, null, shortestPath, gridBoard, true, false);
             break;
         case 'greedyBestFirstSearch':
-            animateGreedyBFS(startNode, finishNode, gridBoard);
+            [visitedNodes, path] = 
+                greedyBestFirstSearch(gridBoard, startNode, finishNode, eightDirections, cornerCutting);
+
+            timeToWait = animateAlgorithm(visitedNodes, null, path, gridBoard, true, false);
             break;
         case 'breadthFirstSearch':
-            animateBreadthFirstSearch(startNode, finishNode, gridBoard);
+            removeWeights(gridBoard);
+
+            [visitedNodes, shortestPath] = breadthFirstSearch(gridBoard, startNode, finishNode);
+
+            timeToWait = animateAlgorithm(visitedNodes, null, shortestPath, gridBoard, false, false);
             break;
         case 'bidirectionalDijkstra':
-            animateBidirectionalDijkstra(startNode, finishNode, gridBoard);
+            visitedNodesFromStart, visitedNodesFromFinish, path =
+                bidirectionalDijkstra(gridBoard, startNode, finishNode);
+
+            timeToWait = animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, path, gridBoard, false, false);
             break;
         case 'bidirectionalAStar':
-            animateBidirectionalAStar(startNode, finishNode, gridBoard);
+            visitedNodesFromStart, visitedNodesFromFinish, path =
+                bidirectionalAStar(gridBoard, startNode, finishNode, eightDirections, cornerCutting);
+
+            timeToWait = animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, path, gridBoard, true, false);
             break;
         case 'depthFirstSearch':
-            animateDepthFirstSearch(startNode, finishNode, gridBoard);
+            removeWeights(gridBoard);
+
+            [visitedNodesFromStart, path] = depthFirstSearch(gridBoard, startNode, finishNode);
+
+            timeToWait = animateAlgorithm(visitedNodesFromStart, null, path, gridBoard, false, false);
             break;
         case 'jumpPointSearch':
-            animateJumpPointSearch(startNode, finishNode, gridBoard);
+            removeWeights(gridBoard);
+
+            [visitedNodesFromStart, shortestPath] = jumpPointSearch(gridBoard, startNode, finishNode);
+
+            timeToWait = animateAlgorithm(visitedNodesFromStart, null, shortestPath, gridBoard, false, true);
             break;
         default:
             break;
     }
-}
 
-function animateDijkstra(startNode, finishNode, gridBoard) 
-{
-    const [visitedNodes, shortestPath] = 
-        dijkstra(gridBoard, startNode, finishNode);
-
-    animateAlgorithm(visitedNodes, null, shortestPath, gridBoard, false, false);
-}
-
-function animateAStar(startNode, finishNode, gridBoard) 
-{
-    const [visitedNodes, shortestPath] = 
-        aStar(gridBoard, startNode, finishNode, eightDirections, cornerCutting);
-    
-    animateAlgorithm(visitedNodes, null, shortestPath, gridBoard, true, false);
-}
-
-function animateGreedyBFS(startNode, finishNode, gridBoard) 
-{
-    const [visitedNodes, path] = 
-        greedyBFS(gridBoard, startNode, finishNode, eightDirections, cornerCutting);
-
-    animateAlgorithm(visitedNodes, null, path, gridBoard, true, false);
-}
-
-function animateBreadthFirstSearch(startNode, finishNode, gridBoard) 
-{
-    removeWeights(gridBoard);
-
-    const [visitedNodes, shortestPath] = 
-        breadthFirstSearch(gridBoard, startNode, finishNode);
-
-    animateAlgorithm(visitedNodes, null, shortestPath, gridBoard, false, false);
-}
-
-function animateBidirectionalDijkstra(startNode, finishNode, gridBoard) 
-{
-    const [visitedNodesFromStart, visitedNodesFromFinish, path] =
-        bidirectionalDijkstra(gridBoard, startNode, finishNode);
-
-    animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, path, 
-        gridBoard, false, false);
-}
-
-function animateBidirectionalAStar(startNode, finishNode, gridBoard) 
-{
-    const [visitedNodesFromStart, visitedNodesFromFinish, path] =
-        bidirectionalAStar(gridBoard, startNode, finishNode, eightDirections, cornerCutting);
-
-    animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, path, 
-        gridBoard, true, false);
-}
-
-function animateDepthFirstSearch(startNode, finishNode, gridBoard) 
-{
-    removeWeights(gridBoard);
-
-    const [visitedNodesFromStart, path] = 
-        depthFirstSearch(gridBoard, startNode, finishNode);
-
-    animateAlgorithm(visitedNodesFromStart, null, path, gridBoard, false, false);
-}
-
-function animateJumpPointSearch(startNode, finishNode, gridBoard) 
-{
-    removeWeights(gridBoard);
-
-    const [visitedNodesFromStart, shortestPath] = 
-        jumpPointSearch(gridBoard, startNode, finishNode);
-
-    animateAlgorithm(visitedNodesFromStart, null, shortestPath, gridBoard,
-        false, true);
+    return timeToWait;
 }
 
 function animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortestPath, 
@@ -131,18 +107,20 @@ function animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortes
         setTimeout(function() 
         {
             const currentNode = visitedNodesFromStart[i];
-
+            const nodeID = document.getElementById(`node-${currentNode.row}-${currentNode.column}`);
+            
             if (i === 0) 
-                document.getElementById(`node-${currentNode.row}-${currentNode.column}`)
-                    .className = 'startVisited';
+                nodeID.className = Node.startVisited;
 
             else if (currentNode.isJumpPoint === true) 
-                document.getElementById(`node-${currentNode.row}-${currentNode.column}`)
-                    .className = 'jumpPoint';
+                nodeID.className = Node.jumpPoint;
 
-            else 
-                document.getElementById(`node-${currentNode.row}-${currentNode.column}`)
-                    .className = 'visited';
+            else if (nodeID.className !== Node.shortestPath && 
+                    nodeID.className !== Node.startShortestPath &&
+                    nodeID.className !== Node.finishShortestPath && 
+                    nodeID.className !== Node.start &&
+                    nodeID.className !== Node.finish) 
+                nodeID.className = Node.visited;
         }, i * ANIMATION_SPEED);
     }
 
@@ -154,14 +132,17 @@ function animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortes
             setTimeout(function() 
             {
                 const currentNode = visitedNodesFromFinish[i];
+                const nodeID = document.getElementById(`node-${currentNode.row}-${currentNode.column}`);
                 
                 if (i === 0) 
-                    document.getElementById(`node-${currentNode.row}-${currentNode.column}`)
-                        .className = 'finishVisited';
+                    nodeID.className = Node.finishVisited;
 
-                else 
-                    document.getElementById(`node-${currentNode.row}-${currentNode.column}`)
-                        .className = 'visited';
+                else if (nodeID.className !== Node.shortestPath && 
+                        nodeID.className !== Node.startShortestPath &&
+                        nodeID.className !== Node.finishShortestPath && 
+                        nodeID.className !== Node.start &&
+                        nodeID.className !== Node.finish)
+                    nodeID.className = Node.visited;
             }, i * ANIMATION_SPEED);
         }
     }
@@ -173,24 +154,26 @@ function animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortes
             setTimeout(function() 
             {
                 const currentNode = shortestPath[i];
+                const nodeID = document.getElementById(`node-${currentNode.row}-${currentNode.column}`);
 
                 if (i === 0) 
-                    document.getElementById(`node-${currentNode.row}-${currentNode.column}`)
-                        .className = 'startShortestPath';
+                    nodeID.className = Node.startShortestPath;
 
-                else if (i === shortestPath.length - 1) 
-                    document.getElementById(`node-${currentNode.row}-${currentNode.column}`)
-                        .className = 'finishShortestPath';
+                else if (i === shortestPath.length - 1)
+                    nodeID.className = Node.finishShortestPath;
 
-                else 
-                    document.getElementById(`node-${currentNode.row}-${currentNode.column}`)
-                        .className = 'shortestPath';
+                else if (nodeID.className !== Node.shortestPath &&
+                        nodeID.className !== Node.startShortestPath &&
+                        nodeID.className !== Node.finishShortestPath &&
+                        nodeID.className !== Node.start &&
+                        nodeID.className !== Node.finish)
+                    nodeID.className = Node.shortestPath;
             }, (visitedNodesFromStart.length + i) * ANIMATION_SPEED);
         }
     }
 
     /* visitedNodesFromStart and visitedNodesFromFinish always have the same length so 
-        taking the first one to calculate the time until the animation's done is enough */
+        using only one of them to calculate the time until the animation's done is enough */
     if (shortestPath !== null) 
     {
         setTimeout(function() 
@@ -229,4 +212,10 @@ function animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortes
                 enableCornerCutting();
         }, visitedNodesFromStart.length * ANIMATION_SPEED);
     }
+
+    if (shortestPath === null)
+        return (visitedNodesFromStart.length * ANIMATION_SPEED);
+
+    else 
+        return ((visitedNodesFromStart.length + shortestPath.length)) * ANIMATION_SPEED;
 }

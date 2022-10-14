@@ -1,5 +1,15 @@
 'use strict';
 
+const NodeClass =
+{
+    start: 'start',
+    finish: 'finish',
+    unvisited: 'unvisited'
+};
+
+/* Make NodeClass attributes immutable */
+Object.freeze(NodeClass);
+
 export {adjustGridDimensions, createGrid};
 
 import Node from './node.js';
@@ -50,13 +60,20 @@ function adjustGridDimensions()
 
 function createGrid(gridBoard) 
 {
+    gridBoard.removeAllFinishNodes();
     /* Remove all previous children (divs that contain the grid cells)
-        in case of resizing */
+        in case of resizing so that the grid can be drawn from scratch */
     board.innerHTML = '';
+    /* Remove nodes from internal representation of grid */
+    gridBoard.nodesMatrix.length = 0;
     const boardWidth = parseInt(board.style.width, 10);
     const boardHeight = parseInt(board.style.height, 10);
     const numOfCols = Math.floor(boardWidth / NODE_WIDTH);
     const numOfRows = Math.floor(boardHeight / NODE_HEIGHT);
+    /* Finish row and column can't be pushed into finishRow and finishCol of
+        gridBoard, because addFinishPriority adds them to these arrays so they
+        would appear twice */
+    let finishRow, finishCol;
 
     gridBoard.rows = numOfRows;
     gridBoard.columns = numOfCols;
@@ -65,8 +82,8 @@ function createGrid(gridBoard)
     {
         gridBoard.startRow = Math.floor(numOfRows / 2);
         gridBoard.startCol = Math.floor(numOfCols / 4);
-        gridBoard.finishRow = Math.floor(numOfRows / 2);
-        gridBoard.finishCol = Math.floor((numOfCols / 4) * 3);
+        finishRow = Math.floor(numOfRows / 2);
+        finishCol = Math.floor((numOfCols / 4) * 3);
     }
 
     /* Place them under each other for the mobile version */
@@ -74,13 +91,14 @@ function createGrid(gridBoard)
     {
         gridBoard.startRow = Math.floor(numOfRows / 4);
         gridBoard.startCol = Math.floor(numOfCols / 2);
-        gridBoard.finishRow = Math.floor((numOfRows / 4) * 3);
-        gridBoard.finishCol = Math.floor(numOfCols / 2);
+        finishRow = Math.floor((numOfRows / 4) * 3);
+        finishCol = Math.floor(numOfCols / 2);
     }
-
+    
     for (let row = 0; row < numOfRows; row++) 
     {
         const newGridArr = [];
+
         for (let col = 0; col < numOfCols; col++) 
         {
             const newNodeIndex = `${row}-${col}`;
@@ -89,17 +107,17 @@ function createGrid(gridBoard)
             if (row === gridBoard.startRow && col === gridBoard.startCol) 
             {
                 gridBoard.startIsPlaced = true;
-                newNodeClass = 'start';
+                newNodeClass = NodeClass.start;
             }
 
-            else if (row === gridBoard.finishRow && col === gridBoard.finishCol) 
+            else if (row === finishRow && col === finishCol) 
             {
                 gridBoard.finishIsPlaced = true;
-                newNodeClass = 'finish';
+                newNodeClass = NodeClass.finish;
             }
 
             else 
-                newNodeClass = 'unvisited';
+                newNodeClass = NodeClass.unvisited;
 
             newNode = new Node(newNodeIndex, row, col, newNodeClass);
             newGridArr.push(newNode);
@@ -110,9 +128,15 @@ function createGrid(gridBoard)
             /* CSS Grid Layout starts indexing at 1 instead of 0 */
             newNodeDiv.style.gridRow = `${row + 1}`;
             newNodeDiv.style.gridColumn = `${col + 1}`;
+            newNodeDiv.style.width = `${NODE_WIDTH}px`;
+            newNodeDiv.style.height = `${NODE_HEIGHT}px`;
+            
+            if (newNodeClass === NodeClass.finish)
+                newNodeDiv.appendChild(gridBoard.addFinishPriority(newNodeDiv.id));
 
             board.appendChild(newNodeDiv);
         }
+
         gridBoard.nodesMatrix.push(newGridArr);
     }
 }

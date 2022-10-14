@@ -7,7 +7,8 @@ const Node =
     start: 'start',
     finish: 'finish',
     shortestPath: 'shortestPath',
-    jumpPoint: 'jumpPoint'
+    jumpPoint: 'jumpPoint',
+    visitedByPreviousAlgorithm: 'visitedByPreviousAlgorithm'
 };
 
 /* Make Node attributes immutable */
@@ -95,48 +96,75 @@ export function removePreviousAlgorithm(gridBoard)
     for (let row = 0; row < gridBoard.rows; row++) 
     {
         for (let col = 0; col < gridBoard.columns; col++) {
-            let node = document.getElementById(`node-${row}-${col}`);
+            const node = document.getElementById(`node-${row}-${col}`);
 
             /* Leave start, finish, walls and weights as they are */
             if (node.className === Node.visited || node.className === Node.shortestPath ||
-                node.className === Node.jumpPoint)
-                node.className = Node.unvisited;
+                node.className === Node.jumpPoint || 
+                node.className === Node.visitedByPreviousAlgorithm)
+                    node.className = Node.unvisited;
 
-            /* Reset each element in the nodesMatrix so that the next algorithm
-                can start from scratch */
-            gridBoard.nodesMatrix[row][col].isVisited = false;
-            gridBoard.nodesMatrix[row][col].distanceFromStart = Infinity;
-            gridBoard.nodesMatrix[row][col].distanceFromFinish = Infinity;
-            gridBoard.nodesMatrix[row][col].heuristicDistance = Infinity;
-            gridBoard.nodesMatrix[row][col].totalDistance = Infinity;
-            gridBoard.nodesMatrix[row][col].prevNode = null;
-            gridBoard.nodesMatrix[row][col].prevNodeFromFinish = null;
-            gridBoard.nodesMatrix[row][col].direction = null;
-            gridBoard.nodesMatrix[row][col].isJumpPoint = false;
+            resetNode(row, col, gridBoard);
         }
     }
     
     document.getElementById(`node-${gridBoard.startRow}-${gridBoard.startCol}`)
         .className = Node.start;
-    document.getElementById(`node-${gridBoard.finishRow}-${gridBoard.finishCol}`)
-    .className = Node.finish;
+
+    for (let i = 0; i < gridBoard.finishRows.length; i++)
+        document.getElementById(`node-${gridBoard.finishRows[i]}-${gridBoard.finishCols[i]}`)
+            .className = Node.finish;
+}
+
+export function makePreviousAlgorithmLessVisible(gridBoard)
+{
+    for (let row = 0; row < gridBoard.rows; row++)
+    {
+        for (let col = 0; col < gridBoard.columns; col++)
+        {
+            const node = document.getElementById(`node-${row}-${col}`);
+
+            if (node.className === Node.visited || node.className === Node.jumpPoint)
+                node.className = Node.visitedByPreviousAlgorithm;
+
+            resetNode(row, col, gridBoard);
+        }
+    }
+}
+
+function resetNode(row, col, gridBoard)
+{
+    /* Reset each element in the nodesMatrix so that the next algorithm
+    can start from scratch */
+    gridBoard.nodesMatrix[row][col].isVisited = false;
+    gridBoard.nodesMatrix[row][col].distanceFromStart = Infinity;
+    gridBoard.nodesMatrix[row][col].distanceFromFinish = Infinity;
+    gridBoard.nodesMatrix[row][col].heuristicDistance = Infinity;
+    gridBoard.nodesMatrix[row][col].totalDistance = Infinity;
+    gridBoard.nodesMatrix[row][col].prevNode = null;
+    gridBoard.nodesMatrix[row][col].prevNodeFromFinish = null;
+    gridBoard.nodesMatrix[row][col].direction = null;
+    gridBoard.nodesMatrix[row][col].isJumpPoint = false;
 }
 
 /* Place start and finish at their original positions from when the grid was first
     created */
 export function resetStartAndFinish(gridBoard) 
 {
-    document.getElementById(`node-${gridBoard.startRow}-${gridBoard.startCol}`)
-        .className = Node.unvisited;
-    document.getElementById(`node-${gridBoard.finishRow}-${gridBoard.finishCol}`)
-        .className = Node.unvisited;
+    let finishRow, finishCol;
+
+    if (gridBoard.startIsPlaced === true)
+        document.getElementById(`node-${gridBoard.startRow}-${gridBoard.startCol}`)
+            .className = Node.unvisited;
+    
+    gridBoard.removeAllFinishNodes();
     
     if (gridBoard.columns >= gridBoard.rows) 
     {
         gridBoard.startRow = Math.floor(gridBoard.rows / 2);
         gridBoard.startCol = Math.floor(gridBoard.columns / 4);
-        gridBoard.finishRow = Math.floor(gridBoard.rows / 2);
-        gridBoard.finishCol = Math.floor((gridBoard.columns / 4) * 3);
+        finishRow = Math.floor(gridBoard.rows / 2);
+        finishCol = Math.floor((gridBoard.columns / 4) * 3);
     }
 
     /* Place them under each other for the mobile version */
@@ -144,14 +172,17 @@ export function resetStartAndFinish(gridBoard)
     {
         gridBoard.startRow = Math.floor(numOfRows / 4);
         gridBoard.startCol = Math.floor(numOfCols / 2);
-        gridBoard.finishRow = Math.floor((numOfRows / 4) * 3);
-        gridBoard.finishCol = Math.floor(numOfCols / 2);
+        finishRow = Math.floor((numOfRows / 4) * 3);
+        finishCol = Math.floor(numOfCols / 2);
     }
 
+    const finishNode = `node-${finishRow}-${finishCol}`;
+    
     document.getElementById(`node-${gridBoard.startRow}-${gridBoard.startCol}`)
         .className = Node.start;
-    document.getElementById(`node-${gridBoard.finishRow}-${gridBoard.finishCol}`)
-        .className = Node.finish;
+    document.getElementById(finishNode).className = Node.finish;
+
+    document.getElementById(finishNode).appendChild(gridBoard.addFinishPriority(finishNode));
 }
 
 export function resetToggleButtons() 

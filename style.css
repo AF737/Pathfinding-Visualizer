@@ -16,6 +16,13 @@
     --normal-weight-node-color: #e8dd19;
     --heavy-weight-node-color: #06d314;
     --jump-point-node-color: black;
+    --visited-by-previous-algorithm-node-color: #5d52f7;
+    --outline-thickness-25-percent: 0.5px;
+    --outline-thickness-50-percent: 1.0px;
+    --outline-thickness-75-percent: 1.5px;
+    --outline-thickness-100-percent: 2.0px;
+    /* Pushes outline inward and leaves room for 1px border */
+    --outline-offset: -3px;
 }
 
 /* These settings apply to all elements */
@@ -467,7 +474,7 @@ div.startVisited
     border: 1px solid black;
     /* Create a blue border inside the square so that the red background color still
         shows the start and the blue outline shows that it has been visited */
-    outline-offset: -5px;
+    outline-offset: var(--outline-offset);
     animation-name: startVisitedAnimation;
     animation-duration: 1.5s;
     animation-fill-mode: forwards;
@@ -475,6 +482,10 @@ div.startVisited
     animation-iteration-count: 1;
     animation-direction: normal;
     animation-timing-function: ease-out;
+    /* Center priority number. The priority */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 @keyframes startVisitedAnimation 
@@ -489,27 +500,27 @@ div.startVisited
     25% 
     {
         background-color: #c94b4b;
-        outline: 1px solid var(--visited-node-color);
+        outline: var(--outline-thickness-25-percent) solid var(--visited-node-color);
     }
 
     50% 
     {
         background-color: #eb4949;
         transform: scale(1.20);
-        outline: 2px solid var(--visited-node-color);
+        outline: var(--outline-thickness-25-percent) solid var(--visited-node-color);
     }
 
     75% 
     {
         background-color: #d43d3d;
-        outline: 3px solid var(--visited-node-color);
+        outline: var(--outline-thickness-75-percent) solid var(--visited-node-color);
     }
 
     100% 
     {
         background-color: var(--start-node-color);
         transform: scale(1.0);
-        outline: 4px solid var(--visited-node-color);
+        outline: var(--outline-thickness-100-percent) solid var(--visited-node-color);
     }
 }
 
@@ -517,7 +528,7 @@ div.startShortestPath
 {
     cursor: pointer;
     border: 1px solid black;
-    outline-offset: -5px;
+    outline-offset: var(--outline-offset);
     animation-name: startShortestPathAnimation;
     animation-duration: 1.5s;
     animation-fill-mode: forwards;
@@ -525,6 +536,9 @@ div.startShortestPath
     animation-iteration-count: 1;
     animation-direction: normal;
     animation-timing-function: ease-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 @keyframes startShortestPathAnimation 
@@ -539,27 +553,27 @@ div.startShortestPath
     25% 
     {
         background-color: #c94b4b;
-        outline: 1px solid var(--shortest-path-node-color);
+        outline: var(--outline-thickness-25-percent) solid var(--shortest-path-node-color);
     }
 
     50% 
     {
         background-color: #eb4949;
         transform: scale(1.20);
-        outline: 2px solid var(--shortest-path-node-color);
+        outline: var(--outline-thickness-50-percent) solid var(--shortest-path-node-color);
     }
 
     75% 
     {
         background-color: #d43d3d;
-        outline: 3px solid var(--shortest-path-node-color);
+        outline: var(--outline-thickness-75-percent) solid var(--shortest-path-node-color);
     }
 
     100% 
     {
         background-color: var(--start-node-color);
         transform: scale(1.0);
-        outline: 4px solid var(--shortest-path-node-color);
+        outline: var(--outline-thickness-100-percent) solid var(--shortest-path-node-color);
     }
 }
 
@@ -568,13 +582,17 @@ div.finish
     cursor: pointer;
     background-color: var(--finish-node-color);
     border: 1px solid black;
+    /* Center priority number */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 div.finishVisited 
 {
     cursor: pointer;
     border: 1px solid black;
-    outline-offset: -5px;
+    outline-offset: var(--outline-offset);
     animation-name: finishVisitedAnimation;
     animation-duration: 1.5s;
     animation-fill-mode: forwards;
@@ -582,6 +600,9 @@ div.finishVisited
     animation-iteration-count: 1;
     animation-direction: normal;
     animation-timing-function: ease-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 @keyframes finishVisitedAnimation 
@@ -596,27 +617,27 @@ div.finishVisited
     25% 
     {
         background-color: #87ed8e;
-        outline: 1px solid var(--visited-node-color);
+        outline: var(--outline-thickness-25-percent) solid var(--visited-node-color);
     }
 
     50% 
     {
         background-color: #64f56e;
         transform: scale(1.20);
-        outline: 2px solid var(--visited-node-color);
+        outline: var(--outline-thickness-50-percent) solid var(--visited-node-color);
     }
 
     75% 
     {
         background-color: #2ae836;
-        outline: 3px solid var(--visited-node-color);
+        outline: var(--outline-thickness-75-percent) solid var(--visited-node-color);
     }
 
     100% 
     {
         background-color: var(--finish-node-color);
         transform: scale(1.0);
-        outline: 4px solid var(--visited-node-color);
+        outline: var(--outline-thickness-100-percent) solid var(--visited-node-color);
     }
 }
 
@@ -624,7 +645,7 @@ div.finishShortestPath
 {
     cursor: pointer;
     border: 1px solid black;
-    outline-offset: -5px;
+    outline-offset: var(--outline-offset);
     animation-name: finishShortestPathAnimation;
     animation-duration: 1.5s;
     animation-fill-mode: forwards;
@@ -632,6 +653,9 @@ div.finishShortestPath
     animation-iteration-count: 1;
     animation-direction: normal;
     animation-timing-function: ease-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 @keyframes finishShortestPathAnimation 
@@ -646,27 +670,27 @@ div.finishShortestPath
     25% 
     {
         background-color: #87ed8e;
-        outline: 1px solid var(--shortest-path-node-color);
+        outline: var(--outline-thickness-25-percent) solid var(--shortest-path-node-color);
     }
 
     50% 
     {
         background-color: #64f56e;
         transform: scale(1.20);
-        outline: 2px solid var(--shortest-path-node-color);
+        outline: var(--outline-thickness-50-percent) solid var(--shortest-path-node-color);
     }
 
     75% 
     {
         background-color: #2ae836;
-        outline: 3px solid var(--shortest-path-node-color);
+        outline: var(--outline-thickness-75-percent) solid var(--shortest-path-node-color);
     }
 
     100% 
     {
         background-color: var(--finish-node-color);
         transform: scale(1.0);
-        outline: 4px solid var(--shortest-path-node-color);
+        outline: var(--outline-thickness-100-percent) solid var(--shortest-path-node-color);
     }
 }
 
@@ -713,6 +737,15 @@ div.visited
         background-color: var(--visited-node-color);
         transform: scale(1.0);
     }
+}
+
+/* Only used for multiple finish nodes. Make visited nodes from
+    previous algorithm iteration less visible */
+div.visitedByPreviousAlgorithm
+{
+    cursor: pointer;
+    border: 1px solid black;
+    background-color: var(--visited-by-previous-algorithm-node-color);
 }
 
 div.shortestPath 

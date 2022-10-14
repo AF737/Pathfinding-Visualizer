@@ -6,8 +6,9 @@ import Board from './board.js';
 import {adjustGridDimensions, createGrid} from './grid.js';
 import {openInfoBox, closeInfoBox, handlePrevInfoButton, 
         handleNextInfoButton} from './infoBox.js';
-import {DISABLED_COLOR, BUTTON_BACKGROUND_COLOR, disableButtons, removeWalls, resetToggleButtons, disableToggleButtons,
-        enableEightDirections, removePreviousAlgorithm, resetStartAndFinish, 
+import {DISABLED_COLOR, BUTTON_BACKGROUND_COLOR, disableButtons, removeWalls, resetToggleButtons, 
+        disableToggleButtons, enableEightDirections, removePreviousAlgorithm, 
+        makePreviousAlgorithmLessVisible, resetStartAndFinish, 
         setAndDisableEightDirections} from './helperFunctions.js';
 import {handleLightWeightSlider, handleNormalWeightSlider, handleHeavyWeightSlider, 
         removeWeights} from './weights.js';
@@ -161,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function()
                 }
         
                 /* Only start the algorithm if both start and finish are placed */
-                else if (gridBoard.startIsPlaced === false || gridBoard.finishIsPlaced === false) 
+                else if (gridBoard.startIsPlaced === false || gridBoard.finishIsPlaced === false)
                     return;
         
                 else 
@@ -176,14 +177,48 @@ document.addEventListener('DOMContentLoaded', function()
                     disableButtons();
                     disableToggleButtons();
                     gridBoard.algoIsRunning = true;
-        
-                    const startNode = gridBoard.nodesMatrix[gridBoard.startRow][gridBoard.startCol];
-                    const finishNode = gridBoard.nodesMatrix[gridBoard.finishRow][gridBoard.finishCol];
-        
-                    startAlgorithmAnimation(selectedAlgorithm.value, startNode, finishNode, gridBoard);
+                    
+                    animateAlgos(selectedAlgorithm.value, gridBoard, 0);
                 }
             });
         });
+    }
+
+    function waitForAlgo(timeToWait)
+    {
+        return new Promise(resolve =>
+        {
+            setTimeout(() =>
+            {
+                resolve('resolved');
+            }, timeToWait);
+        });
+    }
+
+    async function animateAlgos(selectedAlgo, gridBoard, index)
+    {
+        let startNode;
+
+        if (index === gridBoard.finishRows.length)
+            return;
+
+        if (index === 0)
+            startNode = gridBoard.nodesMatrix[gridBoard.startRow][gridBoard.startCol];
+
+        else
+            startNode = gridBoard.nodesMatrix[ gridBoard.finishRows[index - 1] ][ gridBoard.finishCols[index - 1] ];
+
+        const finishNode = gridBoard.nodesMatrix[ gridBoard.finishRows[index] ][ gridBoard.finishCols[index] ];
+
+        const timeToWait = startAlgorithmAnimation(selectedAlgo, startNode, finishNode, gridBoard);
+        
+        makePreviousAlgorithmLessVisible(gridBoard);
+
+        const result = await waitForAlgo(timeToWait);
+
+        index++;
+
+        animateAlgos(selectedAlgo, gridBoard, index);
     }
 
     function setupAlgorithmRadioButtons() 

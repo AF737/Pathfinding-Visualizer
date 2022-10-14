@@ -39,7 +39,8 @@ const Key =
 {
     lightWeight: 'q',
     normalWeight: 'w',
-    heavyWeight: 'e'
+    heavyWeight: 'e',
+    finishNode: 'r'
 };
 
 Object.freeze(Key);
@@ -56,8 +57,8 @@ function handleMouseDownAndMove(ev, mouseEv, gridBoard)
         gridBoard.mouseIsPressed = true;
 
     /* The user can move the mouse without changing the tile that the mouse is
-        over therefore executing this function multiple times. We do nothing after
-        the first click on each tile until the user has changed it to avoid
+        over therefore executing this function multiple times. So do nothing after
+        the first click on a tile until the user has changed it to avoid
         toggling walls, weights, start and finish constantly */
     else if (mouseEv === mouseEvent.move && ev.target === previousTarget) 
         return;
@@ -69,15 +70,21 @@ function handleMouseDownAndMove(ev, mouseEv, gridBoard)
 
     previousTarget = ev.target;
 
+    if (ev.target.className === Node.start ||
+        ev.target.className === Node.startShortestPath)
+            gridBoard.startIsPlaced = false;
+
+    if ((ev.target.className === Node.finish ||
+        ev.target.className === Node.finishShortestPath) &&
+        gridBoard.numberOfFinishNodesPlaced() === 1)
+            gridBoard.finishIsPlaced = false;
+
     if (gridBoard.pressedKey === null) 
     {
-        if (gridBoard.startIsPlaced === false) 
+        if (gridBoard.startIsPlaced === false && 
+            ev.target.className !== Node.start &&
+            ev.target.className !== Node.startShortestPath) 
         {
-            /* If start is placed where finish was */
-            if (ev.target.className === Node.finish ||
-                ev.target.className === Node.finishShortestPath) 
-                    gridBoard.finishIsPlaced = false;
-            
             /* Reset the old position of start to be unvisited */
             gridBoard.nodesMatrix[gridBoard.startRow][gridBoard.startCol].class = 
                 Node.unvisited;
@@ -91,24 +98,6 @@ function handleMouseDownAndMove(ev, mouseEv, gridBoard)
             /* Color the node that is being clicked with the start color */
             ev.target.className = Node.start;
             gridBoard.startIsPlaced = true;
-        }
-
-        /* If finish is placed where start was */
-        else if (gridBoard.finishIsPlaced === false) 
-        {
-            if (ev.target.className === Node.start ||
-                ev.target.className === Node.startShortestPath) 
-                    gridBoard.startIsPlaced = false;
-
-            gridBoard.nodesMatrix[gridBoard.finishRow][gridBoard.finishCol].class = 
-                Node.unvisited;
-            const [descriptor, row, col] = ev.target.id.split('-');
-            gridBoard.finishRow = row;
-            gridBoard.finishCol = col;
-            gridBoard.nodesMatrix[gridBoard.finishRow][gridBoard.finishCol].class = 
-                Node.finish;
-            ev.target.className = Node.finish;
-            gridBoard.finishIsPlaced = true;
         }
 
         else 
@@ -147,26 +136,33 @@ function handleMouseDownAndMove(ev, mouseEv, gridBoard)
                     break;
 
                 case Node.finish:
-                    ev.target.className = Node.unvisited;
-                    gridBoard.finishIsPlaced = false;
+                    gridBoard.clearFinishPriority(ev.target.id);
+                    /* Overwrite className 'unvisited' set by clearFinishPriority */
+                    ev.target.className = Node.wall;
+                    
+                    if (gridBoard.numberOfFinishNodesPlaced() === 0)
+                        gridBoard.finishIsPlaced = false;
                     break;
 
                 case Node.finishShortestPath:
-                    ev.target.className = Node.shortestPath;
-                    gridBoard.finishIsPlaced = false;
+                    gridBoard.clearFinishPriority(ev.target.id);
+                    ev.target.className = Node.wall;
+
+                    if (gridBoard.numberOfFinishNodesPlaced() === 0)
+                        gridBoard.finishIsPlaced = false;
                     break;
             }
         }
     }
 
-    /* If the user presses the key for light weights (default: q) 
+    /* If the user presses the key for light weights (Q)
         while left-clicking */
     else if (gridBoard.pressedKey === Key.lightWeight) 
     {
         if (unweightedAlgorithm === true)
             return;
 
-        if (ev.target.className == Node.lightWeight) 
+        if (ev.target.className === Node.lightWeight) 
         {
             ev.target.className = Node.unvisited;
             changeWeightOfNode(ev.target.id, NODE_WEIGHT_NONE, gridBoard);
@@ -179,12 +175,13 @@ function handleMouseDownAndMove(ev, mouseEv, gridBoard)
         }
     }
 
+    /* W (key) + left-click */
     else if (gridBoard.pressedKey === Key.normalWeight) 
     {
         if (unweightedAlgorithm === true)
             return;
 
-        if (ev.target.className == Node.normalWeight) 
+        if (ev.target.className === Node.normalWeight) 
         {
             ev.target.className = Node.unvisited;
             changeWeightOfNode(ev.target.id, NODE_WEIGHT_NONE, gridBoard);
@@ -197,12 +194,13 @@ function handleMouseDownAndMove(ev, mouseEv, gridBoard)
         }
     }
 
+    /* E (key) + left-click */
     else if (gridBoard.pressedKey === Key.heavyWeight) 
     {
         if (unweightedAlgorithm === true)
             return;
 
-        if (ev.target.className == Node.heavyWeight) 
+        if (ev.target.className === Node.heavyWeight) 
         {
             ev.target.className = Node.unvisited;
             changeWeightOfNode(ev.target.id, NODE_WEIGHT_NONE, gridBoard);
@@ -212,6 +210,39 @@ function handleMouseDownAndMove(ev, mouseEv, gridBoard)
         {
             ev.target.className = Node.heavyWeight;
             changeWeightOfNode(ev.target.id, nodeWeightHeavy, gridBoard);
+        }
+    }
+
+    /* R (key) + left-click */
+    else if (gridBoard.pressedKey === Key.finishNode)
+    {
+        if (ev.target.className === Node.finish ||
+            ev.target.className === Node.finishShortestPath)
+        {
+            gridBoard.clearFinishPriority(ev.target.id);
+            ev.target.className = Node.unvisited;
+
+            if (gridBoard.numberOfFinishNodesPlaced() === 0)
+                gridBoard.finishIsPlaced = false;
+        }
+
+        else
+        {
+            const newFinishPriority = gridBoard.addFinishPriority(ev.target.id);
+
+            /* Maximum amount of finish nodes has been reached (99) */
+            if (newFinishPriority === null)
+                return;
+            
+            ev.target.className = Node.finish;
+            changeWeightOfNode(ev.target.id, NODE_WEIGHT_NONE, gridBoard);
+            document.getElementById(ev.target.id).appendChild(newFinishPriority);
+
+            const [descriptor, row, col] = ev.target.id.split('-');
+
+            gridBoard.nodesMatrix[row][col].class = Node.finish;
+
+            gridBoard.finishIsPlaced = true;
         }
     }
 }
