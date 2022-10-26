@@ -4,6 +4,7 @@ export {mouseEvent, handleMouseDownAndMove};
 
 import {unweightedAlgorithm} from './index.js';
 import {infoBoxVisible} from './infoBox.js';
+import {algorithmStatisticsVisible} from './algorithmStatistics.js'
 import {changeWallStatus} from './helperFunctions.js';
 import {NODE_WEIGHT_NONE, nodeWeightLight, nodeWeightNormal, nodeWeightHeavy, 
         changeWeightOfNode} from './weights.js';
@@ -50,7 +51,8 @@ let previousTarget = null;
 function handleMouseDownAndMove(ev, mouseEv, gridBoard) 
 {
     /* Disable click events for buttons and the grid */
-    if (gridBoard.algoIsRunning === true || infoBoxVisible === true) 
+    if (gridBoard.algoIsRunning === true || infoBoxVisible === true || 
+        algorithmStatisticsVisible === true) 
         return;
 
     if (mouseEv === mouseEvent.down) 

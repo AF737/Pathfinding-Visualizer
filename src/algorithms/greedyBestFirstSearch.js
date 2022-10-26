@@ -34,7 +34,7 @@ export default function greedyBestFirstSearch(grid, startNode, finishNode, eight
         }
 
         updateUnvisitedNeighbors(grid, closestNode, finishNode, nodesToCheck, 
-            eightDirections, cornerCutting);
+            eightDirections, cornerCutting, visitedNodes);
     }
 
     /* If we exited the while loop then the start and/or finish node is completely
@@ -54,12 +54,15 @@ function sortNodesByDistance(nodesToCheck)
         firstNode.heuristicDistance - secondNode.heuristicDistance);
 }
 
-function updateUnvisitedNeighbors(grid, node, finishNode, nodesToCheck, eightDirections, cornerCutting) 
+function updateUnvisitedNeighbors(grid, node, finishNode, nodesToCheck, eightDirections, cornerCutting, visitedNodes) 
 {
     const neighbors = getUnvisitedNeighbors(grid, node, eightDirections, cornerCutting);
 
     for (const neighbor of neighbors) 
     {
+        if (nodesToCheck.includes(neighbor) === true || visitedNodes.includes(neighbor) === true)
+            continue;
+
         neighbor.isVisited = true;
         neighbor.heuristicDistance = neighbor.weight + getHeuristicDistance(neighbor, finishNode);
         neighbor.prevNode = node;

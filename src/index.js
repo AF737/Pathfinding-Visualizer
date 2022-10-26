@@ -14,6 +14,8 @@ import {handleLightWeightSlider, handleNormalWeightSlider, handleHeavyWeightSlid
         removeWeights} from './weights.js';
 import startAlgorithmAnimation from './animateAlgorithms.js';
 import {mouseEvent, handleMouseDownAndMove} from './mouseEvents.js';
+import {openAlgorithmStatistics, closeAlgorithmStatistics, collectAlgorithmStatistics} 
+        from './algorithmStatistics.js';
 
 let eightDirections = false, cornerCutting = false, unweightedAlgorithm = false;
 
@@ -28,20 +30,23 @@ document.addEventListener('DOMContentLoaded', function()
     const normalWeightSlider = document.getElementById('normalWeightSlider');
     const heavyWeightSlider = document.getElementById('heavyWeightSlider');
     const eightDirectionsToggleButton = document.getElementById('eightDirectionsToggleButton');
-    const animateAlgorithmButton = document.getElementById('animateAlgorithm');
-    const clearAlgorithmButton = document.getElementById('clearAlgorithm');
-    const clearWallsButton = document.getElementById('clearWalls');
-    const clearWeightsButton = document.getElementById('clearWeights');
-    const resetBoardButton = document.getElementById('resetBoard');
+    const animateAlgorithmButton = document.getElementById('animateAlgorithmButton');
+    const clearAlgorithmButton = document.getElementById('clearAlgorithmButton');
+    const clearWallsButton = document.getElementById('clearWallsButton');
+    const clearWeightsButton = document.getElementById('clearWeightsButton');
+    const resetBoardButton = document.getElementById('resetBoardButton');
     const skipInfoBoxButton = document.getElementById('skipInfoBoxButton');
     const prevInfoBoxButton = document.getElementById('prevInfoBoxButton');
     const nextInfoButton = document.getElementById('nextInfoBoxButton');
-    const openInfoBoxButton = document.getElementById('openInfoBox');
+    const openInfoBoxButton = document.getElementById('openInfoBoxButton');
     const cornerCuttingToggleButton = document.getElementById('cornerCuttingToggleButton');
     const cornerCuttingSwitch = document.getElementById('cornerCuttingSwitch');
+    const openAlgorithmStatisticsButton = document.getElementById('openAlgorithmStatisticsButton');
+    const closeAlgorithmStatisticsButton = document.getElementById('closeAlgorithmStatisticsButton');
     const mobileMenuButton = document.getElementById('mobileMenuButton');
     const board = document.getElementById('board');
 
+    /* Setup function that runs immediately */
     (function() 
     {
         setupMouseAndTouchInteractions();
@@ -118,6 +123,20 @@ document.addEventListener('DOMContentLoaded', function()
                 resetStartAndFinish(gridBoard);
                 removePreviousAlgorithm(gridBoard);
             });
+
+            openAlgorithmStatisticsButton.addEventListener(userEvent, function(ev)
+            {
+                ev.preventDefault();
+
+                openAlgorithmStatistics();
+            });
+
+            closeAlgorithmStatisticsButton.addEventListener(userEvent, function(ev)
+            {
+                ev.preventDefault();
+
+                closeAlgorithmStatistics();
+            });
         
             skipInfoBoxButton.addEventListener(userEvent, function(ev) 
             {
@@ -178,47 +197,77 @@ document.addEventListener('DOMContentLoaded', function()
                     disableToggleButtons();
                     gridBoard.algoIsRunning = true;
                     
-                    animateAlgos(selectedAlgorithm.value, gridBoard, 0);
+                    let totalNumberOfVisitedNodes = 0;
+                    let totalNumberOfShortestPathNodes = 0;
+
+                    animateAlgorithm(selectedAlgorithm.value, gridBoard, 0, -1, totalNumberOfVisitedNodes, totalNumberOfShortestPathNodes);
                 }
             });
         });
     }
 
-    function waitForAlgo(timeToWait)
+    function waitForAlgorithmToComplete(timeToWait)
     {
-        return new Promise(resolve =>
+        return new Promise(function(resolve)
         {
-            setTimeout(() =>
+            setTimeout(function()
             {
                 resolve('resolved');
             }, timeToWait);
         });
     }
 
-    async function animateAlgos(selectedAlgo, gridBoard, index)
+    async function animateAlgorithm(selectedAlgo, gridBoard, index, previousIndex, totalNumberOfVisitedNodes, totalNumberOfShortestPathNodes)
     {
-        let startNode;
+        while(gridBoard.finishRows[index] === null)
+            index++;
 
         if (index === gridBoard.finishRows.length)
+        {
+            collectAlgorithmStatistics(selectedAlgo, totalNumberOfVisitedNodes, totalNumberOfShortestPathNodes, gridBoard);
             return;
+        }
 
-        if (index === 0)
+        let startNode;
+
+        /* First iteration of this function */
+        if (previousIndex === -1)
             startNode = gridBoard.nodesMatrix[gridBoard.startRow][gridBoard.startCol];
-
+        /* There's more than one finish node and the first finish node has been reached so use this finish node as the start node for 
+            this iteration */
         else
-            startNode = gridBoard.nodesMatrix[ gridBoard.finishRows[index - 1] ][ gridBoard.finishCols[index - 1] ];
+            startNode = gridBoard.nodesMatrix[ gridBoard.finishRows[previousIndex] ][ gridBoard.finishCols[previousIndex] ];
 
         const finishNode = gridBoard.nodesMatrix[ gridBoard.finishRows[index] ][ gridBoard.finishCols[index] ];
 
-        const timeToWait = startAlgorithmAnimation(selectedAlgo, startNode, finishNode, gridBoard);
+        /* Only enable the UI again after the algorithm has visited the last finish node */
+        let lastFinishNode = true;
+
+        for (let i = index + 1; i < gridBoard.finishRows.length; i++)
+        {
+            /* There's still at least one finish node left that hasn't been visited yet as otherwise all values would be null */
+            if (gridBoard.finishRows[i] !== null)
+            {
+                lastFinishNode = false;
+                break;
+            }
+        }
+
+        const [timeToWait, numberOfVisitedNodes, numberOfShortestPathNodes] = 
+            startAlgorithmAnimation(selectedAlgo, startNode, finishNode, gridBoard, lastFinishNode, false);
+
+        totalNumberOfVisitedNodes += numberOfVisitedNodes;
+        totalNumberOfShortestPathNodes += numberOfShortestPathNodes;
         
         makePreviousAlgorithmLessVisible(gridBoard);
 
-        const result = await waitForAlgo(timeToWait);
+        const result = await waitForAlgorithmToComplete(timeToWait);
 
+        previousIndex = index;
         index++;
 
-        animateAlgos(selectedAlgo, gridBoard, index);
+        /* Repeat algorithm until all finish nodes have been reached */
+        animateAlgorithm(selectedAlgo, gridBoard, index, previousIndex, totalNumberOfVisitedNodes, totalNumberOfShortestPathNodes);
     }
 
     function setupAlgorithmRadioButtons() 

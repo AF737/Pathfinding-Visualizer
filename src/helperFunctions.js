@@ -28,11 +28,13 @@ export function enableButtons()
 
     const menuButtons = document.getElementsByClassName('menuButton');
 
-    for (const button of menuButtons) 
+    for (const button of menuButtons)
         button.disabled = false;
 
     mobileMenuButton.style.pointerEvents = 'auto';
 
+    /* The mobile menu button consists for three bars that are red when it can't
+        be clicked */
     for (const bar of bars) 
         bar.style.backgroundColor = 'white';
 }
@@ -112,8 +114,20 @@ export function removePreviousAlgorithm(gridBoard)
         .className = Node.start;
 
     for (let i = 0; i < gridBoard.finishRows.length; i++)
-        document.getElementById(`node-${gridBoard.finishRows[i]}-${gridBoard.finishCols[i]}`)
-            .className = Node.finish;
+    {
+        if (gridBoard.finishRows[i] !== null)
+            document.getElementById(`node-${gridBoard.finishRows[i]}-${gridBoard.finishCols[i]}`)
+                .className = Node.finish;
+    }
+}
+
+export function resetAllNodesInternally(gridBoard)
+{
+    for (let row = 0; row < gridBoard.rows; row++)
+    {
+        for (let col = 0; col < gridBoard.columns; col++)
+            resetNode(row, col, gridBoard);
+    }
 }
 
 export function makePreviousAlgorithmLessVisible(gridBoard)

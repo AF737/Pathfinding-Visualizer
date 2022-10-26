@@ -38,9 +38,8 @@ function closeInfoBox()
 
     for (const menuStyle of menuStyles) 
     {
-        if (menuStyle.style.display === 'flex') {
+        if (menuStyle.style.display === 'flex') 
             enableButtonsMobile();
-        }
 
         else 
             enableButtons();
@@ -160,10 +159,14 @@ function displayInfoBoxText(currentPage)
             break;
         case 4:
             infoBoxText.innerHTML = `<h2 class="h2InfoBox">Overview of features 1/2</h2>
-            <p class="pInfoBox">Walls can be easily added by left-clicking on a tile and
-                removed by clicking on it again. <br/>The start and finish node can be moved
-                by simply left-clicking on them and then clicking the tile where you want to 
-                place them. <br/><span style="color: red;">The following does <strong>NOT</strong> 
+            <p class="pInfoBox">Walls can be added by left-clicking on a tile and
+                removed by clicking on it again. <br/>The start node can be moved
+                by simply left-clicking on it and then clicking the tile where you want to 
+                place it. <br/>There can be multiple finish nodes. They can be added by 
+                pressing R while left-clicking. There can be a maximum of 99 finish nodes at
+                once (numbered 1 to 99). The algorithm will move to them in the order of
+                their number starting with the lowest and ending with the highest. <br/>
+                <span style="color: red;">The following does <strong>NOT</strong> 
                 work in the mobile version:</span><br/>There are three different weights 
                 which can be placed by left-clicking while pressing either of these buttons: 
                 <span style="color: #32ccb2;">Q</span>, <span style="color: #e8dd19;">
@@ -196,9 +199,9 @@ function displayInfoBoxText(currentPage)
         case 7:
             infoBoxText.innerHTML = `<h2 class="h2InfoBox">Cutting corners</h2>
             <p class="pInfoBox"><strong>"Corner cutting"</strong> only works when the allowed directions
-                are set to <strong>"Eight Directions"</strong>. This setting allows the red square to
-                squeeze itself through non-existent spaces when moving diagonally. Please see the video 
-                below for an illustration.
+                are set to <strong>"Eight Directions"</strong>. This setting allows the algorithm to
+                squeeze itself through non-existent spaces when moving diagonally (spaces between two walls
+                that share exactly one corner). Please view the video below for an illustration.
             </p>
             <img src="images/corner_cutting.gif" id="cornerCuttingGif"/>`;
             break;

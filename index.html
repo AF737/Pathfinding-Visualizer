@@ -65,7 +65,7 @@
                             </div>
                         </div> <!-- End of "algorithmDropDownMenu" -->
                     </div> <!-- End of "dropDownWrapper" -->
-                    <button id="animateAlgorithm" class="menuButton" disabled="true">
+                    <button id="animateAlgorithmButton" class="menuButton" disabled="true">
                         Animate
                     </button>
                     <div class="menuStyle">
@@ -102,20 +102,23 @@
                             <input type="checkbox" id="cornerCuttingToggleButton" disabled="true">
                             <span id="cornerCuttingText"></span>
                         </label>
-                        <button id="clearAlgorithm" class="menuButton" disabled="true">
+                        <button id="clearAlgorithmButton" class="menuButton" disabled="true">
                             Clear Algorithm
                         </button>
-                        <button id="clearWalls" class="menuButton" disabled="true">
+                        <button id="clearWallsButton" class="menuButton" disabled="true">
                             Clear Walls
                         </button>
-                        <button id="clearWeights" class="menuButton" disabled="true">
+                        <button id="clearWeightsButton" class="menuButton" disabled="true">
                             Clear Weights
                         </button>
-                        <button id="resetBoard" class="menuButton" disabled="true">
+                        <button id="resetBoardButton" class="menuButton" disabled="true">
                             Reset Board
                         </button>
-                        <button id="openInfoBox" class="menuButton" disabled="true">
+                        <button id="openInfoBoxButton" class="menuButton" disabled="true">
                             Open Infobox
+                        </button>
+                        <button id="openAlgorithmStatisticsButton" class="menuButton" disabled="true">
+                            Open Statistics
                         </button>
                     </div> <!-- End of "menuStyle" -->
                     <div id="mobileMenuButton">
@@ -177,6 +180,20 @@
                 </button>
                 <button id="nextInfoBoxButton" class="infoBoxButton">Next</button>
             </div> <!-- End of "infoBox" -->
+            <div id="algorithmStatistics">
+                <p id="emptyTableExplanation" class="pAlgorithmStatistics">
+                    Run an algorithm to see how it compares to the others!
+                </p>
+                <table id="algorithmStatisticsTable"></table>
+                <div id="coloredBackgroundExplanationWrapper">
+                    <div id="coloredAlgorithmBackgroundSquare"></div>
+                    <p id="coloredBackgroundExplanation" class="pAlgorithmStatistics">Your selected algorithm</p>
+                </div>
+                <p id="algorithmTableStarExplanation" class="pAlgorithmStatistics">(*) Percentage change compared 
+                    to the last run algorithm
+                </p>
+                <button id="closeAlgorithmStatisticsButton" class="algorithmStatisticsButton">Close</button>
+            </div> <!-- End of "algorithmStatistics" -->
             <div class="overlay">
                 <div id="board"></div>
             </div>

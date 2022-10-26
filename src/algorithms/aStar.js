@@ -143,7 +143,7 @@ function getNeighbors(grid, node, eightDirections, cornerCutting)
 
         if (down === true && right === true &&
             checkCornerCutting(grid, cornerCutting, row, col, 1, 1) === true) 
-            neighbors.push(grid.nodesMatrix[row + 1][col + 1]);
+                neighbors.push(grid.nodesMatrix[row + 1][col + 1]);
     }
 
     /* Even already visited neighbors are returned, because there might be a shorter

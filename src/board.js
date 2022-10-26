@@ -78,7 +78,7 @@ export default class Board
 
         const [descriptor, row, col] = id.split('-');
         const index = this.finishRows.indexOf(row);
-
+        
         if (index !== -1)
         {
             this.finishRows[index] = null;

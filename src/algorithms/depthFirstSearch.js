@@ -5,8 +5,6 @@ export default function depthFirstSearch(grid, startNode, finishNode)
     const visitedNodes = [];
     const nodesToCheck = [];
     startNode.distanceFromStart = 0;
-    startNode.isVisited = true;
-    visitedNodes.push(startNode);
     nodesToCheck.push(startNode);
 
     while (nodesToCheck.length > 0) 
@@ -15,7 +13,7 @@ export default function depthFirstSearch(grid, startNode, finishNode)
             every direction until it meets a dead end */
         const currentNode = nodesToCheck.pop();
 
-        if (currentNode.isWall === true)
+        if (currentNode.isWall === true || currentNode.isVisited === true)
             continue;
         
         currentNode.isVisited = true;
@@ -37,7 +35,7 @@ export default function depthFirstSearch(grid, startNode, finishNode)
         }
 
         /* Add the unvisited neighbors to the array */
-        nodesToCheck.push.apply(nodesToCheck, updateUnvisitedNeighbors(grid, currentNode));
+        updateUnvisitedNeighbors(grid, currentNode, nodesToCheck);
     }
 
     /* If we exited the while loop then the start and/or finish node is completely
@@ -46,7 +44,7 @@ export default function depthFirstSearch(grid, startNode, finishNode)
     return [visitedNodes, null];
 }
 
-function updateUnvisitedNeighbors(grid, node) 
+function updateUnvisitedNeighbors(grid, node, nodesToCheck) 
 {
     const unvisitedNeighbors = getUnvisitedNeighbors(grid, node);
 
@@ -57,9 +55,8 @@ function updateUnvisitedNeighbors(grid, node)
     {
         neighbor.distanceFromStart = node.distanceFromStart + neighbor.weight;
         neighbor.prevNode = node;
+        nodesToCheck.push(neighbor);
     }
-
-    return unvisitedNeighbors;
 }
 
 function getUnvisitedNeighbors(grid, node) 
