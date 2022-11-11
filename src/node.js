@@ -19,5 +19,6 @@ export default class Node
         /* Used for bidirectional algorithms */
         this.prevNodeFromFinish = null;
         this.isJumpPoint = false;
+        this.allowedDirection = [null, null];
     }
 }

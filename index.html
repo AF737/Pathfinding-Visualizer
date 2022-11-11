@@ -69,7 +69,38 @@
                         Animate
                     </button>
                     <div class="menuStyle">
-                        <div id="weightDropDownWrapper" class="dropDownWrapper">
+                        <div class="dropDownWrapper">
+                            <button id="mazeDropDownButton" class="dropDownButton" disabled="true">
+                                Create Mazes&#9660;
+                            </button>
+                            <div id="mazeDropDownMenu" class="dropDownMenu">
+                                <button id="randomizedDepthFirstSearch" class="mazeAlgorithmButton" 
+                                    value="randomizedDepthFirstSearchMaze">
+                                    Randomized Depth-First Search
+                                </button>
+                                <button id="randomizedKruskal" class="mazeAlgorithmButton" 
+                                    value="randomizedKruskalMaze">
+                                    Randomized Kruskal's Algorithm
+                                </button>
+                                <button id="randomizedPrim" class="mazeAlgorithmButton" 
+                                    value="randomizedPrimMaze">
+                                    Randomized Prim's Algorithm
+                                </button>
+                                <button id="wilson" class="mazeAlgorithmButton"
+                                    value="wilsonMaze">
+                                    Wilson's Algorithm
+                                </button>
+                                <button id="aldousBroder" class="mazeAlgorithmButton"
+                                    value="aldousBroderMaze">
+                                    Aldous-Broder Algorithm
+                                </button>
+                                <button id="huntAndKill" class="mazeAlgorithmButton"
+                                    value="huntAndKillMaze">
+                                    Hunt-And-Kill Algorithm
+                                </button>
+                            </div> <!-- End of "mazeDropDownMenu" -->
+                        </div> <!-- End of "dropDownWrapper" -->
+                        <div class="dropDownWrapper">
                             <button id="weightDropDownButton" class="dropDownButton" disabled="true">
                                 Adjust Weights&#9660;
                             </button>

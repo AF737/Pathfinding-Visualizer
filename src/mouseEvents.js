@@ -4,10 +4,9 @@ export {mouseEvent, handleMouseDownAndMove};
 
 import {unweightedAlgorithm} from './index.js';
 import {infoBoxVisible} from './infoBox.js';
-import {algorithmStatisticsVisible} from './algorithmStatistics.js'
-import {changeWallStatus} from './helperFunctions.js';
-import {NODE_WEIGHT_NONE, nodeWeightLight, nodeWeightNormal, nodeWeightHeavy, 
-        changeWeightOfNode} from './weights.js';
+import {algorithmStatisticsVisible} from './algorithmStatistics.js';
+import {NODE_WEIGHT_NONE, nodeWeightLight, nodeWeightNormal, nodeWeightHeavy} 
+        from './weights.js';
 
 const mouseEvent = 
 {
@@ -31,27 +30,24 @@ const Node =
     start: 'start',
     startShortestPath: 'startShortestPath',
     finish: 'finish',
-    finishShortestPath: 'finishShortestPath'
+    finishShortestPath: 'finishShortestPath',
+    onlyUpTraversal: 'onlyUpTraversal',
+    onlyLeftTraversal: 'onlyLeftTraversal',
+    onlyDownTraversal: 'onlyDownTraversal',
+    onlyRightTraversal: 'onlyRightTraversal',
+    removeOneWayTraversal: 'removeOneWayTraversal'
 };
 
 Object.freeze(Node);
 
-const Key = 
-{
-    lightWeight: 'q',
-    normalWeight: 'w',
-    heavyWeight: 'e',
-    finishNode: 'r'
-};
-
-Object.freeze(Key);
+const oneWayNodeArrowImgFilePath = '/images/oneWayNodeArrow.png';
 
 let previousTarget = null;
 
-function handleMouseDownAndMove(ev, mouseEv, gridBoard) 
+function handleMouseDownAndMove(ev, mouseEv, gridBoard, PlaceSpecialNodes) 
 {
     /* Disable click events for buttons and the grid */
-    if (gridBoard.algoIsRunning === true || infoBoxVisible === true || 
+    if (gridBoard.algorithmIsRunning === true || infoBoxVisible === true || 
         algorithmStatisticsVisible === true) 
         return;
 
@@ -72,8 +68,19 @@ function handleMouseDownAndMove(ev, mouseEv, gridBoard)
 
     previousTarget = ev.target;
 
-    if (ev.target.className === Node.start ||
-        ev.target.className === Node.startShortestPath)
+    const keys = Object.keys(PlaceSpecialNodes);
+    const specialNodesToPlace = [];
+
+    for (const key of keys)
+    {
+        if (PlaceSpecialNodes[key] === true)
+            specialNodesToPlace.push(key);
+    }
+
+    /* Removing an one way arrow doesn't change the node so it doesn't remove start */
+    if ((ev.target.className === Node.start ||
+        ev.target.className === Node.startShortestPath) && 
+        specialNodesToPlace.includes(Node.removeOneWayTraversal) === false)
             gridBoard.startIsPlaced = false;
 
     if ((ev.target.className === Node.finish ||
@@ -81,12 +88,17 @@ function handleMouseDownAndMove(ev, mouseEv, gridBoard)
         gridBoard.numberOfFinishNodesPlaced() === 1)
             gridBoard.finishIsPlaced = false;
 
-    if (gridBoard.pressedKey === null) 
+    if (specialNodesToPlace.length === 0) 
     {
         if (gridBoard.startIsPlaced === false && 
             ev.target.className !== Node.start &&
             ev.target.className !== Node.startShortestPath) 
         {
+            /* Remove finish node if it's the target */
+            if (ev.target.className === Node.finish ||
+                ev.target.className === Node.finishShortestPath)
+                gridBoard.clearFinishPriority(ev.target.id);
+
             /* Reset the old position of start to be unvisited */
             gridBoard.nodesMatrix[gridBoard.startRow][gridBoard.startCol].class = 
                 Node.unvisited;
@@ -114,15 +126,17 @@ function handleMouseDownAndMove(ev, mouseEv, gridBoard)
                 case Node.visited:
                 case Node.shortestPath:
                 case Node.jumpPoint:
+                    /* Remove one way arrow, because these nodes don't have a special class */
+                    ev.target.innerHTML = '';
                     ev.target.className = Node.wall;
-                    changeWallStatus(ev.target.id, true, gridBoard);
-                    changeWeightOfNode(ev.target.id, NODE_WEIGHT_NONE, gridBoard);
+                    gridBoard.changeWallStatusOfNodeTo(ev.target.id, true);
+                    gridBoard.changeWeightOfNodeTo(ev.target.id, NODE_WEIGHT_NONE);
                     break;
 
                 /* Left-clicking on a wall removes it */
                 case Node.wall:
                     ev.target.className = Node.unvisited;
-                    changeWallStatus(ev.target.id, false, gridBoard);
+                    gridBoard.changeWallStatusOfNodeTo(ev.target.id, false);
                     break;
 
                 /* Start is removed and will be placed at the next node clicked at */
@@ -157,9 +171,9 @@ function handleMouseDownAndMove(ev, mouseEv, gridBoard)
         }
     }
 
-    /* If the user presses the key for light weights (Q)
+    /* If the user presses the key for light weights (1)
         while left-clicking */
-    else if (gridBoard.pressedKey === Key.lightWeight) 
+    else if (specialNodesToPlace.includes(Node.lightWeight) === true) 
     {
         if (unweightedAlgorithm === true)
             return;
@@ -167,18 +181,20 @@ function handleMouseDownAndMove(ev, mouseEv, gridBoard)
         if (ev.target.className === Node.lightWeight) 
         {
             ev.target.className = Node.unvisited;
-            changeWeightOfNode(ev.target.id, NODE_WEIGHT_NONE, gridBoard);
+            gridBoard.changeWeightOfNodeTo(ev.target.id, NODE_WEIGHT_NONE);
         }
 
         else 
         {
+            removeFinishIfTarget(ev, gridBoard);
+
             ev.target.className = Node.lightWeight;
-            changeWeightOfNode(ev.target.id, nodeWeightLight, gridBoard);
+            gridBoard.changeWeightOfNodeTo(ev.target.id, nodeWeightLight);
         }
     }
 
-    /* W (key) + left-click */
-    else if (gridBoard.pressedKey === Key.normalWeight) 
+    /* 2 (key) + left-click */
+    else if (specialNodesToPlace.includes(Node.normalWeight) === true) 
     {
         if (unweightedAlgorithm === true)
             return;
@@ -186,18 +202,20 @@ function handleMouseDownAndMove(ev, mouseEv, gridBoard)
         if (ev.target.className === Node.normalWeight) 
         {
             ev.target.className = Node.unvisited;
-            changeWeightOfNode(ev.target.id, NODE_WEIGHT_NONE, gridBoard);
+            gridBoard.changeWeightOfNodeTo(ev.target.id, NODE_WEIGHT_NONE);
         }
 
         else 
         {
+            removeFinishIfTarget(ev, gridBoard);
+
             ev.target.className = Node.normalWeight;
-            changeWeightOfNode(ev.target.id, nodeWeightNormal, gridBoard);
+            gridBoard.changeWeightOfNodeTo(ev.target.id, nodeWeightNormal);
         }
     }
 
-    /* E (key) + left-click */
-    else if (gridBoard.pressedKey === Key.heavyWeight) 
+    /* 3 (key) + left-click */
+    else if (specialNodesToPlace.includes(Node.heavyWeight) === true) 
     {
         if (unweightedAlgorithm === true)
             return;
@@ -205,25 +223,26 @@ function handleMouseDownAndMove(ev, mouseEv, gridBoard)
         if (ev.target.className === Node.heavyWeight) 
         {
             ev.target.className = Node.unvisited;
-            changeWeightOfNode(ev.target.id, NODE_WEIGHT_NONE, gridBoard);
+            gridBoard.changeWeightOfNodeTo(ev.target.id, NODE_WEIGHT_NONE);
         }
 
         else 
         {
+            removeFinishIfTarget(ev, gridBoard);
+
             ev.target.className = Node.heavyWeight;
-            changeWeightOfNode(ev.target.id, nodeWeightHeavy, gridBoard);
+            gridBoard.changeWeightOfNodeTo(ev.target.id, nodeWeightHeavy);
         }
     }
 
-    /* R (key) + left-click */
-    else if (gridBoard.pressedKey === Key.finishNode)
+    /* E (key) + left-click */
+    else if (specialNodesToPlace.includes(Node.finish) === true)
     {
         if (ev.target.className === Node.finish ||
             ev.target.className === Node.finishShortestPath)
         {
             gridBoard.clearFinishPriority(ev.target.id);
-            ev.target.className = Node.unvisited;
-
+    
             if (gridBoard.numberOfFinishNodesPlaced() === 0)
                 gridBoard.finishIsPlaced = false;
         }
@@ -237,8 +256,9 @@ function handleMouseDownAndMove(ev, mouseEv, gridBoard)
                 return;
             
             ev.target.className = Node.finish;
-            changeWeightOfNode(ev.target.id, NODE_WEIGHT_NONE, gridBoard);
-            document.getElementById(ev.target.id).appendChild(newFinishPriority);
+            gridBoard.changeWeightOfNodeTo(ev.target.id, NODE_WEIGHT_NONE);
+            gridBoard.changeWallStatusOfNodeTo(ev.target.id, false);
+            ev.target.appendChild(newFinishPriority);
 
             const [descriptor, row, col] = ev.target.id.split('-');
 
@@ -246,5 +266,156 @@ function handleMouseDownAndMove(ev, mouseEv, gridBoard)
 
             gridBoard.finishIsPlaced = true;
         }
+    }
+
+    /* W (key) + left-click */
+    else if (specialNodesToPlace.includes(Node.onlyUpTraversal) === true)
+    {
+        // const [prevDescriptor, prevRow, prevCol] = previousTarget.id.split('-');
+        // const [descriptor, row, col] = ev.target.id.split('-');
+        // const rowChange = row - prevRow;
+        // const colChange = col - prevCol;
+
+        // const canvas = document.createElement('canvas');
+        // const ctx = canvas.getContext('2d');
+        // ctx.lineWidth = 3;
+        // ctx.beginPath();
+        // ctx.arc(9, 9, 3, 0, 2 * Math.PI);
+        // ctx.fill();
+        // ctx.moveTo(9, 9);
+        // ctx.lineTo(18, 9);
+        // ctx.stroke();
+
+        // ev.target.appendChild(canvas);
+
+        removeFinishIfTarget(ev, gridBoard);
+
+        /* Node doesn't contain an arrow yet */
+        if (ev.target.firstChild === null)
+        {
+            const img = document.createElement('img');
+            img.src = oneWayNodeArrowImgFilePath;
+            img.style.pointerEvents = 'none';
+            
+            if (specialNodesToPlace.includes(Node.onlyLeftTraversal) === true)
+            {
+                img.style.transform = 'rotate(315deg)';
+                gridBoard.changeAllowedDirectionOfNode(ev.target.id, -1, -1);
+            }
+
+            else if (specialNodesToPlace.includes(Node.onlyRightTraversal) === true)
+            {
+                img.style.transform = 'rotate(45deg)';
+                gridBoard.changeAllowedDirectionOfNode(ev.target.id, -1, 1, gridBoard);
+            }
+
+            else 
+            {
+                img.style.transform = 'rotate(0deg)';
+                gridBoard.changeAllowedDirectionOfNode(ev.target.id, -1, 0, gridBoard);
+            }
+
+            ev.target.appendChild(img);
+            ev.target.className = Node.unvisited;
+        }
+    }
+
+    /* S (key) + left-click */
+    else if (specialNodesToPlace.includes(Node.onlyDownTraversal) === true)
+    {
+        removeFinishIfTarget(ev, gridBoard);
+
+        if (ev.target.firstChild === null)
+        {
+            const img = document.createElement('img');
+            img.src = oneWayNodeArrowImgFilePath;
+            img.style.pointerEvents = 'none';
+
+            if (specialNodesToPlace.includes(Node.onlyLeftTraversal) === true)
+            {
+                img.style.transform = 'rotate(225deg)';
+                gridBoard.changeAllowedDirectionOfNode(ev.target.id, 1, -1);
+            }
+
+            else if (specialNodesToPlace.includes(Node.onlyRightTraversal) === true)
+            {
+                img.style.transform = 'rotate(135deg)';
+                gridBoard.changeAllowedDirectionOfNode(ev.target.id, 1, 1);
+            }
+
+            else
+            {
+                img.style.transform = 'rotate(180deg)';
+                gridBoard.changeAllowedDirectionOfNode(ev.target.id, 1, 0);
+            }
+
+            ev.target.appendChild(img);
+            ev.target.className = Node.unvisited;
+        }
+    }
+
+    /* A (key) + left-click and neither W nor S are pressed */
+    else if (specialNodesToPlace.includes(Node.onlyLeftTraversal) === true)
+    {
+        removeFinishIfTarget(ev, gridBoard);
+
+        if (ev.target.firstChild === null)
+        {
+            const img = document.createElement('img');
+            img.src = oneWayNodeArrowImgFilePath;
+            img.style.pointerEvents = 'none';
+            img.style.transform = 'rotate(270deg)';
+
+            gridBoard.changeAllowedDirectionOfNode(ev.target.id, 0, -1);
+
+            ev.target.appendChild(img);
+            ev.target.className = Node.unvisited;
+        }
+    }
+
+    /* D (key) + left-click and neither W nor S are pressed */
+    else if (specialNodesToPlace.includes(Node.onlyRightTraversal) === true)
+    {
+        removeFinishIfTarget(ev, gridBoard);
+
+        if (ev.target.firstChild === null)
+        {
+            const img = document.createElement('img');
+            img.src = oneWayNodeArrowImgFilePath;
+            img.style.pointerEvents = 'none';
+            img.style.transform = 'rotate(90deg)';
+
+            gridBoard.changeAllowedDirectionOfNode(ev.target.id, 0, 1);
+
+            ev.target.appendChild(img);
+            ev.target.className = Node.unvisited;
+        }
+    }
+
+    /* Q (key) + left-click */
+    else if (specialNodesToPlace.includes(Node.removeOneWayTraversal) === true)
+    {
+        /* Only remove one way arrows */
+        if ((ev.target.className === Node.unvisited ||
+            ev.target.className === Node.visited ||
+            ev.target.className === Node.shortestPath ||
+            ev.target.className === Node.jumpPoint) && 
+            ev.target.firstChild !== null)
+        {
+            ev.target.innerHTML = '';
+            gridBoard.changeAllowedDirectionOfNode(ev.target.id, null, null);
+        }
+    }
+}
+
+function removeFinishIfTarget(ev, gridBoard)
+{
+    if (ev.target.className === Node.finish ||
+        ev.target.className === Node.finishShortestPath)
+    {
+        gridBoard.clearFinishPriority(ev.target.id);
+
+        if (gridBoard.numberOfFinishNodesPlaced() === 0)
+            gridBoard.finishIsPlaced = false;
     }
 }

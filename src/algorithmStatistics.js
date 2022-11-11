@@ -3,7 +3,7 @@
 export {algorithmStatisticsVisible, openAlgorithmStatistics, closeAlgorithmStatistics,
         collectAlgorithmStatistics};
 
-import {enableButtons, enableButtonsMobile, disableButtons, resetAllNodesInternally} 
+import {enableButtons, enableButtonsMobile, disableButtons} 
         from './helperFunctions.js';
 import startAlgorithmAnimation from './animateAlgorithms.js';
 
@@ -83,65 +83,68 @@ function createAlgorithmStatisticsTable(algorithmStatistics)
 }
 
 function collectAlgorithmStatistics(selectedAlgo, totalNumberOfVisitedNodes, totalNumberOfShortestPathNodes, gridBoard)
+{
+    const allAlgorithms = document.querySelectorAll('input[class="algorithmRadioButtons"]');
+    const algorithmStatistics = [[selectedAlgo, totalNumberOfVisitedNodes, '+0%', totalNumberOfShortestPathNodes, '+0%']];
+    
+    for (const algorithm of allAlgorithms)
     {
-        const allAlgorithms = document.querySelectorAll('input[class="algorithmRadioButtons"]');
-        const algorithmStatistics = [[selectedAlgo, totalNumberOfVisitedNodes, '+0%', totalNumberOfShortestPathNodes, '+0%']];
-        
-        for (const algorithm of allAlgorithms)
+        if (algorithm.value === selectedAlgo)
+            continue;
+
+        let previousIndex = null;
+        let startNode;
+        totalNumberOfVisitedNodes = 0;
+        totalNumberOfShortestPathNodes = 0;
+
+        for (let index = 0; index < gridBoard.finishRows.length; index++)
         {
-            if (algorithm.value === selectedAlgo)
+            if (gridBoard.finishRows[index] === null)
                 continue;
 
-            let previousIndex = -1;
-            let startNode;
-            totalNumberOfVisitedNodes = 0;
-            totalNumberOfShortestPathNodes = 0;
+            if (previousIndex === null)
+                startNode = gridBoard.nodesMatrix[gridBoard.startRow][gridBoard.startCol];
+    
+            else
+                startNode = gridBoard.nodesMatrix[ gridBoard.finishRows[previousIndex] ][ gridBoard.finishCols[previousIndex] ];
+    
+            const finishNode = gridBoard.nodesMatrix[ gridBoard.finishRows[index] ][ gridBoard.finishCols[index] ];
 
-            for (let index = 0; index < gridBoard.finishRows.length; index++)
+            let lastFinishNode = true;
+
+            for (let i = index + 1; i < gridBoard.finishRows.length; i++)
             {
-                if (gridBoard.finishRows[index] === null)
-                    continue;
-
-                if (previousIndex === -1)
-                    startNode = gridBoard.nodesMatrix[gridBoard.startRow][gridBoard.startCol];
-        
-                else
-                    startNode = gridBoard.nodesMatrix[ gridBoard.finishRows[previousIndex] ][ gridBoard.finishCols[previousIndex] ];
-        
-                const finishNode = gridBoard.nodesMatrix[ gridBoard.finishRows[index] ][ gridBoard.finishCols[index] ];
-
-                let lastFinishNode = true;
-
-                for (let i = index + 1; i < gridBoard.finishRows.length; i++)
+                if (gridBoard.finishRows[i] !== null)
                 {
-                    if (gridBoard.finishRows[i] !== null)
-                    {
-                        lastFinishNode = false;
-                        break;
-                    }
+                    lastFinishNode = false;
+                    break;
                 }
-
-                const [timeToWait, numberOfVisitedNodes, numberOfShortestPathNodes] = 
-                    startAlgorithmAnimation(algorithm.value, startNode, finishNode, gridBoard, lastFinishNode, true);
-
-                totalNumberOfVisitedNodes += numberOfVisitedNodes;
-                totalNumberOfShortestPathNodes += numberOfShortestPathNodes;
-                previousIndex = index;
-
-                /* Reset all the node's attributes that have been set by the previous algorithm so that the next algorithm
-                    can start from scratch. Doesn't affect the visual appearence of the application so the algorithm selected
-                    by the user will still be displayed */
-                resetAllNodesInternally(gridBoard);
             }
 
-            algorithmStatistics.push([algorithm.value, totalNumberOfVisitedNodes, 
-                calculatePercentageDifference(totalNumberOfVisitedNodes, algorithmStatistics[0][1]), 
-                totalNumberOfShortestPathNodes, 
-                calculatePercentageDifference(totalNumberOfShortestPathNodes, algorithmStatistics[0][3])]);
+            const onlyGetStatistics = true;
+            const [timeToWait, numberOfVisitedNodes, numberOfShortestPathNodes] = 
+                startAlgorithmAnimation(algorithm.value, startNode, finishNode, gridBoard, lastFinishNode, onlyGetStatistics);
+
+            totalNumberOfVisitedNodes += numberOfVisitedNodes;
+            totalNumberOfShortestPathNodes += numberOfShortestPathNodes;
+            previousIndex = index;
+
+            /* Reset all the node's attributes that have been set by the previous algorithm so that the next algorithm
+                can start from scratch. Doesn't affect the visual appearence of the application so the algorithm selected
+                by the user will still be displayed */
+            gridBoard.resetAllNodesInternally();
         }
 
-        createAlgorithmStatisticsTable(algorithmStatistics);
+        algorithmStatistics.push([algorithm.value, totalNumberOfVisitedNodes, 
+            calculatePercentageDifference(totalNumberOfVisitedNodes, algorithmStatistics[0][1]), 
+            totalNumberOfShortestPathNodes, 
+            calculatePercentageDifference(totalNumberOfShortestPathNodes, algorithmStatistics[0][3])]);
     }
+
+    createAlgorithmStatisticsTable(algorithmStatistics);
+    /* If the last algorithm is unweighted then display the weights again */
+    gridBoard.restoreWeights();
+}
 
     /* Calculate how many more or less nodes the other algorithms had to visited compared to the algorithm the user had selected.
         Do the same for the length of the shortest path */

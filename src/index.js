@@ -1,23 +1,51 @@
 'use strict';
 
-export {eightDirections, cornerCutting, unweightedAlgorithm};
+export {unweightedAlgorithm};
 
 import Board from './board.js';
 import {adjustGridDimensions, createGrid} from './grid.js';
 import {openInfoBox, closeInfoBox, handlePrevInfoButton, 
         handleNextInfoButton} from './infoBox.js';
-import {DISABLED_COLOR, BUTTON_BACKGROUND_COLOR, disableButtons, removeWalls, resetToggleButtons, 
-        disableToggleButtons, enableEightDirections, removePreviousAlgorithm, 
-        makePreviousAlgorithmLessVisible, resetStartAndFinish, 
-        setAndDisableEightDirections} from './helperFunctions.js';
-import {handleLightWeightSlider, handleNormalWeightSlider, handleHeavyWeightSlider, 
-        removeWeights} from './weights.js';
+import {DISABLED_COLOR, BUTTON_BACKGROUND_COLOR, disableButtons, resetToggleButtons, 
+        disableToggleButtons, enableEightDirections, setAndDisableEightDirections}
+        from './helperFunctions.js';
+import {handleLightWeightSlider, handleNormalWeightSlider, handleHeavyWeightSlider} 
+        from './weights.js';
 import startAlgorithmAnimation from './animateAlgorithms.js';
 import {mouseEvent, handleMouseDownAndMove} from './mouseEvents.js';
 import {openAlgorithmStatistics, closeAlgorithmStatistics, collectAlgorithmStatistics} 
         from './algorithmStatistics.js';
+import startMazeAnimation from './animateMazes.js';
 
-let eightDirections = false, cornerCutting = false, unweightedAlgorithm = false;
+let unweightedAlgorithm = false;
+
+const SpecialNodeKeyboardKeys =
+{
+    lightWeight : '1',
+    normalWeight : '2',
+    heavyWeight : '3',
+    removeOneWayTraversal : 'q',
+    onlyUpTraversal : 'w',
+    finish : 'e',
+    onlyLeftTraversal : 'a',
+    onlyDownTraversal : 's',
+    onlyRightTraversal : 'd'
+};
+
+Object.freeze(SpecialNodeKeyboardKeys);
+
+const PlaceSpecialNodes = 
+{
+    lightWeight: false,
+    normalWeight: false,
+    heavyWeight: false,
+    removeOneWayTraversal: false,
+    onlyUpTraversal: false,
+    finish: false,
+    onlyLeftTraversal: false,
+    onlyDownTraversal: false,
+    onlyRightTraversal: false
+};
 
 document.addEventListener('DOMContentLoaded', function() 
 {
@@ -43,6 +71,8 @@ document.addEventListener('DOMContentLoaded', function()
     const cornerCuttingSwitch = document.getElementById('cornerCuttingSwitch');
     const openAlgorithmStatisticsButton = document.getElementById('openAlgorithmStatisticsButton');
     const closeAlgorithmStatisticsButton = document.getElementById('closeAlgorithmStatisticsButton');
+    const mazeDropDownButton = document.getElementById('mazeDropDownButton');
+    const mazeDropDownMenu = document.getElementById('mazeDropDownMenu');
     const mobileMenuButton = document.getElementById('mobileMenuButton');
     const board = document.getElementById('board');
 
@@ -59,17 +89,19 @@ document.addEventListener('DOMContentLoaded', function()
     {
         ev.preventDefault();
 
-        handleMouseDownAndMove(ev, mouseEvent.down, gridBoard);
+        handleMouseDownAndMove(ev, mouseEvent.down, gridBoard, PlaceSpecialNodes);
     });
 
     board.addEventListener('mousemove', function(ev) 
     {
         ev.preventDefault();
 
-        handleMouseDownAndMove(ev, mouseEvent.move, gridBoard);
+        handleMouseDownAndMove(ev, mouseEvent.move, gridBoard, PlaceSpecialNodes);
     });
 
-    board.addEventListener('mouseup', function(ev) 
+    /* Set this value to false even if the user releases the left mousebutton outside
+        of the grid */
+    document.addEventListener('mouseup', function(ev) 
     {
         ev.preventDefault();
 
@@ -100,28 +132,65 @@ document.addEventListener('DOMContentLoaded', function()
                 }
             });
 
+            mazeDropDownButton.addEventListener(userEvent, function(ev)
+            {
+                ev.preventDefault();
+
+                /* Display the menu if the button is clicked */
+                if (mazeDropDownMenu.style.display === '' || 
+                mazeDropDownMenu.style.display === 'none') 
+                {
+                    mazeDropDownMenu.style.display = 'block';
+                    mazeDropDownButton.innerHTML = 'Create Mazes&#9650;'
+                }
+        
+                /* Hide it if the button is clicked again while it's open */
+                else 
+                {
+                    mazeDropDownMenu.style.display = 'none';
+                    mazeDropDownButton.innerHTML = 'Create Mazes&#9660;'
+                }
+            });
+
+            const mazeAlgorithmButtons = document.getElementsByClassName('mazeAlgorithmButton');
+
+            for (const mazeAlgorithmButton of mazeAlgorithmButtons)
+            {
+                mazeAlgorithmButton.addEventListener(userEvent, function(ev)
+                {
+                    ev.preventDefault();
+
+                    mazeDropDownMenu.style.display = 'none';
+                    mazeDropDownButton.innerHTML = 'Create Mazes&#9660;'
+
+                    gridBoard.removePreviousAlgorithm();
+                    startMazeAnimation(mazeAlgorithmButton.value, gridBoard);
+                });
+            }
+
             clearWallsButton.addEventListener(userEvent, function(ev) 
             {
                 ev.preventDefault();
 
-                removeWalls(gridBoard);
+                gridBoard.removeWalls();
             });
         
             clearWeightsButton.addEventListener(userEvent, function(ev) 
             {
                 ev.preventDefault();
 
-                removeWeights(gridBoard);
+                gridBoard.removeWeights();
             });
         
             resetBoardButton.addEventListener(userEvent, function(ev) 
             {
                 ev.preventDefault();
 
-                removeWalls(gridBoard);
-                removeWeights(gridBoard);
-                resetStartAndFinish(gridBoard);
-                removePreviousAlgorithm(gridBoard);
+                gridBoard.removeWalls();
+                gridBoard.removeWeights();
+                gridBoard.resetStartAndFinish();
+                gridBoard.removePreviousAlgorithm();
+                gridBoard.removeOneWayNodes();
             });
 
             openAlgorithmStatisticsButton.addEventListener(userEvent, function(ev)
@@ -183,7 +252,7 @@ document.addEventListener('DOMContentLoaded', function()
                 /* Only start the algorithm if both start and finish are placed */
                 else if (gridBoard.startIsPlaced === false || gridBoard.finishIsPlaced === false)
                     return;
-        
+
                 else 
                 {
                     /* Hide menus that may overlap with the grid */
@@ -191,16 +260,19 @@ document.addEventListener('DOMContentLoaded', function()
                     algorithmDropDownButton.innerHTML = 'Animate&#9660;';
                     weightDropDownMenu.style.display = 'none';
                     weightDropDownButton.innerHTML = 'Adjust Weights&#9660;';
-                    removePreviousAlgorithm(gridBoard);
+                    gridBoard.removePreviousAlgorithm();
                     /* Disable all menu buttons until the algorithm is done */
                     disableButtons();
                     disableToggleButtons();
-                    gridBoard.algoIsRunning = true;
+                    gridBoard.algorithmIsRunning = true;
                     
                     let totalNumberOfVisitedNodes = 0;
                     let totalNumberOfShortestPathNodes = 0;
+                    let index = 0;
+                    let previousIndex = null;
 
-                    animateAlgorithm(selectedAlgorithm.value, gridBoard, 0, -1, totalNumberOfVisitedNodes, totalNumberOfShortestPathNodes);
+                    animateAlgorithm(selectedAlgorithm.value, gridBoard, index, previousIndex, 
+                        totalNumberOfVisitedNodes, totalNumberOfShortestPathNodes);
                 }
             });
         });
@@ -217,7 +289,8 @@ document.addEventListener('DOMContentLoaded', function()
         });
     }
 
-    async function animateAlgorithm(selectedAlgo, gridBoard, index, previousIndex, totalNumberOfVisitedNodes, totalNumberOfShortestPathNodes)
+    async function animateAlgorithm(selectedAlgo, gridBoard, index, previousIndex, 
+        totalNumberOfVisitedNodes, totalNumberOfShortestPathNodes)
     {
         while(gridBoard.finishRows[index] === null)
             index++;
@@ -231,7 +304,7 @@ document.addEventListener('DOMContentLoaded', function()
         let startNode;
 
         /* First iteration of this function */
-        if (previousIndex === -1)
+        if (previousIndex === null)
             startNode = gridBoard.nodesMatrix[gridBoard.startRow][gridBoard.startCol];
         /* There's more than one finish node and the first finish node has been reached so use this finish node as the start node for 
             this iteration */
@@ -253,13 +326,14 @@ document.addEventListener('DOMContentLoaded', function()
             }
         }
 
+        const onlyGetStatistics = false;
         const [timeToWait, numberOfVisitedNodes, numberOfShortestPathNodes] = 
-            startAlgorithmAnimation(selectedAlgo, startNode, finishNode, gridBoard, lastFinishNode, false);
+            startAlgorithmAnimation(selectedAlgo, startNode, finishNode, gridBoard, lastFinishNode, onlyGetStatistics);
 
         totalNumberOfVisitedNodes += numberOfVisitedNodes;
         totalNumberOfShortestPathNodes += numberOfShortestPathNodes;
         
-        makePreviousAlgorithmLessVisible(gridBoard);
+        gridBoard.makePreviousAlgorithmLessVisible();
 
         const result = await waitForAlgorithmToComplete(timeToWait);
 
@@ -274,62 +348,87 @@ document.addEventListener('DOMContentLoaded', function()
     {
         const radioButtons = document.querySelectorAll('input[name="algorithmOption"]');
 
-        for (let i = 0; i < radioButtons.length; i++) {
-            radioButtons[i].addEventListener('change', function() 
+        for (const radioButton of radioButtons) 
+        {
+            radioButton.addEventListener('change', function() 
             {
                 let animateButtonText = 'Animate ';
 
-                switch(radioButtons[i].value) 
+                switch(radioButton.value) 
                 {
                     case 'dijkstra':
                         animateButtonText += 'Dijkstra';
                         unweightedAlgorithm = false;
                         resetToggleButtons();
                         disableToggleButtons();
+                        gridBoard.eightDirectionalMovement = false;
+                        gridBoard.allowCornerCutting = false;
                         break;
+
                     case 'aStar':
                         animateButtonText += 'A*';
                         unweightedAlgorithm = false;
                         resetToggleButtons();
                         enableEightDirections();
+                        gridBoard.eightDirectionalMovement = false;
+                        gridBoard.allowCornerCutting = false;
                         break;
+
                     case 'greedyBestFirstSearch':
                         animateButtonText += 'Greedy';
                         unweightedAlgorithm = false;
                         resetToggleButtons();
                         enableEightDirections();
+                        gridBoard.eightDirectionalMovement = false;
+                        gridBoard.allowCornerCutting = false;
                         break;
+
                     case 'breadthFirstSearch':
                         animateButtonText += 'BFS';
                         unweightedAlgorithm = true;
                         resetToggleButtons();
                         disableToggleButtons();
+                        gridBoard.eightDirectionalMovement = false;
+                        gridBoard.allowCornerCutting = false;
                         break;
+
                     case 'bidirectionalDijkstra':
                         animateButtonText += 'Bi. Dijkstra';
                         unweightedAlgorithm = false;
                         resetToggleButtons();
                         disableToggleButtons();
+                        gridBoard.eightDirectionalMovement = false;
+                        gridBoard.allowCornerCutting = false;
                         break;
+
                     case 'bidirectionalAStar':
                         animateButtonText += 'Bi. A*';
                         unweightedAlgorithm = false;
                         resetToggleButtons();
                         enableEightDirections();
+                        gridBoard.eightDirectionalMovement = false;
+                        gridBoard.allowCornerCutting = false;
                         break;
+
                     case 'depthFirstSearch':
                         animateButtonText += 'DFS';
                         unweightedAlgorithm = true;
                         resetToggleButtons();
                         disableToggleButtons();
+                        gridBoard.eightDirectionalMovement = false;
+                        gridBoard.allowCornerCutting = false;
                         break;
+
                     case 'jumpPointSearch':
                         animateButtonText += 'JPS';
                         unweightedAlgorithm = true;
                         resetToggleButtons();
                         /* JPS only works with eight directional movement */
                         setAndDisableEightDirections();
+                        gridBoard.eightDirectionalMovement = true;
+                        gridBoard.allowCornerCutting = false;
                         break;
+
                     default:
                         break;
                 }
@@ -343,12 +442,42 @@ document.addEventListener('DOMContentLoaded', function()
 
     document.addEventListener('keydown', function(ev) 
     {
-        gridBoard.pressedKey = ev.key;
+        // gridBoard.pressedKey = ev.key;
+        const keyboardKeyValues = Object.values(SpecialNodeKeyboardKeys); 
+
+        for (const keyboardKey of keyboardKeyValues)
+        {
+            if (keyboardKey === ev.key)
+            {
+                const specialNode = Object.keys(SpecialNodeKeyboardKeys).find(function(key)
+                {
+                    return SpecialNodeKeyboardKeys[key] === keyboardKey
+                });
+
+                PlaceSpecialNodes[specialNode] = true;
+                break;
+            }
+        }
     });
 
-    document.addEventListener('keyup', function() 
+    document.addEventListener('keyup', function(ev) 
     {
-        gridBoard.pressedKey = null;
+        // gridBoard.pressedKey = null;
+        const keyboardKeyValues = Object.values(SpecialNodeKeyboardKeys); 
+
+        for (const keyboardKey of keyboardKeyValues)
+        {
+            if (keyboardKey === ev.key)
+            {
+                const specialNode = Object.keys(SpecialNodeKeyboardKeys).find(function(key)
+                {
+                    return SpecialNodeKeyboardKeys[key] === keyboardKey
+                });
+
+                PlaceSpecialNodes[specialNode] = false;
+                break;
+            }
+        }
     });
 
     /* Create a new grid if the user resized the window */
@@ -365,7 +494,7 @@ document.addEventListener('DOMContentLoaded', function()
         {
             cornerCuttingToggleButton.disabled = false;
             cornerCuttingSwitch.style.backgroundColor = BUTTON_BACKGROUND_COLOR;
-            eightDirections = true;
+            gridBoard.eightDirectionalMovement = true;
         }
 
         /* Disallow corner cutting when eight directions is disabled */
@@ -374,18 +503,18 @@ document.addEventListener('DOMContentLoaded', function()
             cornerCuttingToggleButton.checked = false;
             cornerCuttingToggleButton.disabled = true;
             cornerCuttingSwitch.style.backgroundColor = DISABLED_COLOR;
-            cornerCutting = false;
-            eightDirections = false;
+            gridBoard.allowCornerCutting = false;
+            gridBoard.eightDirectionalMovement = false;
         }
     });
 
     cornerCuttingToggleButton.addEventListener('change', function() 
     {
         if (cornerCuttingToggleButton.checked === true) 
-            cornerCutting = true;
+            gridBoard.allowCornerCutting = true;
 
         else 
-            cornerCutting = false;
+            gridBoard.allowCornerCutting = false;
     });
 
     /* Close the menu if the user's mouse leaves it */
@@ -419,22 +548,28 @@ document.addEventListener('DOMContentLoaded', function()
 
     lightWeightSlider.addEventListener('input', function() 
     {
-        handleLightWeightSlider.call(this);
+        handleLightWeightSlider.call(this, gridBoard);
     });
 
     normalWeightSlider.addEventListener('input', function() 
     {
-        handleNormalWeightSlider.call(this);
+        handleNormalWeightSlider.call(this, gridBoard);
     });
 
     heavyWeightSlider.addEventListener('input', function() 
     {
-        handleHeavyWeightSlider.call(this);
+        handleHeavyWeightSlider.call(this, gridBoard);
+    });
+
+    mazeDropDownMenu.addEventListener('mouseleave', function()
+    {
+        mazeDropDownMenu.style.display = 'none';
+        mazeDropDownButton.innerHTML = 'Create Mazes&#9660;';
     });
 
     clearAlgorithmButton.addEventListener('click', function() 
     {
-        removePreviousAlgorithm(gridBoard);
+        gridBoard.removePreviousAlgorithm();
     });
 
     mobileMenuButton.addEventListener('click', function(ev) 

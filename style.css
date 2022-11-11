@@ -94,8 +94,6 @@ div.dropDownMenu
 {
     width: inherit;
     background-color: var(--main-background-color);
-    border: 1px solid var(--main-border-color);
-    border-top: none;
     display: none;
 }
 
@@ -131,8 +129,24 @@ div.radioButtonWrapper label
 {
     width: inherit;
     color: var(--main-font-color);
-    font-size: var(--default-fontsize);
+    font-size: 1.0rem;
     cursor: pointer;
+}
+
+button.mazeAlgorithmButton
+{
+    width: inherit;
+    background-color: var(--main-background-color);
+    color: var(--main-font-color);
+    font-size: 1.0rem;
+    cursor: pointer;
+    border: none;
+    padding: 0.5vh 0.5vw;
+}
+
+button.mazeAlgorithmButton:hover
+{
+    background-color: #3b423c;
 }
 
 div.weightWrapper 
