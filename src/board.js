@@ -27,7 +27,7 @@ export default class Board
     createMazeCells()
     {
         /* Create top and bottom border around the grid */
-        for (let row = 0; row < this.rows; row += this.rows -1)
+        for (let row = 0; row < this.rows; row += this.rows - 1)
         {
             for (let col = 0; col < this.columns; col++)
             {
@@ -62,7 +62,7 @@ export default class Board
             }
         }
 
-        const nodeOffsets = [[0, 0], [0, 1], [-1, 0], [-1, -1]];
+        const nodeOffsets = [[0, 0], [0, 1], [1, 0], [1, 1]];
         this.mazeCells.length = 0;
 
         for (let row = 1; row < this.rows - 1; row += 2)

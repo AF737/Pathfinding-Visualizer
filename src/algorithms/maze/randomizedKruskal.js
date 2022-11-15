@@ -5,7 +5,7 @@ export default function randomizedKruskal(grid)
     /* Right and bottom wall of each cell */
     const cellWalls = [];
     /* Each set contains all cells connected to each other */
-    let cellSets = [];
+    const cellSets = [];
 
     for (const cell of grid.mazeCells)
     {
@@ -50,8 +50,9 @@ export default function randomizedKruskal(grid)
         if (grid.isAccessibleAt(cellOneRow, cellOneCol) === true &&
             grid.isAccessibleAt(cellTwoRow, cellTwoCol) === true)
         {
-            const cellOneSetNumber = getSetNumberOfCell([cellOneRow, cellOneCol], cellSets);
-            const cellTwoSetNumber = getSetNumberOfCell([cellTwoRow, cellTwoCol], cellSets);
+            const cellOneSetNumber = getSetNumberOfCell(cellOneRow, cellOneCol, cellSets);
+            const cellTwoSetNumber = getSetNumberOfCell(cellTwoRow, cellTwoCol, cellSets);
+            
             /* Both cells are in different sets */
             if (cellOneSetNumber !== cellTwoSetNumber)
             {
@@ -75,7 +76,7 @@ export default function randomizedKruskal(grid)
     }
 }
 
-function getSetNumberOfCell(cellCoordinates, cellSets)
+function getSetNumberOfCell(cellRow, cellCol, cellSets)
 {
     for (let i = 0; i < cellSets.length; i++)
     {
@@ -84,8 +85,7 @@ function getSetNumberOfCell(cellCoordinates, cellSets)
         {
             /* Turn array of size 2 to string, because if the content of both
                 arrays is equal then the string is too */
-            if (cellCoordinates[0] === cellSets[i][j].row &&
-                cellCoordinates[1] === cellSets[i][j].column)
+            if (cellRow === cellSets[i][j].row && cellCol === cellSets[i][j].column)
                 return i;
         }
     }

@@ -6,6 +6,8 @@ import randomizedPrim from './algorithms/maze/randomizedPrim.js';
 import aldousBroder from './algorithms/maze/aldousBroder.js';
 import huntAndKill from './algorithms/maze/huntAndKill.js';
 import wilson from './algorithms/maze/wilson.js';
+import sidewinder from './algorithms/maze/sidewinder.js';
+import eller from './algorithms/maze/eller.js';
 
 export default function startMazeAnimation(selectedMaze, gridBoard)
 {
@@ -40,6 +42,14 @@ export default function startMazeAnimation(selectedMaze, gridBoard)
 
         case 'huntAndKillMaze':
             huntAndKill(gridBoard);
+            break;
+
+        case 'sidewinder':
+            sidewinder(gridBoard);
+            break;
+
+        case 'eller':
+            eller(gridBoard);
             break;
 
         default:
