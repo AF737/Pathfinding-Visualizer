@@ -2,6 +2,7 @@
 
 export default function sidewinder(grid)
 {
+    const animations = [];
     /* Contains all the cells in the current row that are connected 
         horizontally. Cells get added as long as right walls are removed.
         If no right wall is removed the remove a top wall from a random
@@ -17,6 +18,10 @@ export default function sidewinder(grid)
         if (cell.row == 1)
         {
             grid.removeWallBetweenMazeCells(currCell, cell);
+
+            const nodeBetween = grid.getNodeBetween(currCell, cell);
+            animations.push(nodeBetween);
+
             currCell = cell;
         }
     }
@@ -49,6 +54,10 @@ export default function sidewinder(grid)
                 currCellIndex++;
                 const nextCell = cellsInCurrentRow[currCellIndex];
                 grid.removeWallBetweenMazeCells(currCell, nextCell);
+
+                const nodeBetween = grid.getNodeBetween(currCell, nextCell);
+                animations.push(nodeBetween);
+
                 currCell = nextCell;
                 runSet.push(nextCell);
             }
@@ -63,6 +72,10 @@ export default function sidewinder(grid)
                     if (isNorthNeighbor(randomCell, neighbor) === true)
                     {
                         grid.removeWallBetweenMazeCells(randomCell, neighbor);
+
+                        const nodeBetween = grid.getNodeBetween(randomCell, neighbor);
+                        animations.push(nodeBetween);
+
                         /* Clear the run set */
                         runSet.length = 0;
                         /* Add the right neighbor of the current cell to the run set */
@@ -87,10 +100,16 @@ export default function sidewinder(grid)
                 grid.removeWallBetweenMazeCells(randomCell, neighbor);
                 /* Clear the run set */
                 runSet.length = 0;
+
+                const nodeBetween = grid.getNodeBetween(randomCell, neighbor);
+                animations.push(nodeBetween);
+
                 break;
             }
         }
     }
+
+    return animations;
 }
 
 function isNorthNeighbor(cell, neighbor)

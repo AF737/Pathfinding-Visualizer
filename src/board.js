@@ -24,23 +24,27 @@ export default class Board
         this.mazeCells = [];
     }
 
-    createMazeCells()
+    createMazeCells(animateProcess = false, animationsArr = [])
     {
+        const outerBorderAnimation = [];
+        const mazeFillAnimation = [];
+
         /* Create top and bottom border around the grid */
         for (let row = 0; row < this.rows; row += this.rows - 1)
         {
             for (let col = 0; col < this.columns; col++)
-            {
-                const node = this.nodesMatrix[row][col];
-                
-                if (node.class !== 'start' && node.class !== 'finish')
-                {
-                    node.class = 'wall';
-                    const id = `node-${row}-${col}`;
-                    this.changeWallStatusOfNodeTo(id, true);
-                    this.changeWeightOfNodeTo(id, NODE_WEIGHT_NONE);
+            { 
+                this.nodesMatrix[row][col].class = 'wall';
+
+                const id = `node-${row}-${col}`;
+                this.changeWallStatusOfNodeTo(id, true);
+                this.changeWeightOfNodeTo(id, NODE_WEIGHT_NONE);
+
+                if (animateProcess === true)
+                    outerBorderAnimation.push(this.nodesMatrix[row][col]);
+
+                else
                     document.getElementById(id).className = 'wall';
-                }
             }
         }
 
@@ -49,16 +53,17 @@ export default class Board
         {
             for (let row = 0; row < this.rows; row++)
             {
-                const node = this.nodesMatrix[row][col];
-                
-                if (node.class !== 'start' && node.class !== 'finish')
-                {
-                    node.class = 'wall';
-                    const id = `node-${row}-${col}`;
-                    this.changeWallStatusOfNodeTo(id, true);
-                    this.changeWeightOfNodeTo(id, NODE_WEIGHT_NONE);
+                this.nodesMatrix[row][col].class = 'wall';
+
+                const id = `node-${row}-${col}`;
+                this.changeWallStatusOfNodeTo(id, true);
+                this.changeWeightOfNodeTo(id, NODE_WEIGHT_NONE);
+
+                if (animateProcess === true)
+                    outerBorderAnimation.push(this.nodesMatrix[row][col]);
+
+                else
                     document.getElementById(id).className = 'wall';
-                }
             }
         }
 
@@ -81,7 +86,9 @@ export default class Board
                         this.changeWallStatusOfNodeTo(cellNodeIDs[i], false);
                         this.changeWeightOfNodeTo(cellNodeIDs[i], NODE_WEIGHT_NONE);
 
-                        document.getElementById(cellNodeIDs[i]).className = 'unvisited';
+                        if (animateProcess === false)
+                            document.getElementById(cellNodeIDs[i]).className = 'unvisited';
+
                         /* A cell is 2x2 nodes in size and only the top right node of each cell isn't a
                             wall, so it determines whether or not a cell has been visited */
                         const [descriptor, cellRow, cellCol] = cellNodeIDs[i].split('-');
@@ -92,11 +99,22 @@ export default class Board
                     {
                         this.changeWallStatusOfNodeTo(cellNodeIDs[i], true);
                         this.changeWeightOfNodeTo(cellNodeIDs[i], NODE_WEIGHT_NONE);
-                        document.getElementById(cellNodeIDs[i]).className = 'wall';
+
+                        if (animateProcess === true)
+                        {
+                            const [descriptor, row, col] = cellNodeIDs[i].split('-');
+                            mazeFillAnimation.push(this.nodesMatrix[row][col]);
+                        }
+
+                        else
+                            document.getElementById(cellNodeIDs[i]).className = 'wall';
                     }
                 }
             }
         }
+
+        animationsArr.push(outerBorderAnimation);
+        animationsArr.push(mazeFillAnimation);
     }
 
     getNeighborsOfMazeCell(cell)
@@ -146,6 +164,14 @@ export default class Board
 
         this.changeWallStatusOfNodeTo(id, false);
         document.getElementById(id).className = 'unvisited';
+    }
+
+    getNodeBetween(node, neighbor)
+    {
+        const rowOffset = (neighbor.row - node.row) / 2;
+        const colOffset = (neighbor.column - node.column) / 2;
+
+        return this.nodesMatrix[node.row + rowOffset][node.column + colOffset];
     }
 
     isOnGrid(row, col)

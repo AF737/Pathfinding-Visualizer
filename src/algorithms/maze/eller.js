@@ -2,6 +2,7 @@
 
 export default function eller(grid)
 {
+    const animations = [];
     const sets = [];
     let setNumber = 0;
 
@@ -36,6 +37,9 @@ export default function eller(grid)
             {
                 /* Remove the wall between two distinct sets */
                 grid.removeWallBetweenMazeCells(currCell, rightNeighborCell);
+
+                const nodeBetween = grid.getNodeBetween(currCell, rightNeighborCell);
+                animations.push(nodeBetween);
 
                 /* Add all cells from the right set to the current one by changing
                     their set number therefore joining both sets together */
@@ -96,9 +100,14 @@ export default function eller(grid)
                     setsBelow[setIndex + cellOffset][0] = currSetNumber;
                     grid.removeWallBetweenMazeCells(currCell, cellBelow);
 
+                    const nodeBetween = grid.getNodeBetween(currCell, cellBelow);
+                    animations.push(nodeBetween);
+
                     oneBottomWallRemoved = true;
                 }
             }
         }
     }
+
+    return animations;
 }

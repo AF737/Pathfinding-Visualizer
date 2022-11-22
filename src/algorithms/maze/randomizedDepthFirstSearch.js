@@ -2,6 +2,7 @@
 
 export default function randomizedDepthFirstSearch(grid)
 {
+    const animations = [];
     const visitedCells = [];
     let currentCell = grid.getRandomUnvisitedMazeCell();
     currentCell.isVisited = true;
@@ -19,11 +20,17 @@ export default function randomizedDepthFirstSearch(grid)
             const randomNeighbor = 
                 unvisitedNeighbors[Math.floor(Math.random() * unvisitedNeighbors.length)];
 
-            grid.removeWallBetweenMazeCells(currentCell, randomNeighbor);
+            const nodeBetween = grid.getNodeBetween(currentCell, randomNeighbor);
+            const id = `node-${nodeBetween.row}-${nodeBetween.column}`;
+            grid.changeWallStatusOfNodeTo(id, false);
+            animations.push(nodeBetween);
+
             randomNeighbor.isVisited = true;
             visitedCells.push(randomNeighbor);
         }
     }
+
+    return animations;
 }
 
 function checkIfUnivisted(neighbor)

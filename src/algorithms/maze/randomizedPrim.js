@@ -2,6 +2,7 @@
 
 export default function randomizedPrim(grid)
 {
+    const animations = [];
     const startingCell = grid.getRandomUnvisitedMazeCell();
     startingCell.isVisited = true;
     /* Frontier cells are cells that haven't been visited yet and are neighbor of a visited
@@ -28,7 +29,12 @@ export default function randomizedPrim(grid)
         const neighborsInMaze = neighbors.filter(checkIfVisited);
         const randomNeighborInMaze = neighborsInMaze[Math.floor(Math.random() * neighborsInMaze.length)];
         grid.removeWallBetweenMazeCells(randomFrontierCell, randomNeighborInMaze);
+
+        const nodeBetween = grid.getNodeBetween(randomFrontierCell, randomNeighborInMaze);
+        animations.push(nodeBetween);
     }
+
+    return animations;
 }
 
 function checkIfUnvisited(neighbor)

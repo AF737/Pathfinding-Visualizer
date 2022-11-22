@@ -2,6 +2,7 @@
 
 export default function randomizedKruskal(grid)
 {
+    const animations = [];
     /* Right and bottom wall of each cell */
     const cellWalls = [];
     /* Each set contains all cells connected to each other */
@@ -71,9 +72,14 @@ export default function randomizedKruskal(grid)
                 const cellTwo = grid.nodesMatrix[cellTwoRow][cellTwoCol];
                 grid.removeWallBetweenMazeCells(cellOne, cellTwo);
                 document.getElementById(`node-${wallRow}-${wallCol}`).className = 'unvisited';
+
+                const cellBetween = grid.getNodeBetween(cellOne, cellTwo);
+                animations.push(cellBetween);
             }
         }
     }
+
+    return animations;
 }
 
 function getSetNumberOfCell(cellRow, cellCol, cellSets)

@@ -2,6 +2,7 @@
 
 export default function huntAndKill(grid)
 {
+    const animations = [];
     const unvisitedCells = grid.mazeCells;
     let currCell = grid.getRandomUnvisitedMazeCell();
     currCell.isVisited = true;
@@ -26,6 +27,10 @@ export default function huntAndKill(grid)
                     grid.removeWallBetweenMazeCells(cell, randomVisitedNeighbor);
                     cell.isVisited = true;
                     removeCellFromUnvisitedCells(unvisitedCells, cell);
+
+                    const nodeBetween = grid.getNodeBetween(cell, randomVisitedNeighbor);
+                    animations.push(nodeBetween);
+
                     currCell = cell;
                     break;
                 }
@@ -40,9 +45,15 @@ export default function huntAndKill(grid)
             grid.removeWallBetweenMazeCells(currCell, randomUnvisitedNeighbor);
             randomUnvisitedNeighbor.isVisited = true;
             removeCellFromUnvisitedCells(unvisitedCells, randomUnvisitedNeighbor);
+
+            const nodeBetween = grid.getNodeBetween(currCell, randomUnvisitedNeighbor);
+            animations.push(nodeBetween);
+
             currCell = randomUnvisitedNeighbor;
         }
     }
+
+    return animations;
 }
 
 function checkIfUnvisited(neighbor)

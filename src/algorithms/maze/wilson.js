@@ -2,6 +2,7 @@
 
 export default function wilson(grid)
 {
+    const animations = [];
     const unvisitedCells = grid.mazeCells;
     const randomVisitedCell = grid.getRandomUnvisitedMazeCell();
     randomVisitedCell.isVisited = true;
@@ -30,6 +31,10 @@ export default function wilson(grid)
                     const [rowChange, colChange] = currCell.allowedDirection;
                     const neighbor = grid.nodesMatrix[currCell.row + rowChange][currCell.column + colChange];
                     grid.removeWallBetweenMazeCells(currCell, neighbor);
+                    
+                    const nodeBetween = grid.getNodeBetween(currCell, neighbor);
+                    animations.push(nodeBetween);
+
                     currCell = neighbor;
                 }
 
@@ -47,6 +52,8 @@ export default function wilson(grid)
             grid.nodesMatrix[row][col].allowedDirection = [null, null];
         }
     }
+
+    return animations;
 }
 
 function removeCellFromUnvisitedCells(unvisitedCells, cell)

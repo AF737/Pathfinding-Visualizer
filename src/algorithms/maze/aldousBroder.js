@@ -2,6 +2,7 @@
 
 export default function aldousBroder(grid)
 {
+    const animations = [];
     let numOfUnvisitedCells = grid.mazeCells.length;
 
     let currCell = grid.getRandomUnvisitedMazeCell();
@@ -19,8 +20,13 @@ export default function aldousBroder(grid)
             grid.removeWallBetweenMazeCells(currCell, randomNeighbor);
             randomNeighbor.isVisited = true;
             numOfUnvisitedCells--;
+
+            const nodeBetween = grid.getNodeBetween(currCell, randomNeighbor);
+            animations.push(nodeBetween);
         }
 
         currCell = randomNeighbor;
     }
+
+    return animations;
 }
