@@ -15,7 +15,6 @@
     --light-weight-node-color: #32ccb2;
     --normal-weight-node-color: #e8dd19;
     --heavy-weight-node-color: #06d314;
-    --jump-point-node-color: black;
     --visited-by-previous-algorithm-node-color: #5d52f7;
     --outline-thickness-25-percent: 0.5px;
     --outline-thickness-50-percent: 1.0px;
@@ -377,11 +376,6 @@ div#normalWeightNode
 div#heavyWeightNode 
 {
     background-color: var(--heavy-weight-node-color);
-}
-
-div#jumpPointNode
-{
-    background-color: var(--jump-point-node-color);
 }
 
 div#infoBox 

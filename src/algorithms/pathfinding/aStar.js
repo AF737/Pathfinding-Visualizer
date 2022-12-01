@@ -4,6 +4,7 @@ export default function aStar(grid, startNode, finishNode)
 {
     /* Contains all nodes to which the shortest path is known */
     const closedList = [];
+    const shortestPath = [];
     startNode.distanceFromStart = 0;
     /* Contains all nodes where a path is known. This path may be suboptimal */
     const openList = [];
@@ -22,12 +23,11 @@ export default function aStar(grid, startNode, finishNode)
         /* If either the start or the finish node is completely surrounded by
             walls then terminate, because no path can be found */
         if (closestNode.distanceFromStart === Infinity) 
-            return [closedList, null];
+            return [closedList, shortestPath];
 
         if (closestNode === finishNode) 
         {
             let currentNode = finishNode;
-            const shortestPath = [];
 
             /* Recreate the path from the finish to the start node by going
                 through the previous nodes until the start node is reached */
@@ -43,7 +43,7 @@ export default function aStar(grid, startNode, finishNode)
         updateNeighbors(grid, closestNode, finishNode, openList, closedList);
     }
     
-    return [closedList, null];
+    return [closedList, shortestPath];
 }
 
 function sortNodesByDistance(openList) 
@@ -94,23 +94,4 @@ function updateNeighbors(grid, node, finishNode, openList, closedList)
                 neighbor.heuristicDistance;
         }
     }
-}
-
-/* Checks if traversal from the current node to it's neighbor is allowed. */
-function checkIfDirectionIsAllowed(grid, row, col, rowChange, colChange)
-{
-    /* Allowed direction of neighbor */
-    const [rowDirection, colDirection] = 
-        grid.nodesMatrix[row + rowChange][col + colChange].allowedDirection;
-    
-    /* Neighboring node allows all traversal directions */
-    if (rowDirection === null && colDirection === null)
-        return true;
-
-    /* Move from node to neighbor is the move allowed by the neighbor's direction attribute */
-    if (rowDirection === rowChange && colDirection === colChange)
-        return true;
-
-    /* Otherwise prevent traversal */
-    return false;
 }

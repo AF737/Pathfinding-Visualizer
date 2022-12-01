@@ -4,6 +4,7 @@ export default function jumpPointSearch(grid, startNode, finishNode)
 {
     const closedList = [];
     const openList = [];
+    const shortestPath = [];
     startNode.distanceFromStart = 0;
     startNode.heuristicDistance = getDistance(startNode, finishNode);
     startNode.totalDistance = startNode.distanceFromStart + startNode.heuristicDistance;
@@ -22,7 +23,6 @@ export default function jumpPointSearch(grid, startNode, finishNode)
         if (closestNode === finishNode)
         {
             let currentNode = finishNode;
-            const shortestPath = [];
 
             /* Recreate the path from the finish to the start node by going
                 through the previous nodes until the start node is reached */
@@ -38,7 +38,7 @@ export default function jumpPointSearch(grid, startNode, finishNode)
         identifySuccessors(grid, closestNode, finishNode, closedList, openList);
     }
 
-    return [closedList, null];
+    return [closedList, shortestPath];
 }
 
 function sortNodesByDistance(openList) 
@@ -92,7 +92,6 @@ function identifySuccessors(grid, currentNode, finishNode, closedList, openList)
             {
                 jumpPoint.distanceFromStart = shortestPath;
                 jumpPoint.totalDistance = jumpPoint.distanceFromStart + jumpPoint.heuristicDistance;
-                jumpPoint.isJumpPoint = true;
 
                 if (jumpPoint.id !== neighbor.id)
                     setPrevNodes(grid, jumpPoint, neighbor);
@@ -113,11 +112,6 @@ function jump(grid, row, col, rowChange, colChange, finishNode)
     if (grid.nodesMatrix[row][col] === finishNode)
         return [row, col];
 
-    /* Prevent exiting an one way another way than the specificed one */
-    if (grid.isAccessibleAt(row + rowChange, col + colChange) === true &&
-        checkIfDirectionIsAllowed(grid, row - rowChange, col - colChange, rowChange, colChange) === false)
-        return null;
-
     /* Jump diagonally */
     if (rowChange !== 0 && colChange !== 0)
     {
@@ -135,8 +129,7 @@ function jump(grid, row, col, rowChange, colChange, finishNode)
             x = wall or non traversable one way node
             */
         if (grid.isAccessibleAt(row + rowChange, col - colChange) === true &&
-            (grid.isAccessibleAt(row, col - colChange) === false ||
-            checkIfDirectionIsAllowed(grid, row, col, rowChange, -colChange) === false))
+            grid.isAccessibleAt(row, col - colChange) === false)
             return [row, col];
 
         /* Example for up and right movement:
@@ -145,8 +138,7 @@ function jump(grid, row, col, rowChange, colChange, finishNode)
 
         /* 2 */
         if (grid.isAccessibleAt(row - rowChange, col + colChange) === true &&
-            (grid.isAccessibleAt(row - rowChange, col) === false || 
-            checkIfDirectionIsAllowed(grid, row, col, -rowChange, colChange) === false))
+            grid.isAccessibleAt(row - rowChange, col) === false)
             return [row, col];
 
         /* Jump horizontally */
@@ -170,14 +162,12 @@ function jump(grid, row, col, rowChange, colChange, finishNode)
                 jumping diagonally from this new jump point. */
             if (grid.isAccessibleAt(row + rowChange, col + 1) === true &&
                 grid.isAccessibleAt(row + rowChange, col) === true && 
-                (grid.isAccessibleAt(row, col + 1) === false || 
-                checkIfDirectionIsAllowed(grid, row, col, 0, 1) === false))
+                grid.isAccessibleAt(row, col + 1) === false)
                 return [row, col];
 
             if (grid.isAccessibleAt(row + rowChange, col - 1) === true &&
                 grid.isAccessibleAt(row + rowChange, col) === true &&
-                (grid.isAccessibleAt(row, col - 1) === false ||
-                checkIfDirectionIsAllowed(grid, row, col, 0, -1) === false))
+                grid.isAccessibleAt(row, col - 1) === false)
                 return [row, col];
         }
 
@@ -186,14 +176,12 @@ function jump(grid, row, col, rowChange, colChange, finishNode)
         {
             if (grid.isAccessibleAt(row + 1, col + colChange) === true &&
                 grid.isAccessibleAt(row, col + colChange) === true &&
-                (grid.isAccessibleAt(row + 1, col) === false ||
-                checkIfDirectionIsAllowed(grid, row, col, 1, 0) === false))
+                grid.isAccessibleAt(row + 1, col) === false)
                 return [row, col];
 
             if (grid.isAccessibleAt(row - 1, col + colChange) === true &&
                 grid.isAccessibleAt(row, col + colChange) === true &&
-                (grid.isAccessibleAt(row - 1, col) === false ||
-                checkIfDirectionIsAllowed(grid, row, col, -1, 0) === false))
+                grid.isAccessibleAt(row - 1, col) === false)
                 return [row, col];
         }
     }
@@ -250,52 +238,44 @@ function getNeighbors(grid, node)
     /* If the node is the start node */
     if (node.prevNode === null)
     {
-        if (row > 0 &&
-            checkIfDirectionIsAllowed(grid, row, col, -1, 0) === true) 
+        if (row > 0) 
         {
             neighbors.push(grid.nodesMatrix[row - 1][col]);
             up = true;
         }
 
-        if (row < grid.rows - 1 &&
-            checkIfDirectionIsAllowed(grid, row, col, 1, 0) === true) 
+        if (row < grid.rows - 1) 
         {
             neighbors.push(grid.nodesMatrix[row + 1][col]);
             down = true;
         }
 
-        if (col > 0 &&
-            checkIfDirectionIsAllowed(grid, row, col, 0, -1) === true) 
+        if (col > 0) 
         {
             neighbors.push(grid.nodesMatrix[row][col - 1]);
             left = true;
         }
 
-        if (col < grid.columns - 1 &&
-            checkIfDirectionIsAllowed(grid, row, col, 0, 1) === true) 
+        if (col < grid.columns - 1) 
         {
             neighbors.push(grid.nodesMatrix[row][col + 1]);
             right = true;
         }
 
         if (up === true && left === true &&
-            checkCornerCutting(grid, row, col, -1, -1) === false &&
-            checkIfDirectionIsAllowed(grid, row, col, -1, -1) === true)
+            checkCornerCutting(grid, row, col, -1, -1) === false)
             neighbors.push(grid.nodesMatrix[row - 1][col - 1]);
 
         if (up === true && right === true &&
-            checkCornerCutting(grid, row, col, -1, 1) === false &&
-            checkIfDirectionIsAllowed(grid, row, col, -1, 1) === true)
+            checkCornerCutting(grid, row, col, -1, 1) === false)
             neighbors.push(grid.nodesMatrix[row - 1][col + 1]);
 
         if (down === true && left === true &&
-            checkCornerCutting(grid, row, col, 1, -1) === false &&
-            checkIfDirectionIsAllowed(grid, row, col, 1, -1) === true) 
+            checkCornerCutting(grid, row, col, 1, -1) === false) 
             neighbors.push(grid.nodesMatrix[row + 1][col - 1]);
 
         if (down === true && right === true &&
-            checkCornerCutting(grid, row, col, 1, 1) === false &&
-            checkIfDirectionIsAllowed(grid, row, col, 1, 1) === true) 
+            checkCornerCutting(grid, row, col, 1, 1) === false) 
             neighbors.push(grid.nodesMatrix[row + 1][col + 1]);
     }
 
@@ -340,31 +320,26 @@ function getNeighbors(grid, node)
         if (rowChange !== 0 && colChange !== 0)
         {
             /* 1 */
-            if (grid.isAccessibleAt(nextRow, col) === true &&
-                checkIfDirectionIsAllowed(grid, row, col, rowChange, 0) === true)
+            if (grid.isAccessibleAt(nextRow, col) === true)
                 neighbors.push(grid.nodesMatrix[nextRow][col]);
 
             /* 2 */
-            if (grid.isAccessibleAt(row, nextCol) === true &&
-                checkIfDirectionIsAllowed(grid, row, col, 0, colChange) === true)
+            if (grid.isAccessibleAt(row, nextCol) === true)
                 neighbors.push(grid.nodesMatrix[row][nextCol]);
 
             /* 3 */
             if (grid.isAccessibleAt(nextRow, nextCol) === true &&
-                checkCornerCutting(grid, row, col, rowChange, colChange) === false &&
-                checkIfDirectionIsAllowed(grid, row, col, rowChange, colChange) === true)
+                checkCornerCutting(grid, row, col, rowChange, colChange) === false)
                 neighbors.push(grid.nodesMatrix[nextRow][nextCol]);
 
             /* 4 */
             if (grid.isAccessibleAt(prevRow, col) === false &&
-                grid.isAccessibleAt(row, nextCol) === true && 
-                checkIfDirectionIsAllowed(grid, row, col, -rowDiff, colChange) === true)
+                grid.isAccessibleAt(row, nextCol) === true)
                 neighbors.push(grid.nodesMatrix[prevRow][nextCol]);
 
             /* 5 */
             if (grid.isAccessibleAt(row, prevCol) === false &&
-                grid.isAccessibleAt(nextRow, col) === true &&
-                checkIfDirectionIsAllowed(grid, row, col, rowChange, -colDiff) === true)
+                grid.isAccessibleAt(nextRow, col) === true)
                 neighbors.push(grid.nodesMatrix[nextRow][prevCol]);
         }
 
@@ -389,8 +364,7 @@ function getNeighbors(grid, node)
                 let accessible = false;
 
                 /* 1 */
-                if (grid.isAccessibleAt(row, nextCol) === true &&
-                    checkIfDirectionIsAllowed(grid, row, col, 0, colChange) === true)
+                if (grid.isAccessibleAt(row, nextCol) === true)
                 {
                     accessible = true;
                     neighbors.push(grid.nodesMatrix[row][nextCol]);
@@ -399,17 +373,13 @@ function getNeighbors(grid, node)
                 /* 2 */
                 if (grid.isOnGrid(row + 1, col) === true && 
                     accessible === true &&
-                    checkIfDirectionIsAllowed(grid, row, col, 1, colChange) === true &&
-                    (grid.isAccessibleAt(row + 1, col) === false ||
-                    checkIfDirectionIsAllowed(grid, row, col, 1, 0) === false))
+                    grid.isAccessibleAt(row + 1, col) === false)
                     neighbors.push(grid.nodesMatrix[row + 1][nextCol]);
 
                 /* 3 */
                 if (grid.isOnGrid(row - 1, col) === true && 
                     accessible === true &&
-                    checkIfDirectionIsAllowed(grid, row, col, -1, colChange) === true &&
-                    (grid.isAccessibleAt(row - 1, col) === false ||
-                    checkIfDirectionIsAllowed(grid, row, col, -1, 0) === false)) 
+                    grid.isAccessibleAt(row - 1, col) === false) 
                     neighbors.push(grid.nodesMatrix[row - 1][nextCol]);
             }
 
@@ -424,8 +394,7 @@ function getNeighbors(grid, node)
                 let accessible = false;
 
                 /* 1 */
-                if (grid.isAccessibleAt(nextRow, col) === true &&
-                    checkIfDirectionIsAllowed(grid, row, col, rowChange, 0) === true)
+                if (grid.isAccessibleAt(nextRow, col) === true)
                 {
                     accessible = true;
                     neighbors.push(grid.nodesMatrix[nextRow][col]);
@@ -434,17 +403,13 @@ function getNeighbors(grid, node)
                 /* 2 */
                 if (grid.isOnGrid(row, col - 1) &&
                     accessible === true &&
-                    checkIfDirectionIsAllowed(grid, row, col, rowChange, -1) === true &&
-                    (grid.isAccessibleAt(row, col - 1) === false ||
-                    checkIfDirectionIsAllowed(grid, row, col, 0, -1) === false))
+                    grid.isAccessibleAt(row, col - 1) === false)
                     neighbors.push(grid.nodesMatrix[nextRow][col - 1]);
 
                 /* 3 */
                 if (grid.isOnGrid(row, col + 1) &&
                     accessible === true &&
-                    checkIfDirectionIsAllowed(grid, row, col, rowChange, 1) === true &&
-                    (grid.isAccessibleAt(row, col + 1) === false ||
-                    checkIfDirectionIsAllowed(grid, row, col, 0, 1) === false))
+                    grid.isAccessibleAt(row, col + 1) === false)
                     neighbors.push(grid.nodesMatrix[nextRow][col + 1]);
             }
         }
@@ -476,23 +441,4 @@ function getDistance(firstNode, secondNode)
 
     else 
         return ((colChange - rowChange) + (Math.SQRT2 * rowChange));
-}
-
-/* Checks if traversal from the current node to it's neighbor is allowed. */
-function checkIfDirectionIsAllowed(grid, row, col, rowChange, colChange)
-{
-    /* Allowed direction of neighbor */
-    const [rowDirection, colDirection] = 
-        grid.nodesMatrix[row + rowChange][col + colChange].allowedDirection;
-
-    /* Neighboring node allows all traversal directions */
-    if (rowDirection === null && colDirection === null)
-        return true;
-
-    /* Move from node to neighbor is the move allowed by the neighbor's direction attribute */
-    if (rowDirection === rowChange && colDirection === colChange)
-        return true;
-
-    /* Otherwise prevent traversal */
-    return false;
 }

@@ -1,6 +1,6 @@
 'use strict';
 
-export {unweightedAlgorithm};
+export {unweightedAlgorithm, NodeType};
 
 import Board from './board.js';
 import {adjustGridDimensions, createGrid} from './grid.js';
@@ -12,12 +12,31 @@ import {DISABLED_COLOR, BUTTON_BACKGROUND_COLOR, disableButtons, resetToggleButt
 import {handleLightWeightSlider, handleNormalWeightSlider, handleHeavyWeightSlider} 
         from './weights.js';
 import startAlgorithmAnimation from './animateAlgorithms.js';
-import {mouseEvent, handleMouseDownAndMove} from './mouseEvents.js';
-import {openAlgorithmStatistics, closeAlgorithmStatistics, collectAlgorithmStatistics} 
-        from './algorithmStatistics.js';
+import {MouseEv, handleMouseDownAndMove} from './mouseEvents.js';
 import startMazeAnimation from './animateMazes.js';
 
 let unweightedAlgorithm = false;
+
+const NodeType = 
+{
+    wall: 'wall',
+    unvisited: 'unvisited',
+    visited: 'visited',
+    start: 'start',
+    startVisited: 'startVisited',
+    startShortestPath: 'startShortestPath',
+    finish: 'finish',
+    finishVisited: 'finishVisited',
+    finishShortestPath: 'finishShortestPath',
+    shortestPath: 'shortestPath',
+    lightWeight: 'lightWeight',
+    normalWeight: 'normalWeight',
+    heavyWeight: 'heavyWeight',
+    visitedByPreviousAlgorithm: 'visitedByPreviousAlgorithm'
+};
+
+/* Make Node attributes immutable */
+Object.freeze(NodeType);
 
 const SpecialNodeKeyboardKeys =
 {
@@ -34,18 +53,7 @@ const SpecialNodeKeyboardKeys =
 
 Object.freeze(SpecialNodeKeyboardKeys);
 
-const PlaceSpecialNodes = 
-{
-    lightWeight: false,
-    normalWeight: false,
-    heavyWeight: false,
-    removeOneWayTraversal: false,
-    onlyUpTraversal: false,
-    finish: false,
-    onlyLeftTraversal: false,
-    onlyDownTraversal: false,
-    onlyRightTraversal: false
-};
+const pressedKeys = [];
 
 document.addEventListener('DOMContentLoaded', function() 
 {
@@ -69,8 +77,6 @@ document.addEventListener('DOMContentLoaded', function()
     const openInfoBoxButton = document.getElementById('openInfoBoxButton');
     const cornerCuttingToggleButton = document.getElementById('cornerCuttingToggleButton');
     const cornerCuttingSwitch = document.getElementById('cornerCuttingSwitch');
-    const openAlgorithmStatisticsButton = document.getElementById('openAlgorithmStatisticsButton');
-    const closeAlgorithmStatisticsButton = document.getElementById('closeAlgorithmStatisticsButton');
     const mazeDropDownButton = document.getElementById('mazeDropDownButton');
     const mazeDropDownMenu = document.getElementById('mazeDropDownMenu');
     const mobileMenuButton = document.getElementById('mobileMenuButton');
@@ -89,14 +95,14 @@ document.addEventListener('DOMContentLoaded', function()
     {
         ev.preventDefault();
 
-        handleMouseDownAndMove(ev, mouseEvent.down, gridBoard, PlaceSpecialNodes);
+        handleMouseDownAndMove(ev, MouseEv.down, gridBoard, pressedKeys);
     });
 
     board.addEventListener('mousemove', function(ev) 
     {
         ev.preventDefault();
 
-        handleMouseDownAndMove(ev, mouseEvent.move, gridBoard, PlaceSpecialNodes);
+        handleMouseDownAndMove(ev, MouseEv.move, gridBoard, pressedKeys);
     });
 
     /* Set this value to false even if the user releases the left mousebutton outside
@@ -192,20 +198,6 @@ document.addEventListener('DOMContentLoaded', function()
                 gridBoard.removePreviousAlgorithm();
                 gridBoard.removeOneWayNodes();
             });
-
-            openAlgorithmStatisticsButton.addEventListener(userEvent, function(ev)
-            {
-                ev.preventDefault();
-
-                openAlgorithmStatistics();
-            });
-
-            closeAlgorithmStatisticsButton.addEventListener(userEvent, function(ev)
-            {
-                ev.preventDefault();
-
-                closeAlgorithmStatistics();
-            });
         
             skipInfoBoxButton.addEventListener(userEvent, function(ev) 
             {
@@ -266,13 +258,10 @@ document.addEventListener('DOMContentLoaded', function()
                     disableToggleButtons();
                     gridBoard.algorithmIsRunning = true;
                     
-                    let totalNumberOfVisitedNodes = 0;
-                    let totalNumberOfShortestPathNodes = 0;
                     let index = 0;
                     let previousIndex = null;
 
-                    animateAlgorithm(selectedAlgorithm.value, gridBoard, index, previousIndex, 
-                        totalNumberOfVisitedNodes, totalNumberOfShortestPathNodes);
+                    animateAlgorithm(selectedAlgorithm.value, gridBoard, index, previousIndex);
                 }
             });
         });
@@ -289,17 +278,13 @@ document.addEventListener('DOMContentLoaded', function()
         });
     }
 
-    async function animateAlgorithm(selectedAlgo, gridBoard, index, previousIndex, 
-        totalNumberOfVisitedNodes, totalNumberOfShortestPathNodes)
+    async function animateAlgorithm(selectedAlgo, gridBoard, index, previousIndex)
     {
-        while(gridBoard.finishRows[index] === null)
+        while (gridBoard.finishRows[index] === null)
             index++;
 
         if (index === gridBoard.finishRows.length)
-        {
-            collectAlgorithmStatistics(selectedAlgo, totalNumberOfVisitedNodes, totalNumberOfShortestPathNodes, gridBoard);
             return;
-        }
 
         let startNode;
 
@@ -326,12 +311,7 @@ document.addEventListener('DOMContentLoaded', function()
             }
         }
 
-        const onlyGetStatistics = false;
-        const [timeToWait, numberOfVisitedNodes, numberOfShortestPathNodes] = 
-            startAlgorithmAnimation(selectedAlgo, startNode, finishNode, gridBoard, lastFinishNode, onlyGetStatistics);
-
-        totalNumberOfVisitedNodes += numberOfVisitedNodes;
-        totalNumberOfShortestPathNodes += numberOfShortestPathNodes;
+        const timeToWait = startAlgorithmAnimation(selectedAlgo, startNode, finishNode, gridBoard, lastFinishNode);
         
         gridBoard.makePreviousAlgorithmLessVisible();
 
@@ -341,7 +321,7 @@ document.addEventListener('DOMContentLoaded', function()
         index++;
 
         /* Repeat algorithm until all finish nodes have been reached */
-        animateAlgorithm(selectedAlgo, gridBoard, index, previousIndex, totalNumberOfVisitedNodes, totalNumberOfShortestPathNodes);
+        animateAlgorithm(selectedAlgo, gridBoard, index, previousIndex);
     }
 
     function setupAlgorithmRadioButtons() 
@@ -442,41 +422,23 @@ document.addEventListener('DOMContentLoaded', function()
 
     document.addEventListener('keydown', function(ev) 
     {
-        // gridBoard.pressedKey = ev.key;
-        const keyboardKeyValues = Object.values(SpecialNodeKeyboardKeys); 
-
-        for (const keyboardKey of keyboardKeyValues)
+        for (const [key, value] of Object.entries(SpecialNodeKeyboardKeys))
         {
-            if (keyboardKey === ev.key)
+            if (ev.key === value)
             {
-                const specialNode = Object.keys(SpecialNodeKeyboardKeys).find(function(key)
-                {
-                    return SpecialNodeKeyboardKeys[key] === keyboardKey
-                });
-
-                PlaceSpecialNodes[specialNode] = true;
-                break;
+                /* Avoid duplicates */
+                if (pressedKeys.indexOf(key) === -1)
+                    pressedKeys.push(key);
             }
         }
     });
 
     document.addEventListener('keyup', function(ev) 
     {
-        // gridBoard.pressedKey = null;
-        const keyboardKeyValues = Object.values(SpecialNodeKeyboardKeys); 
-
-        for (const keyboardKey of keyboardKeyValues)
+        for (const [key, value] of Object.entries(SpecialNodeKeyboardKeys))
         {
-            if (keyboardKey === ev.key)
-            {
-                const specialNode = Object.keys(SpecialNodeKeyboardKeys).find(function(key)
-                {
-                    return SpecialNodeKeyboardKeys[key] === keyboardKey
-                });
-
-                PlaceSpecialNodes[specialNode] = false;
-                break;
-            }
+            if (ev.key === value)
+                pressedKeys.splice(pressedKeys.indexOf(key), 1);
         }
     });
 

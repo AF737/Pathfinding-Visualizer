@@ -4,6 +4,7 @@ export default function depthFirstSearch(grid, startNode, finishNode)
 {
     const visitedNodes = [];
     const nodesToCheck = [];
+    const shortestPath = [];
     startNode.distanceFromStart = 0;
     nodesToCheck.push(startNode);
 
@@ -22,16 +23,15 @@ export default function depthFirstSearch(grid, startNode, finishNode)
         if (currentNode === finishNode) 
         {
             let pathNode = finishNode;
-            const path = [];
 
             /* Backtrack from finish to start node */
             while (pathNode !== null) 
             {
-                path.unshift(pathNode);
+                shortestPath.unshift(pathNode);
                 pathNode = pathNode.prevNode;
             }
 
-            return [visitedNodes, path];
+            return [visitedNodes, shortestPath];
         }
 
         /* Add the unvisited neighbors to the array */
@@ -41,7 +41,7 @@ export default function depthFirstSearch(grid, startNode, finishNode)
     /* If we exited the while loop then the start and/or finish node is completely
         surrounded by walls and thereby unreachable. Then there's no path to connect both
         nodes so return null */
-    return [visitedNodes, null];
+    return [visitedNodes, shortestPath];
 }
 
 function updateUnvisitedNeighbors(grid, node, nodesToCheck) 
@@ -62,23 +62,4 @@ function updateUnvisitedNeighbors(grid, node, nodesToCheck)
 function checkIfUnvisited(neighbor) 
 {
     return neighbor.isVisited === false;
-}
-
-/* Checks if traversal from the current node to it's neighbor is allowed. */
-function checkIfDirectionIsAllowed(grid, row, col, rowChange, colChange)
-{
-    /* Allowed direction of neighbor */
-    const [rowDirection, colDirection] = 
-        grid.nodesMatrix[row + rowChange][col + colChange].allowedDirection;
-
-    /* Neighboring node allows all traversal directions */
-    if (rowDirection === null && colDirection === null)
-        return true;
-
-    /* Move from node to neighbor is the move allowed by the neighbor's direction attribute */
-    if (rowDirection === rowChange && colDirection === colChange)
-        return true;
-
-    /* Otherwise prevent traversal */
-    return false;
 }

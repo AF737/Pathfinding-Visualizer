@@ -3,6 +3,7 @@
 export default function dijkstra(grid, startNode, finishNode) 
 {
     const visitedNodes = [];
+    const shortestPath = [];
     startNode.distanceFromStart = 0;
     const unvisitedNodes = getUnvisitedNodes(grid);
 
@@ -17,7 +18,7 @@ export default function dijkstra(grid, startNode, finishNode)
         /* Either the start node or the finish node is completely surrounded
             by walls and no path can connect them */
         if (closestNode.distanceFromStart === Infinity) 
-            return [visitedNodes, null];
+            return [visitedNodes, shortestPath];
 
         closestNode.isVisited = true;
         visitedNodes.push(closestNode);
@@ -25,7 +26,6 @@ export default function dijkstra(grid, startNode, finishNode)
         if (closestNode === finishNode) 
         {
             let currentNode = finishNode;
-            const shortestPath = [];
             
             /* Recreate the path from the finish to the start node by going
                 through the previous nodes */
@@ -79,23 +79,4 @@ function updateUnvisitedNeighbors(grid, node)
 function checkIfUnvisited(neighbor) 
 {
     return neighbor.isVisited === false;
-}
-
-/* Checks if traversal from the current node to it's neighbor is allowed. */
-function checkIfDirectionIsAllowed(grid, row, col, rowChange, colChange)
-{
-    /* Allowed direction of neighbor */
-    const [rowDirection, colDirection] = 
-        grid.nodesMatrix[row + rowChange][col + colChange].allowedDirection;
-
-    /* Neighboring node allows all traversal directions */
-    if (rowDirection === null && colDirection === null)
-        return true;
-
-    /* Move from node to neighbor is the move allowed by the neighbor's direction attribute */
-    if (rowDirection === rowChange && colDirection === colChange)
-        return true;
-
-    /* Otherwise prevent traversal */
-    return false;
 }

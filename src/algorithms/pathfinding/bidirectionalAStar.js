@@ -13,6 +13,7 @@ export default function bidirectionalAStar(grid, startNode, finishNode)
 {
     const closedListFromStart = [];
     const closedListFromFinish = [];
+    const shortestPath = [];
     startNode.distanceFromStart = 0;
     finishNode.distanceFromFinish = 0;
     const openListFromStart = [];
@@ -40,16 +41,16 @@ export default function bidirectionalAStar(grid, startNode, finishNode)
             shortest path from start to finish through this node */
         if (closedListFromStart.includes(closestNodeFromFinish)) 
         {
-            const path = getPath(closestNodeFromFinish);
+            getPath(closestNodeFromFinish, shortestPath);
 
-            return [closedListFromStart, closedListFromFinish, path];
+            return [closedListFromStart, closedListFromFinish, shortestPath];
         }
 
         else if (closedListFromFinish.includes(closestNodeFromStart)) 
         {
-            const path = getPath(closestNodeFromStart);
+            getPath(closestNodeFromStart, shortestPath);
 
-            return [closedListFromStart, closedListFromFinish, path];
+            return [closedListFromStart, closedListFromFinish, shortestPath];
         }
 
         updateNeighbors(grid, closestNodeFromStart, finishNode, openListFromStart,
@@ -61,7 +62,7 @@ export default function bidirectionalAStar(grid, startNode, finishNode)
     /* If we exited the while loop then the start and/or finish node is completely
         surrounded by walls and thereby unreachable. Then there's no path to connect both
         nodes so return null */
-    return [closedListFromStart, closedListFromFinish, null];
+    return [closedListFromStart, closedListFromFinish, shortestPath];
 }
 
 function sortNodesByDistance(openList) 
@@ -135,16 +136,15 @@ function updateNeighbors(grid, node, goalNode, openList, closedList, initNode)
 }
 
 /* This path doesn't have to be the shortest one */
-function getPath(startingNode) 
+function getPath(startingNode, shortestPath) 
 {
     let currentNode = startingNode;
-    const path = [];
 
     /* Backtrack from the node that both algorithms have in common to
         the start node */
     while (currentNode !== null) 
     {
-        path.unshift(currentNode);
+        shortestPath.unshift(currentNode);
         currentNode = currentNode.prevNode;
     }
     
@@ -156,28 +156,7 @@ function getPath(startingNode)
         to the finish node */
     while (currentNode !== null) 
     {
-        path.push(currentNode);
+        shortestPath.push(currentNode);
         currentNode = currentNode.prevNodeFromFinish;
     }
-
-    return path;
-}
-
-/* Checks if traversal from the current node to it's neighbor is allowed. */
-function checkIfDirectionIsAllowed(grid, row, col, rowChange, colChange)
-{
-    /* Allowed direction of neighbor */
-    const [rowDirection, colDirection] = 
-        grid.nodesMatrix[row + rowChange][col + colChange].allowedDirection;
-
-    /* Neighboring node allows all traversal directions */
-    if (rowDirection === null && colDirection === null)
-        return true;
-
-    /* Move from node to neighbor is the move allowed by the neighbor's direction attribute */
-    if (rowDirection === rowChange && colDirection === colChange)
-        return true;
-
-    /* Otherwise prevent traversal */
-    return false;
 }

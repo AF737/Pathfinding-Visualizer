@@ -1,23 +1,6 @@
 'use strict';
 
-const Node = 
-{
-    unvisited: 'unvisited',
-    visited: 'visited',
-    start: 'start',
-    startVisited: 'startVisited',
-    startShortestPath: 'startShortestPath',
-    finish: 'finish',
-    finishVisited: 'finishVisited',
-    finishShortestPath: 'finishShortestPath',
-    shortestPath: 'shortestPath',
-    jumpPoint: 'jumpPoint',
-    visitedByPreviousAlgorithm: 'visitedByPreviousAlgorithm'
-};
-
-/* Make Node attributes immutable */
-Object.freeze(Node);
-
+import {NodeType} from './index.js';
 import {enableButtons, enableEightDirections, enableCornerCutting} 
         from './helperFunctions.js';
 import dijkstra from './algorithms/pathfinding/dijkstra.js';
@@ -29,276 +12,194 @@ import bidirectionalAStar from './algorithms/pathfinding/bidirectionalAStar.js';
 import depthFirstSearch from './algorithms/pathfinding/depthFirstSearch.js';
 import jumpPointSearch from './algorithms/pathfinding/jumpPointSearch.js';
 
+const Animation = 
+{
+    visitedNodesFromStart: [],
+    visitedNodesFromFinish: [],
+    shortestPath: []
+};
+
 const ANIMATION_SPEED = 10;
-let eightDirectionsToggleButton = document.getElementById('eightDirectionsToggleButton');
-let cornerCuttingToggleButton = document.getElementById('cornerCuttingToggleButton');
+const eightDirectionsToggleButton = document.getElementById('eightDirectionsToggleButton');
 
 export default function startAlgorithmAnimation(selectedAlgorithm, startNode, finishNode, 
-    gridBoard, lastFinishNode, onlyGetStatistics) 
+    gridBoard, lastFinishNode) 
 {
-    let visitedNodesFromStart = [];
-    let visitedNodesFromFinish = [];
-    let shortestPath = [];
     let timeToWait = 0;
-    let numberOfVisitedNodes = 0;
-    let numberOfShortestPathNodes = 0;
     let allowsEightDirectionalMovement = false;
     let isJumpPointSearch = false;
+
+    Animation.visitedNodesFromStart.length = 0;
+    Animation.visitedNodesFromFinish = 0;
+    Animation.shortestPath = 0;
     
     switch (selectedAlgorithm) 
     {
         case 'dijkstra':
-            gridBoard.restoreWeights();
+            [Animation.visitedNodesFromStart, Animation.shortestPath] = 
+                dijkstra(gridBoard, startNode, finishNode);
 
-            [visitedNodesFromStart, shortestPath] = dijkstra(gridBoard, startNode, finishNode);
-
-            [timeToWait, numberOfVisitedNodes, numberOfShortestPathNodes] = 
-                animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortestPath, gridBoard, 
-                    allowsEightDirectionalMovement, isJumpPointSearch, lastFinishNode, onlyGetStatistics);
+            timeToWait = animateAlgorithm(gridBoard, allowsEightDirectionalMovement, isJumpPointSearch, 
+                lastFinishNode);
             break;
 
         case 'aStar':
-            gridBoard.restoreWeights();
-
-            [visitedNodesFromStart, shortestPath] = aStar(gridBoard, startNode, finishNode);
+            [Animation.visitedNodesFromStart, Animation.shortestPath] = 
+                aStar(gridBoard, startNode, finishNode);
     
             allowsEightDirectionalMovement = true;
 
-            [timeToWait, numberOfVisitedNodes, numberOfShortestPathNodes] = 
-                animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortestPath, gridBoard, 
-                    allowsEightDirectionalMovement, isJumpPointSearch, lastFinishNode, onlyGetStatistics);
+            timeToWait = animateAlgorithm(gridBoard, allowsEightDirectionalMovement, isJumpPointSearch, 
+                lastFinishNode);
             break;
 
         case 'greedyBestFirstSearch':
-            gridBoard.restoreWeights();
-
-            [visitedNodesFromStart, shortestPath] = greedyBestFirstSearch(gridBoard, startNode, finishNode);
+            [Animation.visitedNodesFromStart, Animation.shortestPath] = 
+                greedyBestFirstSearch(gridBoard, startNode, finishNode);
 
             allowsEightDirectionalMovement = true;
 
-            [timeToWait, numberOfVisitedNodes, numberOfShortestPathNodes] = 
-                animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortestPath, gridBoard, 
-                    allowsEightDirectionalMovement, isJumpPointSearch, lastFinishNode, onlyGetStatistics);
+            timeToWait = animateAlgorithm(gridBoard, allowsEightDirectionalMovement, isJumpPointSearch, 
+                lastFinishNode);
             break;
 
         case 'breadthFirstSearch':
-            /* When getting statistics the algorithms are ran in this order, so save weights of nodes for
-                upcoming bidirectional Dijkstra and A*, which are weighted algorithms */
-            gridBoard.saveWeightValues();
-
             gridBoard.removeWeights();
 
-            [visitedNodesFromStart, shortestPath] = breadthFirstSearch(gridBoard, startNode, finishNode);
+            [Animation.visitedNodesFromStart, Animation.shortestPath] = 
+                breadthFirstSearch(gridBoard, startNode, finishNode);
 
-            [timeToWait, numberOfVisitedNodes, numberOfShortestPathNodes] = 
-                animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortestPath, gridBoard, 
-                    allowsEightDirectionalMovement, isJumpPointSearch, lastFinishNode, onlyGetStatistics);
+            timeToWait = animateAlgorithm(gridBoard, allowsEightDirectionalMovement, isJumpPointSearch, 
+                lastFinishNode);
             break;
 
         case 'bidirectionalDijkstra':
-            gridBoard.restoreWeights();
-
-            [visitedNodesFromStart, visitedNodesFromFinish, shortestPath] =
+            [Animation.visitedNodesFromStart, Animation.visitedNodesFromFinish, Animation.shortestPath] =
                 bidirectionalDijkstra(gridBoard, startNode, finishNode);
 
-            [timeToWait, numberOfVisitedNodes, numberOfShortestPathNodes] = 
-                animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortestPath, gridBoard, 
-                    allowsEightDirectionalMovement, isJumpPointSearch, lastFinishNode, onlyGetStatistics);
+            timeToWait = animateAlgorithm(gridBoard, allowsEightDirectionalMovement, isJumpPointSearch, 
+                lastFinishNode);
             break;
 
         case 'bidirectionalAStar':
-            gridBoard.restoreWeights();
-
-            [visitedNodesFromStart, visitedNodesFromFinish, shortestPath] =
+            [Animation.visitedNodesFromStart, Animation.visitedNodesFromFinish, Animation.shortestPath] =
                 bidirectionalAStar(gridBoard, startNode, finishNode);
 
             allowsEightDirectionalMovement = true;
 
-            [timeToWait, numberOfVisitedNodes, numberOfShortestPathNodes] = 
-                animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortestPath, gridBoard,
-                    allowsEightDirectionalMovement, isJumpPointSearch, lastFinishNode, onlyGetStatistics);
+            timeToWait = animateAlgorithm(gridBoard, allowsEightDirectionalMovement, isJumpPointSearch, 
+                lastFinishNode);
             break;
 
         case 'depthFirstSearch':
-            gridBoard.saveWeightValues();
-
             gridBoard.removeWeights();
 
-            [visitedNodesFromStart, shortestPath] = depthFirstSearch(gridBoard, startNode, finishNode);
+            [Animation.visitedNodesFromStart, Animation.shortestPath] = 
+                depthFirstSearch(gridBoard, startNode, finishNode);
 
-            [timeToWait, numberOfVisitedNodes, numberOfShortestPathNodes] = 
-                animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortestPath, gridBoard, 
-                    allowsEightDirectionalMovement, isJumpPointSearch, lastFinishNode, onlyGetStatistics);
+            timeToWait = animateAlgorithm(gridBoard, allowsEightDirectionalMovement, isJumpPointSearch, 
+                lastFinishNode);
             break;
 
         case 'jumpPointSearch':
-            gridBoard.saveWeightValues();
-
             gridBoard.removeWeights();
 
-            [visitedNodesFromStart, shortestPath] = jumpPointSearch(gridBoard, startNode, finishNode);
+            [Animation.visitedNodesFromStart, Animation.shortestPath] = 
+                jumpPointSearch(gridBoard, startNode, finishNode);
 
             allowsEightDirectionalMovement = true;
             isJumpPointSearch = true;
 
-            [timeToWait, numberOfVisitedNodes, numberOfShortestPathNodes] = 
-                animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortestPath, gridBoard, 
-                    allowsEightDirectionalMovement, isJumpPointSearch, lastFinishNode, onlyGetStatistics);
+            timeToWait = animateAlgorithm(gridBoard, allowsEightDirectionalMovement, isJumpPointSearch, 
+                lastFinishNode);
             break;
             
         default:
             break;
     }
 
-    return [timeToWait, numberOfVisitedNodes, numberOfShortestPathNodes];
+    return timeToWait;
 }
 
-function animateAlgorithm(visitedNodesFromStart, visitedNodesFromFinish, shortestPath, 
-    gridBoard, allowsEightDirectionalMovement, isJumpPointSearch, lastFinishNode, onlyGetStatistics) 
+function animateAlgorithm(gridBoard, allowsEightDirectionalMovement, isJumpPointSearch, lastFinishNode) 
 {
-    if (onlyGetStatistics === false)
+    for (const [animationName, nodesToAnimate] of Object.entries(Animation))
     {
-        for (let i = 0; i < visitedNodesFromStart.length; i++) 
-        {
-            setTimeout(function() 
-            {
-                const currentNode = visitedNodesFromStart[i];
-                const nodeID = document.getElementById(`node-${currentNode.row}-${currentNode.column}`);
-                
-                if (i === 0)
-                {
-                    if (nodeID.className === Node.start) 
-                        nodeID.className = Node.startVisited;
+        let animationDelay = 0;
 
-                    /* Algorithm started from finish node of previous algorithm iteration */
-                    else
-                        nodeID.className = Node.finishVisited;
+        if (animationName === 'shortestPath')
+            animationDelay = Animation.visitedNodesFromStart.length;
+        
+        for (let i = 0; i < nodesToAnimate.length; i++)
+        {
+            setTimeout(function()
+            {
+                const node = nodesToAnimate[i];
+                const nodeID = document.getElementById(`node-${node.row}-${node.column}`);
+
+                if (animationName === 'shortestPath')
+                {
+                    switch (nodeID.className)
+                    {
+                        case NodeType.startVisited:
+                            nodeID.className = NodeType.startShortestPath;
+                            break;
+
+                        case NodeType.finishVisited:
+                            nodeID.className = NodeType.finishShortestPath;
+                            break;
+                    
+                        default:
+                            nodeID.className = NodeType.shortestPath;
+                            break;
+                    }
                 }
 
-                else if (currentNode.isJumpPoint === true) 
-                    nodeID.className = Node.jumpPoint;
-
-                else if (nodeID.className !== Node.shortestPath && 
-                        nodeID.className !== Node.startShortestPath &&
-                        nodeID.className !== Node.finishShortestPath && 
-                        nodeID.className !== Node.start &&
-                        nodeID.className !== Node.finish) 
-                    nodeID.className = Node.visited;
-            }, i * ANIMATION_SPEED);
-        }
-
-        /* Used for bidirectional search algorithms */
-        if (visitedNodesFromFinish.length !== 0) 
-        {
-            for (let i = 0; i < visitedNodesFromFinish.length; i++) 
-            {
-                setTimeout(function() 
+                else
                 {
-                    const currentNode = visitedNodesFromFinish[i];
-                    const nodeID = document.getElementById(`node-${currentNode.row}-${currentNode.column}`);
-                    
-                    if (i === 0) 
-                        nodeID.className = Node.finishVisited;
-
-                    else if (nodeID.className !== Node.shortestPath && 
-                            nodeID.className !== Node.startShortestPath &&
-                            nodeID.className !== Node.finishShortestPath && 
-                            nodeID.className !== Node.start &&
-                            nodeID.className !== Node.finish)
-                        nodeID.className = Node.visited;
-                }, i * ANIMATION_SPEED);
-            }
-        }
-
-        if (shortestPath !== null) 
-        {
-            for (let i = 0; i < shortestPath.length; i++) 
-            {
-                setTimeout(function() 
-                {
-                    const currentNode = shortestPath[i];
-                    const nodeID = document.getElementById(`node-${currentNode.row}-${currentNode.column}`);
-
-                    if (i === 0)
+                    switch(nodeID.className)
                     {
-                        if (nodeID.className === Node.startVisited)
-                            nodeID.className = Node.startShortestPath;
+                        case NodeType.start:
+                            nodeID.className = NodeType.startVisited;
+                            break;
 
-                        else
-                            nodeID.className = Node.finishShortestPath;
+                        case NodeType.finish:
+                            nodeID.className = NodeType.finishVisited;
+                            break;
+
+                        case NodeType.unvisited:
+                        case NodeType.lightWeight:
+                        case NodeType.normalWeight:
+                        case NodeType.heavyWeight:
+                            nodeID.className = NodeType.visited;
+                            break;
                     }
-
-                    else if (i === shortestPath.length - 1)
-                        nodeID.className = Node.finishShortestPath;
-
-                    else if (nodeID.className !== Node.shortestPath &&
-                            nodeID.className !== Node.startShortestPath &&
-                            nodeID.className !== Node.finishShortestPath &&
-                            nodeID.className !== Node.start &&
-                            nodeID.className !== Node.finish)
-                        nodeID.className = Node.shortestPath;
-                }, (visitedNodesFromStart.length + i) * ANIMATION_SPEED);
-            }
-        }
-
-        /* Only enable the UI after the algorithm is done with all finish nodes */
-        if (lastFinishNode === true)
-        {
-            /* visitedNodesFromStart and visitedNodesFromFinish always have the same length so 
-                using only one of them to calculate the time until the animation's done is enough */
-            if (shortestPath !== null) 
-            {
-                setTimeout(function() 
-                {
-                    gridBoard.algorithmIsRunning = false;
-                    enableButtons();
-                    
-                    if (allowsEightDirectionalMovement === true) 
-                        enableEightDirections();
-
-                    /* Jump Point Search uses eight directions, but doesn't allow for corner
-                        cutting so the extra check is necessary otherwise just enable it if
-                        it was set before */
-                    if ((eightDirectionsToggleButton.checked === true || 
-                        cornerCuttingToggleButton.checked === true) && 
-                        isJumpPointSearch === false) 
-                        enableCornerCutting();
-                }, (visitedNodesFromStart.length + shortestPath.length) * ANIMATION_SPEED);
-            }
-
-            /* If no shortest path was found then enable all buttons when the algorithm has
-                terminated */
-            else 
-            {
-                setTimeout(function() 
-                {
-                    gridBoard.algorithmIsRunning = false;
-                    enableButtons();
-                    
-                    if (allowsEightDirectionalMovement === true) 
-                        enableEightDirections();
-
-                    if ((eightDirectionsToggleButton.checked === true || 
-                        cornerCuttingToggleButton.checked === true) &&
-                        isJumpPointSearch === false)
-                        enableCornerCutting();
-                }, visitedNodesFromStart.length * ANIMATION_SPEED);
-            }
+                }
+            }, (animationDelay + i) * ANIMATION_SPEED);
         }
     }
 
-    let numberOfVisitedNodes = visitedNodesFromStart.length;
-    let timeToWait = visitedNodesFromStart.length;
-    let numberOfShortestPathNodes = 0;
+    const timeToWait = (Animation.visitedNodesFromStart.length + Animation.shortestPath.length) * ANIMATION_SPEED;
 
-    if (visitedNodesFromFinish !== null)
-        numberOfVisitedNodes += visitedNodesFromFinish.length;
-
-    if (shortestPath !== null)
+    /* Only enable the UI after the algorithm is done with all finish nodes */
+    if (lastFinishNode === true)
     {
-        timeToWait += shortestPath.length;
-        numberOfShortestPathNodes = shortestPath.length;
+        setTimeout(function() 
+        {
+            gridBoard.algorithmIsRunning = false;
+            enableButtons();
+            
+            if (allowsEightDirectionalMovement === true) 
+                enableEightDirections();
+
+            /* Jump Point Search uses eight directions, but doesn't allow for corner
+                cutting so the extra check is necessary otherwise just enable it if
+                it was set before */
+            if (eightDirectionsToggleButton.checked === true && 
+                isJumpPointSearch === false) 
+                enableCornerCutting();
+        }, timeToWait);
     }
 
-    return [(timeToWait * ANIMATION_SPEED), numberOfVisitedNodes, numberOfShortestPathNodes];
+    return timeToWait;
 }

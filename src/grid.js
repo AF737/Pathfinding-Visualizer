@@ -1,18 +1,9 @@
 'use strict';
 
-const NodeClass =
-{
-    start: 'start',
-    finish: 'finish',
-    unvisited: 'unvisited'
-};
-
-/* Make NodeClass attributes immutable */
-Object.freeze(NodeClass);
-
 export {adjustGridDimensions, createGrid};
 
 import Node from './node.js';
+import {NodeType} from './index.js';
 
 const board = document.getElementById('board');
 const NODE_WIDTH = 20;
@@ -107,17 +98,17 @@ function createGrid(gridBoard)
             if (row === gridBoard.startRow && col === gridBoard.startCol) 
             {
                 gridBoard.startIsPlaced = true;
-                newNodeClass = NodeClass.start;
+                newNodeClass = NodeType.start;
             }
 
             else if (row === finishRow && col === finishCol) 
             {
                 gridBoard.finishIsPlaced = true;
-                newNodeClass = NodeClass.finish;
+                newNodeClass = NodeType.finish;
             }
 
             else 
-                newNodeClass = NodeClass.unvisited;
+                newNodeClass = NodeType.unvisited;
 
             newNode = new Node(newNodeIndex, row, col, newNodeClass);
             newGridArr.push(newNode);
@@ -131,7 +122,7 @@ function createGrid(gridBoard)
             newNodeDiv.style.width = `${NODE_WIDTH}px`;
             newNodeDiv.style.height = `${NODE_HEIGHT}px`;
             
-            if (newNodeClass === NodeClass.finish)
+            if (newNodeClass === NodeType.finish)
                 newNodeDiv.appendChild(gridBoard.addFinishPriority(newNodeDiv.id));
 
             board.appendChild(newNodeDiv);

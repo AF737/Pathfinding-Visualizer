@@ -4,6 +4,7 @@ export default function greedyBestFirstSearch(grid, startNode, finishNode)
 {
     const visitedNodes = [];
     const nodesToCheck = [];
+    const shortestPath = [];
     startNode.heuristicDistance = grid.getDistanceBetween(startNode, finishNode);
     nodesToCheck.push(startNode);
 
@@ -21,16 +22,15 @@ export default function greedyBestFirstSearch(grid, startNode, finishNode)
         if (closestNode === finishNode) 
         {
             let currentNode = finishNode;
-            const path = [];
 
             /* Backtrack the path from finish node to start node */
             while (currentNode !== null) 
             {
-                path.unshift(currentNode);
+                shortestPath.unshift(currentNode);
                 currentNode = currentNode.prevNode;
             }
             
-            return [visitedNodes, path];
+            return [visitedNodes, shortestPath];
         }
 
         updateUnvisitedNeighbors(grid, closestNode, finishNode, nodesToCheck, visitedNodes);
@@ -39,7 +39,7 @@ export default function greedyBestFirstSearch(grid, startNode, finishNode)
     /* If we exited the while loop then the start and/or finish node is completely
         surrounded by walls and thereby unreachable. Then there's no path to connect both
         nodes so return null */
-    return [visitedNodes, null];
+    return [visitedNodes, shortestPath];
 }
 
 /* The node with the estimated shortest path to the finish node will be at
@@ -72,23 +72,4 @@ function updateUnvisitedNeighbors(grid, node, finishNode, nodesToCheck, visitedN
 function checkIfUnvisited(neighbor) 
 {
     return neighbor.isVisited === false;
-}
-
-/* Checks if traversal from the current node to it's neighbor is allowed. */
-function checkIfDirectionIsAllowed(grid, row, col, rowChange, colChange)
-{
-    /* Allowed direction of neighbor */
-    const [rowDirection, colDirection] = 
-        grid.nodesMatrix[row + rowChange][col + colChange].allowedDirection;
-    
-    /* Neighboring node allows all traversal directions */
-    if (rowDirection === null && colDirection === null)
-        return true;
-
-    /* Move from node to neighbor is the move allowed by the neighbor's direction attribute */
-    if (rowDirection === rowChange && colDirection === colChange)
-        return true;
-
-    /* Otherwise prevent traversal */
-    return false;
 }

@@ -13,6 +13,7 @@ export default function bidirectionalDijkstra(grid, startNode, finishNode)
 {
     const visitedNodesFromStart = [];
     const visitedNodesFromFinish = [];
+    const shortestPath = [];
     startNode.distanceFromStart = 0;
     finishNode.distanceFromFinish = 0;
     const unvisitedNodesFromStart = getUnvisitedNodes(grid);
@@ -37,7 +38,7 @@ export default function bidirectionalDijkstra(grid, startNode, finishNode)
             walls then terminate, because no path can be found */
         if (closestNodeFromStart.distanceFromStart === Infinity
             || closestNodeFromFinish.distanceFromFinish === Infinity)
-            return [visitedNodesFromStart, visitedNodesFromFinish, null];
+            return [visitedNodesFromStart, visitedNodesFromFinish, shortestPath];
 
         closestNodeFromStart.isVisited = true;
         visitedNodesFromStart.push(closestNodeFromStart);
@@ -49,16 +50,16 @@ export default function bidirectionalDijkstra(grid, startNode, finishNode)
             node through the current node */
         if (visitedNodesFromStart.includes(closestNodeFromFinish)) 
         {
-            const path = getPath(closestNodeFromFinish);
+            getPath(closestNodeFromFinish, shortestPath);
 
-            return [visitedNodesFromStart, visitedNodesFromFinish, path];
+            return [visitedNodesFromStart, visitedNodesFromFinish, shortestPath];
         }
 
         else if (visitedNodesFromFinish.includes(closestNodeFromStart)) 
         {
-            const path = getPath(closestNodeFromStart)
+            getPath(closestNodeFromStart, shortestPath)
 
-            return [visitedNodesFromStart, visitedNodesFromFinish, path];
+            return [visitedNodesFromStart, visitedNodesFromFinish, shortestPath];
         }
 
         updateUnvisitedNeighbors(grid, closestNodeFromStart, Node.start);
@@ -127,16 +128,15 @@ function checkIfUnvisited(neighbor)
 }
 
 /* This path doesn't have to be the shortest one */
-function getPath(startingNode) 
+function getPath(startingNode, shortestPath) 
 {
     let currentNode = startingNode;
-    const path = [];
 
     /* Backtrack from the node that both algorithms have in common to
         the start node */
     while (currentNode !== null) 
     {
-        path.unshift(currentNode);
+        shortestPath.unshift(currentNode);
         currentNode = currentNode.prevNode;
     }
 
@@ -148,28 +148,7 @@ function getPath(startingNode)
         to the finish node */
     while (currentNode !== null) 
     {
-        path.push(currentNode);
+        shortestPath.push(currentNode);
         currentNode = currentNode.prevNodeFromFinish;
     }
-
-    return path;
-}
-
-/* Checks if traversal from the current node to it's neighbor is allowed. */
-function checkIfDirectionIsAllowed(grid, row, col, rowChange, colChange)
-{
-    /* Allowed direction of neighbor */
-    const [rowDirection, colDirection] = 
-        grid.nodesMatrix[row + rowChange][col + colChange].allowedDirection;
-
-    /* Neighboring node allows all traversal directions */
-    if (rowDirection === null && colDirection === null)
-        return true;
-
-    /* Move from node to neighbor is the move allowed by the neighbor's direction attribute */
-    if (rowDirection === rowChange && colDirection === colChange)
-        return true;
-
-    /* Otherwise prevent traversal */
-    return false;
 }

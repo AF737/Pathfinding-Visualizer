@@ -1,5 +1,6 @@
 'use strict';
 
+import {NodeType} from './index.js';
 import {NODE_WEIGHT_NONE, nodeWeightLight, nodeWeightNormal, nodeWeightHeavy}
         from './weights.js'
 
@@ -20,101 +21,7 @@ export default class Board
         this.algorithmIsRunning = false;
         this.eightDirectionalMovement = false;
         this.allowCornerCutting = false;
-        this.savedWeights = [];
         this.mazeCells = [];
-    }
-
-    createMazeCells(animateProcess = false, animationsArr = [])
-    {
-        const outerBorderAnimation = [];
-        const mazeFillAnimation = [];
-
-        /* Create top and bottom border around the grid */
-        for (let row = 0; row < this.rows; row += this.rows - 1)
-        {
-            for (let col = 0; col < this.columns; col++)
-            { 
-                this.nodesMatrix[row][col].class = 'wall';
-
-                const id = `node-${row}-${col}`;
-                this.changeWallStatusOfNodeTo(id, true);
-                this.changeWeightOfNodeTo(id, NODE_WEIGHT_NONE);
-
-                if (animateProcess === true)
-                    outerBorderAnimation.push(this.nodesMatrix[row][col]);
-
-                else
-                    document.getElementById(id).className = 'wall';
-            }
-        }
-
-        /* Create a border at the left and right most columns */
-        for (let col = 0; col < this.columns; col += this.columns - 1)
-        {
-            for (let row = 0; row < this.rows; row++)
-            {
-                this.nodesMatrix[row][col].class = 'wall';
-
-                const id = `node-${row}-${col}`;
-                this.changeWallStatusOfNodeTo(id, true);
-                this.changeWeightOfNodeTo(id, NODE_WEIGHT_NONE);
-
-                if (animateProcess === true)
-                    outerBorderAnimation.push(this.nodesMatrix[row][col]);
-
-                else
-                    document.getElementById(id).className = 'wall';
-            }
-        }
-
-        const nodeOffsets = [[0, 0], [0, 1], [1, 0], [1, 1]];
-        this.mazeCells.length = 0;
-
-        for (let row = 1; row < this.rows - 1; row += 2)
-        {
-            for (let col = 1; col < this.columns - 1; col += 2)
-            {
-                const cellNodeIDs = [];
-
-                for (const nodeOffset of nodeOffsets)
-                    cellNodeIDs.push(`node-${row + nodeOffset[0]}-${col + nodeOffset[1]}`);
-
-                for (let i = 0; i < cellNodeIDs.length; i++)
-                {
-                    if (i === 0)
-                    {
-                        this.changeWallStatusOfNodeTo(cellNodeIDs[i], false);
-                        this.changeWeightOfNodeTo(cellNodeIDs[i], NODE_WEIGHT_NONE);
-
-                        if (animateProcess === false)
-                            document.getElementById(cellNodeIDs[i]).className = 'unvisited';
-
-                        /* A cell is 2x2 nodes in size and only the top right node of each cell isn't a
-                            wall, so it determines whether or not a cell has been visited */
-                        const [descriptor, cellRow, cellCol] = cellNodeIDs[i].split('-');
-                        this.mazeCells.push(this.nodesMatrix[cellRow][cellCol]);
-                    }
-
-                    else
-                    {
-                        this.changeWallStatusOfNodeTo(cellNodeIDs[i], true);
-                        this.changeWeightOfNodeTo(cellNodeIDs[i], NODE_WEIGHT_NONE);
-
-                        if (animateProcess === true)
-                        {
-                            const [descriptor, row, col] = cellNodeIDs[i].split('-');
-                            mazeFillAnimation.push(this.nodesMatrix[row][col]);
-                        }
-
-                        else
-                            document.getElementById(cellNodeIDs[i]).className = 'wall';
-                    }
-                }
-            }
-        }
-
-        animationsArr.push(outerBorderAnimation);
-        animationsArr.push(mazeFillAnimation);
     }
 
     getNeighborsOfMazeCell(cell)
@@ -142,10 +49,9 @@ export default class Board
     {
         /* MazeCellCoordinates only contains the top right node of a 2x2 cell,
         because it's the only node that isn't a wall */
-        const startingCell = this.mazeCells[Math.floor(Math.random() * 
-            this.mazeCells.length)];
+        const cell = this.mazeCells[Math.floor(Math.random() * this.mazeCells.length)];
 
-        return this.nodesMatrix[startingCell.row][startingCell.column];
+        return this.nodesMatrix[cell.row][cell.column];
     }
 
     isWallBetweenMazeCells(cell, neighbor)
@@ -163,7 +69,7 @@ export default class Board
         const id = `node-${cell.row + wallRowOffset}-${cell.column + wallColOffset}`;
 
         this.changeWallStatusOfNodeTo(id, false);
-        document.getElementById(id).className = 'unvisited';
+        document.getElementById(id).className = NodeType.unvisited;
     }
 
     getNodeBetween(node, neighbor)
@@ -275,7 +181,7 @@ export default class Board
                 {
                     this.nodesMatrix[row][col].isWall = false;
                     document.getElementById(`node-${row}-${col}`)
-                        .className = 'unvisited';
+                        .className = NodeType.unvisited;
                 } 
             }
         }
@@ -297,67 +203,7 @@ export default class Board
                 if (this.nodesMatrix[row][col].weight !== NODE_WEIGHT_NONE) 
                 {
                     this.changeWeightOfNodeTo(`node-${row}-${col}`, NODE_WEIGHT_NONE);
-                    document.getElementById(`node-${row}-${col}`).className = 'unvisited';
-                }
-            }
-        }
-    }
-
-    /* Save weights so they can be placed on the board again after an
-        unweighted algorithm is done */
-    saveWeightValues()
-    {
-        if (this.savedWeights.length !== 0)
-            return;
-
-        for (let row = 0; row < this.rows; row++)
-        {
-            const weightsOfRow = [];
-
-            for (let col = 0; col < this.columns; col++)
-                weightsOfRow.push(this.nodesMatrix[row][col].weight);
-
-            this.savedWeights.push(weightsOfRow);
-        }
-    }
-
-    restoreWeights()
-    {
-        /* Nothing to restore */
-        if (this.savedWeights.length === 0)
-            return;
-
-        for (let row = 0; row < this.rows; row++)
-        {
-            for (let col = 0; col < this.columns; col++)
-            {
-                this.changeWeightOfNodeTo(`node-${row}-${col}`, this.savedWeights[row][col]);
-
-                if (this.nodesMatrix[row][col].weight !== NODE_WEIGHT_NONE &&
-                    this.nodesMatrix[row][col].class !== 'visited' &&
-                    this.nodesMatrix[row][col].class !== 'shortestPath')
-                {
-                    let nameOfClass;
-
-                    switch(this.nodesMatrix[row][col].weight)
-                    {
-                        case nodeWeightLight:
-                            nameOfClass = 'lightWeight';
-                            break;
-
-                        case nodeWeightNormal:
-                            nameOfClass = 'normalWeight';
-                            break;
-
-                        case nodeWeightHeavy:
-                            nameOfClass = 'heavyWeight';
-                            break;
-
-                        default:
-                            break;
-                    }
-
-                    document.getElementById(`node-${row}-${col}`).className = nameOfClass;
+                    document.getElementById(`node-${row}-${col}`).className = NodeType.unvisited;
                 }
             }
         }
@@ -367,27 +213,45 @@ export default class Board
     {
         for (let row = 0; row < this.rows; row++) 
         {
-            for (let col = 0; col < this.columns; col++) {
+            for (let col = 0; col < this.columns; col++) 
+            {
                 const node = document.getElementById(`node-${row}-${col}`);
 
-                /* Leave start, finish, walls and weights as they are */
-                if (node.className === 'visited' || node.className === 'shortestPath' ||
-                    node.className === 'jumpPoint' || 
-                    node.className === 'visitedByPreviousAlgorithm')
-                        node.className = 'unvisited';
+                switch(this.nodesMatrix[row][col].weight)
+                {
+                    case nodeWeightLight:
+                        node.className = NodeType.lightWeight;
+                        break;
+
+                    case nodeWeightNormal:
+                        node.className = NodeType.normalWeight;
+                        break;
+
+                    case nodeWeightHeavy:
+                        node.className = NodeType.heavyWeight;
+                        break;
+
+                    case NODE_WEIGHT_NONE:
+                        /* Leave start, finish and walls as they are */
+                        if (node.className === NodeType.visited || 
+                            node.className === NodeType.shortestPath ||
+                            node.className === NodeType.visitedByPreviousAlgorithm)
+                                node.className = NodeType.unvisited;
+                        break;
+                }
 
                 this.resetNode(row, col);
             }
         }
         
         document.getElementById(`node-${this.startRow}-${this.startCol}`)
-            .className = 'start';
+            .className = NodeType.start;
 
         for (let i = 0; i < this.finishRows.length; i++)
         {
             if (this.finishRows[i] !== null)
                 document.getElementById(`node-${this.finishRows[i]}-${this.finishCols[i]}`)
-                    .className = 'finish';
+                    .className = NodeType.finish;
         }
     }
 
@@ -408,8 +272,8 @@ export default class Board
             {
                 const node = document.getElementById(`node-${row}-${col}`);
 
-                if (node.className === 'visited' || node.className === 'jumpPoint')
-                    node.className = 'visitedByPreviousAlgorithm';
+                if (node.className === NodeType.visited)
+                    node.className = NodeType.visitedByPreviousAlgorithm;
 
                 this.resetNode(row, col);
             }
@@ -439,7 +303,7 @@ export default class Board
         
         if (this.startIsPlaced === true)
             document.getElementById(`node-${this.startRow}-${this.startCol}`)
-                .className = 'unvisited';
+                .className = NodeType.unvisited;
         
         this.removeAllFinishNodes();
         
@@ -464,34 +328,13 @@ export default class Board
         const finishNode = `node-${finishRow}-${finishCol}`;
         
         document.getElementById(`node-${this.startRow}-${this.startCol}`)
-            .className = 'start';
-        document.getElementById(finishNode).className = 'finish';
+            .className = NodeType.start;
+        document.getElementById(finishNode).className = NodeType.finish;
 
         document.getElementById(finishNode).appendChild(this.addFinishPriority(finishNode));
-    }
 
-    changeAllowedDirectionOfNode(id, newRowDirection, newColDirection)
-    {
-        const [descriptor, row, col] = id.split('-');
-        
-        this.nodesMatrix[row][col].allowedDirection = [newRowDirection, newColDirection];
-    }
-
-    removeOneWayNodes()
-    {
-        for (let row = 0; row < this.rows; row++)
-        {
-            for (let col = 0; col < this.columns; col++)
-            {
-                const [rowDirection, colDirection] = this.nodesMatrix[row][col].allowedDirection;
-
-                if (rowDirection !== null && colDirection !== null)
-                {
-                    document.getElementById(`node-${row}-${col}`).innerHTML = '';
-                    this.nodesMatrix[row][col].allowedDirection = [null, null];
-                }
-            }
-        }
+        this.startIsPlaced = true;
+        this.finishIsPlaced = true;
     }
 
     addFinishPriority(id)
@@ -504,7 +347,7 @@ export default class Board
         if (emptyPriority === -1)
         {
             /* All priorites between 1 and 99 are taken */
-            if (this.finishRows.length === 99)
+            if (this.numberOfFinishNodesPlaced() === 99)
                 return null;
             /* New priority will have the highest value */
             else
@@ -532,7 +375,7 @@ export default class Board
         const node = document.getElementById(id);
 
         node.removeChild(node.firstElementChild);
-        node.className = 'unvisited';
+        node.className = NodeType.unvisited;
 
         const [descriptor, row, col] = id.split('-');
         const index = this.finishRows.indexOf(row);
@@ -546,7 +389,15 @@ export default class Board
 
     numberOfFinishNodesPlaced()
     {
-        return this.finishRows.length;
+        let num = 0;
+
+        for (let i = 0; i < this.finishRows.length; i++)
+        {
+            if (this.finishRows[i] !== null)
+                num++;
+        }
+
+        return num;
     }
 
     removeAllFinishNodes()
