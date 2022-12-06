@@ -49,6 +49,88 @@ div.menuBar
     justify-content: center;
 }
 
+div.mobileMenuButton
+{
+    width: 33px;
+    height: 33px;
+    top: 8.5px;
+    position: fixed;
+    display: none;
+}
+
+div#mobileNodeSelectionButton
+{
+    left: 10px;
+    background-color: var(--main-background-color);
+    cursor: pointer;
+}
+
+div#mobileSelectedNodeDisplay
+{
+    width: 21px;
+    height: 21px;
+    top: 6px;
+    left: 6px;
+    position: relative;
+    background-color: var(--wall-node-color);
+}
+
+div#mobileNodeSelection
+{
+    /* Width of button + 2 * left offset so that button appears
+        horizontally centered above this div */
+    width: 53px;
+    height: calc(100vh - 50px);
+    top: 50px;
+    left: 0;
+    position: fixed;
+    display: none;
+    z-index: 2;
+    background-color: var(--main-background-color);
+    cursor: pointer;
+}
+
+button.mobileNodeOptionButtons
+{
+    width: 33px;
+    height: 33px;
+    margin-top: 10px;
+    margin-left: 10px;
+    border: none;
+}
+
+button#mobileWallSelectionButton
+{
+    background-color: var(--wall-node-color);
+}
+
+button#mobileLightWeightSelectionButton
+{
+    background-color: var(--light-weight-node-color);
+}
+
+button#mobileNormalWeightSelectionButton
+{
+    background-color: var(--normal-weight-node-color);
+}
+
+button#mobileHeavyWeightSelectionButton
+{
+    background-color: var(--heavy-weight-node-color);
+}
+
+button#mobileFinishSelectionButton
+{
+    background-color: var(--finish-node-color);
+}
+
+p.mobileNodeOptionExplanation
+{
+    color: var(--main-font-color);
+    font-size: var(--default-fontsize);
+    text-align: center;
+}
+
 div.menuStyle 
 {
     width: 75vw;
@@ -146,6 +228,13 @@ button.mazeAlgorithmButton
 button.mazeAlgorithmButton:hover
 {
     background-color: #3b423c;
+}
+
+/* Place drop down menu of mazes above weights in
+    mobile version */
+div#mazeDropDownWrapper
+{
+    z-index: 3;
 }
 
 div.weightWrapper 
@@ -280,17 +369,12 @@ button.menuButton:disabled
     background-color: red;
 }
 
-div#mobileMenuButton 
+div#mobileOptionsButton 
 {
-    width: 33px;
-    height: 33px;
-    top: 8.5px;
     right: 10px;
-    position: fixed;
-    display: none;
 }
 
-div#mobileMenuButton .bar 
+div#mobileOptionsButton .bar 
 {
     width: 25px;
     height: 3px;
@@ -455,98 +539,6 @@ button#nextInfoBoxButton
 {
     right: 1vw;
     bottom: 1vh;
-}
-
-div#algorithmStatistics
-{
-    width: 50vw;
-    height: 70vh;
-    border: 5px solid black;
-    border-radius: 10px;
-    background-color: white;
-    /* Center div */
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    position: fixed;
-    /* Place the statistics above the grid and menu */
-    z-index: 2;
-    text-align: center;
-    display: none;
-}
-
-p#emptyTableExplanation
-{
-    width: 100%;
-    font-size: 2rem;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-table#algorithmStatisticsTable
-{
-    width: 45vw;
-    height: 45vh;
-    border: 1px solid black;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    position: fixed;
-    /* Neighboring cells share the same border */
-    border-collapse: collapse;
-}
-
-div#coloredBackgroundExplanationWrapper
-{
-    bottom: 5vh;
-    left: 2.5vw;
-    position: fixed;
-}
-
-div#coloredAlgorithmBackgroundSquare
-{
-    width: 25px;
-    height: 25px;
-    border: 1px solid black;
-    background-color: rgba(121, 224, 130, 0.5);
-    float: left;
-}
-
-p.pAlgorithmStatistics
-{
-    font-size: var(--default-fontsize);
-    position: fixed;
-}
-
-p#coloredBackgroundExplanation
-{
-    margin-left: 35px;
-}
-
-p#algorithmTableStarExplanation
-{
-    bottom: 2vh;
-    left: 2.5vw;
-}
-
-button.algorithmStatisticsButton
-{
-    width: 6vw;
-    height: 4vh;
-    background-color: var(--main-background-color);
-    color: var(--main-font-color);
-    font-size: var(--default-fontsize);
-    border: 1px solid var(--main-border-color);
-    border-radius: 5px;
-    position: fixed;
-    cursor: pointer;
-}
-
-button#closeAlgorithmStatisticsButton
-{
-    right: 1vw;
-    bottom: 1vw;
 }
 
 div#board 
@@ -922,69 +914,14 @@ div.heavyWeight
     border: 1px solid black;
 }
 
-div.jumpPoint 
-{
-    cursor: pointer;
-    border: 1px solid black;
-    animation-name: jumpPointAnimation;
-    animation-duration: 1.5s;
-    animation-fill-mode: forwards;
-    animation-delay: 0s;
-    animation-iteration-count: 1;
-    animation-direction: normal;
-    animation-timing-function: ease-out;
-}
-
-@keyframes jumpPointAnimation 
-{
-    0% 
-    {
-        background-color: white;
-        transform: scale(0.3);
-        border-radius: 100%;
-    }
-
-    25%
-    {
-        background-color: #615f5f;
-    }
-
-    50% 
-    {
-        background-color: #424242;
-        transform: scale(1.20);
-    }
-
-    75% 
-    {
-        background-color: #242424;
-    }
-
-    100% 
-    {
-        background-color: var(--jump-point-node-color);
-        transform: scale(1.0);
-    }
-}
-
 @media screen and (max-width: 1900px) 
 {
-    button.dropDownButton 
-    {
-        font-size: 1.0rem;
-    }
-
-    div.radioButtonWrapper label 
-    {
-        font-size: 1.0rem;
-    }
-
-    button.menuButton 
-    {
-        font-size: 1.0rem;
-    }
-
-    label.switch 
+    button.dropDownButton,
+    div.radioButtonWrapper label,
+    button.menuButton,
+    label.switch,
+    span#directionsText:after,
+    span#cornerCuttingText:after  
     {
         font-size: 1.0rem;
     }
@@ -994,59 +931,21 @@ div.jumpPoint
         top: 5px;
     }
 
-    span#directionsText:after 
-    {
-        font-size: 1.0rem;
-    }
-
     span#cornerCuttingText 
     {
         top: 5px;
-    }
-
-    span#cornerCuttingText:after 
-    {
-        font-size: 1.0rem;
     }
 }
 
 @media screen and (max-width: 1300px) 
 {
-    button.dropDownButton 
-    {
-        font-size: 0.9rem;
-    }
-
-    div.radioButtonWrapper label 
-    {
-        font-size: 0.9rem;
-    }
-
-    button.menuButton 
-    {
-        font-size: 0.9rem;
-    }
-
-    label.switch 
-    {
-        font-size: 0.9rem;
-    }
-
-    span#directionsText:after 
-    {
-        font-size: 0.9rem;
-    }
-
-    span#cornerCuttingText:after 
-    {
-        font-size: 0.9rem;
-    }
-
-    div.weightWrapper label 
-    {
-        font-size: 0.9rem;
-    }
-
+    button.dropDownButton,
+    div.radioButtonWrapper label,
+    button.menuButton,
+    label.switch,
+    span#directionsText:after,
+    span#cornerCuttingText:after,
+    div.weightWrapper label,
     div.nodeExplanationWrapper label 
     {
         font-size: 0.9rem;
@@ -1083,6 +982,11 @@ div.jumpPoint
     to a higher resolution */
 @media screen and (min-width: 1051px) 
 {
+    div#mobileNodeSelection
+    {
+        display: none !important;
+    }
+
     div.menuStyle 
     {
         /* This overwrites the html-style attribute of display
@@ -1106,7 +1010,7 @@ div.jumpPoint
         display: inline;
     }
 
-    div#mobileMenuButton 
+    div.mobileMenuButton 
     {
         display: none;
     }
@@ -1159,22 +1063,12 @@ div.jumpPoint
 
 @media screen and (min-width: 1051px) and (max-width: 1150px) 
 {
-    button.dropDownButton 
-    {
-        font-size: 0.8rem;
-    }
-
-    div.radioButtonWrapper label 
-    {
-        font-size: 0.8rem;
-    }
-
-    button.menuButton 
-    {
-        font-size: 0.8rem;
-    }
-
-    label.switch 
+    button.dropDownButton,
+    div.radioButtonWrapper label,
+    button.menuButton,
+    label.switch,
+    span#directionsText:after,
+    span#cornerCuttingText:after 
     {
         font-size: 0.8rem;
     }
@@ -1184,19 +1078,9 @@ div.jumpPoint
         top: 7px;
     }
 
-    span#directionsText:after 
-    {
-        font-size: 0.8rem;
-    }
-
     span#cornerCuttingText 
     {
         top: 7px;
-    }
-
-    span#cornerCuttingText:after 
-    {
-        font-size: 0.8rem;
     }
 
     h2.h2InfoBox 
@@ -1240,24 +1124,20 @@ div.jumpPoint
         z-index: 1;
     } 
 
-    div#mobileMenuButton 
+    div.mobileMenuButton 
     {
         display: block;
     }
 
     /* Each button now occupies 1/3 of the screen */
     label.switch,
-    button.menuButton 
-    {
-        width: 30vw;
-        margin: 20px 1.66vw;
-    }
-
-    div.dropDownWrapper 
+    button.menuButton,
+    div.dropDownWrapper
     {
         width: 30vw;
         height: 33px;
-        margin: 8.5px 2.5vw;
+        /* Menu bar - element / 2 for equal top and bottom margin */
+        margin: 8.5px 1.66vw;
     }
 
     button.dropDownButton 
@@ -1270,23 +1150,6 @@ div.jumpPoint
         width: 30vw;
         height: 33px;
         margin: 8.5px 20px;
-    }
-    
-    /* Hide dropdown button because no weights can be placed while in
-        mobile mode */
-    div#weightDropDownWrapper 
-    {
-        display: none;
-    }
-
-    div#weightsWrapper 
-    {
-        display: none;
-    }
-
-    button#clearWeights
-    {
-        display: none;
     }
 
     div.nodeColor 
@@ -1338,16 +1201,13 @@ div.jumpPoint
         right: 20vw;
     }
 
-    img#movementGif 
-    {
-        display: none;
-    }
-
-    img#cornerCuttingGif 
-    {
-        display: none;
-    }
-
+    /* Hide dropdown button because no weights can be placed while in
+        mobile mode */
+    div#weightDropDownWrapper,
+    div#weightsWrapper,
+    button#clearWeights,
+    img#movementGif,
+    img#cornerCuttingGif,
     img#directionsImg 
     {
         display: none;

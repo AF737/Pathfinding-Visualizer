@@ -16,6 +16,7 @@ import {MouseEv, handleMouseDownAndMove} from './mouseEvents.js';
 import startMazeAnimation from './animateMazes.js';
 
 let unweightedAlgorithm = false;
+let pressedKey = null;
 
 const NodeType = 
 {
@@ -53,8 +54,6 @@ const SpecialNodeKeyboardKeys =
 
 Object.freeze(SpecialNodeKeyboardKeys);
 
-const pressedKeys = [];
-
 document.addEventListener('DOMContentLoaded', function() 
 {
     const gridBoard = new Board();
@@ -79,7 +78,8 @@ document.addEventListener('DOMContentLoaded', function()
     const cornerCuttingSwitch = document.getElementById('cornerCuttingSwitch');
     const mazeDropDownButton = document.getElementById('mazeDropDownButton');
     const mazeDropDownMenu = document.getElementById('mazeDropDownMenu');
-    const mobileMenuButton = document.getElementById('mobileMenuButton');
+    const mobileOptionsButton = document.getElementById('mobileOptionsButton');
+    const mobileNodeSelectionButton = document.getElementById('mobileNodeSelectionButton');
     const board = document.getElementById('board');
 
     /* Setup function that runs immediately */
@@ -95,14 +95,14 @@ document.addEventListener('DOMContentLoaded', function()
     {
         ev.preventDefault();
 
-        handleMouseDownAndMove(ev, MouseEv.down, gridBoard, pressedKeys);
+        handleMouseDownAndMove(ev, MouseEv.down, gridBoard, pressedKey);
     });
 
     board.addEventListener('mousemove', function(ev) 
     {
         ev.preventDefault();
 
-        handleMouseDownAndMove(ev, MouseEv.move, gridBoard, pressedKeys);
+        handleMouseDownAndMove(ev, MouseEv.move, gridBoard, pressedKey);
     });
 
     /* Set this value to false even if the user releases the left mousebutton outside
@@ -118,6 +118,37 @@ document.addEventListener('DOMContentLoaded', function()
     {
         ['touchstart', 'click'].forEach(function(userEvent) 
         {
+            const mobileNodeOptions = document.getElementsByClassName('mobileNodeOptionButtons');
+
+            for (const option of mobileNodeOptions)
+            {
+                option.addEventListener(userEvent, function(ev)
+                {
+                    ev.preventDefault();
+
+                    const mobileSelectedNodeDisplay = document.getElementById('mobileSelectedNodeDisplay');
+                    const color = window.getComputedStyle(option).backgroundColor;
+                    mobileSelectedNodeDisplay.style.backgroundColor = color;
+
+                    const mobileNodeSelection = document.getElementById('mobileNodeSelection');
+                    mobileNodeSelection.style.display = 'none';
+                    algorithmDropDownButton.disabled = false;
+                    animateAlgorithmButton.disabled = false;
+
+                    if (option.value === 'wall')
+                        return;
+
+                    for (const [key, value] of Object.entries(NodeType))
+                    {
+                        if (option.value === value)
+                        {
+                            pressedKey = key;
+                            break;
+                        }
+                    }
+                });
+            }
+
             algorithmDropDownButton.addEventListener(userEvent, function(ev) 
             {
                 ev.preventDefault();
@@ -144,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function()
 
                 /* Display the menu if the button is clicked */
                 if (mazeDropDownMenu.style.display === '' || 
-                mazeDropDownMenu.style.display === 'none') 
+                    mazeDropDownMenu.style.display === 'none') 
                 {
                     mazeDropDownMenu.style.display = 'block';
                     mazeDropDownButton.innerHTML = 'Create Mazes&#9650;'
@@ -168,6 +199,19 @@ document.addEventListener('DOMContentLoaded', function()
 
                     mazeDropDownMenu.style.display = 'none';
                     mazeDropDownButton.innerHTML = 'Create Mazes&#9660;'
+
+                    /* Hide mobile menu if visible as it partially hides the grid */
+                    const menuStyles = document.getElementsByClassName('menuStyle');
+
+                    for (const menuStyle of menuStyles) 
+                    {
+                        if (menuStyle.style.display === 'flex') 
+                        {
+                            menuStyle.style.display = 'none';
+                            algorithmDropDownButton.disabled = false;
+                            animateAlgorithmButton.disabled = false;
+                        }
+                    }
 
                     gridBoard.removePreviousAlgorithm();
                     startMazeAnimation(mazeAlgorithmButton.value, gridBoard);
@@ -426,20 +470,15 @@ document.addEventListener('DOMContentLoaded', function()
         {
             if (ev.key === value)
             {
-                /* Avoid duplicates */
-                if (pressedKeys.indexOf(key) === -1)
-                    pressedKeys.push(key);
+                pressedKey = key;
+                break;
             }
         }
     });
 
     document.addEventListener('keyup', function(ev) 
     {
-        for (const [key, value] of Object.entries(SpecialNodeKeyboardKeys))
-        {
-            if (ev.key === value)
-                pressedKeys.splice(pressedKeys.indexOf(key), 1);
-        }
+        pressedKey = null;
     });
 
     /* Create a new grid if the user resized the window */
@@ -534,7 +573,7 @@ document.addEventListener('DOMContentLoaded', function()
         gridBoard.removePreviousAlgorithm();
     });
 
-    mobileMenuButton.addEventListener('click', function(ev) 
+    mobileOptionsButton.addEventListener('click', function(ev) 
     {
         ev.preventDefault();
 
@@ -555,6 +594,27 @@ document.addEventListener('DOMContentLoaded', function()
                 algorithmDropDownButton.disabled = true;
                 animateAlgorithmButton.disabled = true;
             }
+        }
+    });
+
+    mobileNodeSelectionButton.addEventListener('click', function(ev)
+    {
+        ev.preventDefault();
+
+        const mobileNodeSelection = document.getElementById('mobileNodeSelection');
+
+        if (mobileNodeSelection.style.display === 'inline-block') 
+        {
+            algorithmDropDownButton.disabled = false;
+            animateAlgorithmButton.disabled = false;
+            mobileNodeSelection.style.display = 'none';
+        }
+
+        else 
+        {
+            algorithmDropDownButton.disabled = true;
+            animateAlgorithmButton.disabled = true;
+            mobileNodeSelection.style.display = 'inline-block';
         }
     });
 }); 

@@ -16,6 +16,29 @@
         <main>
             <div class="overlay">
                 <div class="menuBar">
+                    <div id="mobileNodeSelectionButton" class="mobileMenuButton">
+                        <div id="mobileSelectedNodeDisplay"></div>
+                    </div>
+                    <div id="mobileNodeSelection">
+                        <p class="mobileNodeOptionExplanation">Wall</p>
+                        <button id="mobileWallSelectionButton" class="mobileNodeOptionButtons" 
+                            value="wall">
+                        </button>
+                        <p class="mobileNodeOptionExplanation">Weights</p>
+                        <button  id="mobileLightWeightSelectionButton" class="mobileNodeOptionButtons" 
+                        value="lightWeight">
+                        </button>
+                        <button id="mobileNormalWeightSelectionButton" class="mobileNodeOptionButtons" 
+                            value="normalWeight">
+                        </button>
+                        <button id="mobileHeavyWeightSelectionButton" class="mobileNodeOptionButtons" 
+                            value="heavyWeight">
+                        </button>
+                        <p class="mobileNodeOptionExplanation">Finish</p>
+                        <button id="mobileFinishSelectionButton" class="mobileNodeOptionButtons"
+                            value="finish">
+                        </button>
+                    </div>
                     <div class="dropDownWrapper">
                         <button id="algorithmDropDownButton" class="dropDownButton" disabled="true">
                             Algorithms&#9660;
@@ -69,7 +92,7 @@
                         Animate
                     </button>
                     <div class="menuStyle">
-                        <div class="dropDownWrapper">
+                        <div id="mazeDropDownWrapper" class="dropDownWrapper">
                             <button id="mazeDropDownButton" class="dropDownButton" disabled="true">
                                 Create Mazes&#9660;
                             </button>
@@ -161,7 +184,7 @@
                             Open Infobox
                         </button>
                     </div> <!-- End of "menuStyle" -->
-                    <div id="mobileMenuButton">
+                    <div id="mobileOptionsButton" class="mobileMenuButton">
                         <span class="bar"></span>
                         <span class="bar"></span>
                         <span class="bar"></span>
@@ -216,20 +239,6 @@
                 </button>
                 <button id="nextInfoBoxButton" class="infoBoxButton">Next</button>
             </div> <!-- End of "infoBox" -->
-            <div id="algorithmStatistics">
-                <p id="emptyTableExplanation" class="pAlgorithmStatistics">
-                    Run an algorithm to see how it compares to the others!
-                </p>
-                <table id="algorithmStatisticsTable"></table>
-                <div id="coloredBackgroundExplanationWrapper">
-                    <div id="coloredAlgorithmBackgroundSquare"></div>
-                    <p id="coloredBackgroundExplanation" class="pAlgorithmStatistics">Your selected algorithm</p>
-                </div>
-                <p id="algorithmTableStarExplanation" class="pAlgorithmStatistics">(*) Percentage change compared 
-                    to the last run algorithm
-                </p>
-                <button id="closeAlgorithmStatisticsButton" class="algorithmStatisticsButton">Close</button>
-            </div> <!-- End of "algorithmStatistics" -->
             <div class="overlay">
                 <div id="board"></div>
             </div>

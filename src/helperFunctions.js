@@ -20,7 +20,7 @@ export const BUTTON_BACKGROUND_COLOR = '#79e082';
 export function enableButtons() 
 {
     const dropDownButtons = document.getElementsByClassName('dropDownButton');
-    const mobileMenuButton = document.getElementById('mobileMenuButton');
+    const mobileOptionsButton = document.getElementById('mobileOptionsButton');
     const bars = document.getElementsByClassName('bar');
 
     for (const button of dropDownButtons) 
@@ -31,7 +31,7 @@ export function enableButtons()
     for (const button of menuButtons)
         button.disabled = false;
 
-    mobileMenuButton.style.pointerEvents = 'auto';
+    mobileOptionsButton.style.pointerEvents = 'auto';
 
     /* The mobile menu button consists for three bars that are red when it can't
         be clicked */
@@ -56,7 +56,7 @@ export function disableButtons()
 {
     const dropDownButtons = document.getElementsByClassName('dropDownButton');
     const menuButtons = document.getElementsByClassName('menuButton');
-    const mobileMenuButton = document.getElementById('mobileMenuButton');
+    const mobileOptionsButton = document.getElementById('mobileOptionsButton');
     const bars = document.getElementsByClassName('bar');
 
     for (const button of dropDownButtons) 
@@ -65,7 +65,7 @@ export function disableButtons()
     for (const button of menuButtons) 
         button.disabled = true;
 
-    mobileMenuButton.style.pointerEvents = 'none';
+    mobileOptionsButton.style.pointerEvents = 'none';
 
     for (const bar of bars) 
         bar.style.backgroundColor = DISABLED_COLOR;

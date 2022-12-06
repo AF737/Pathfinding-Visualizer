@@ -8,42 +8,36 @@ import {NodeType} from './index.js';
 const board = document.getElementById('board');
 const NODE_WIDTH = 20;
 const NODE_HEIGHT = 20;
-const MOBILE_MAX_WIDTH = 1050;
 
 function adjustGridDimensions() 
 {
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
+    const menuBarHeight = document.getElementsByClassName('menuBar')[0].clientHeight;
+    const nodeDescriptionBarHeight = document.getElementsByClassName('descriptionBar')[0].clientHeight;
     let boardWidth = 0;
     let boardHeight = 0;
+    
+    /* Leave at least one cell worth of space at the left and right edge of the
+        grid */
+    boardWidth = windowWidth - (2 * NODE_WIDTH) - (windowWidth % NODE_WIDTH);
 
-    /* Desktop version */
-    if (windowWidth > MOBILE_MAX_WIDTH)
-    {
-        /* Leave at least one cell worth of space at the left and right edge of the
-            grid */
-        boardWidth = windowWidth - (2 * NODE_WIDTH) - (windowWidth % 100);
-        /* 200 = 100 + 50 + 50 (menu bar height + node color legend height + extra
-            margin) */
-        boardHeight = windowHeight - 200 - (windowHeight % 100);
-        board.style.marginTop = '50px';
-    }
+    /* Maze algorithms only work correctly with an uneven amount of rows and columns */
+    if ((boardWidth / NODE_WIDTH) % 2 === 0)
+        boardWidth -= NODE_WIDTH;
 
-    /* Mobile version */
-    else
-    {
-        /* Leaves at least the widht of a node from the grid as space on both sides */
-        boardWidth = windowWidth - (2 * NODE_WIDTH) - (windowWidth % NODE_WIDTH);
-        /* Leaves at least the height of a node from the grid as space above and below
-            the grid */
-        boardHeight = windowHeight - document.getElementsByClassName('menuBar')[0].clientHeight
-            - document.getElementsByClassName('descriptionBar')[0].clientHeight
-            - (2 * NODE_HEIGHT) - (windowHeight % NODE_HEIGHT);
-        board.style.marginTop = `${NODE_HEIGHT}px`;
-    }
+    boardHeight = windowHeight - menuBarHeight - nodeDescriptionBarHeight - 
+        (2 * NODE_HEIGHT) - (windowHeight % NODE_HEIGHT);
+    
+    /* Cut off extra height where no complete node can be placed */
+    boardHeight -= (boardHeight % NODE_HEIGHT);
+
+    if ((boardHeight / NODE_HEIGHT) % 2 === 0)
+        boardHeight -= NODE_HEIGHT;
 
     board.style.width = `${boardWidth}px`;
     board.style.height = `${boardHeight}px`;
+    board.style.marginTop = `${(windowHeight - boardHeight - menuBarHeight - nodeDescriptionBarHeight) / 2}px`;
     board.style.marginLeft = `${(windowWidth - boardWidth) / 2}px`;
     board.style.gridTemplateColumns = `${Math.floor(boardWidth / NODE_WIDTH)}`;
     board.style.gridTemplateRows = `${Math.floor(boardHeight / NODE_HEIGHT)}`;

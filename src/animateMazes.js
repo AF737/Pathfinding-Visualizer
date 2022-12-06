@@ -25,7 +25,6 @@ export default function startMazeAnimation(selectedMaze, gridBoard)
     gridBoard.removeWeights();
     gridBoard.resetStartAndFinish();
     gridBoard.removePreviousAlgorithm();
-    gridBoard.removeOneWayNodes();
 
     Animation.outerBorder = getOuterBorderAnimation(gridBoard);
     Animation.cellCreation = getCellCreationAnimation(gridBoard);

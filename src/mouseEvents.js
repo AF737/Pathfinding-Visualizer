@@ -18,7 +18,7 @@ Object.freeze(MouseEv);
 
 let previousTarget = null;
 
-function handleMouseDownAndMove(ev, mouseEv, gridBoard, pressedKeys) 
+function handleMouseDownAndMove(ev, mouseEv, gridBoard, pressedKey) 
 {
     /* Disable click events for buttons and the grid */
     if (gridBoard.algorithmIsRunning === true || infoBoxVisible === true) 
@@ -42,7 +42,7 @@ function handleMouseDownAndMove(ev, mouseEv, gridBoard, pressedKeys)
     previousTarget = ev.target;
 
     /* Left-click without pressing any keyboard keys */
-    if (pressedKeys.length === 0) 
+    if (pressedKey === null) 
     {
         if (ev.target.className === NodeType.start ||
             ev.target.className === NodeType.startShortestPath)
@@ -114,22 +114,22 @@ function handleMouseDownAndMove(ev, mouseEv, gridBoard, pressedKeys)
 
     /* If the user presses the key for light weights (1)
         while left-clicking */
-    else if (pressedKeys.includes(NodeType.lightWeight) === true)
+    else if (pressedKey === NodeType.lightWeight)
         handleWeights(ev, gridBoard, NodeType.lightWeight, nodeWeightLight);
 
     /* 2 (key) + left-click */
-    else if (pressedKeys.includes(NodeType.normalWeight) === true)
+    else if (pressedKey === NodeType.normalWeight)
         handleWeights(ev, gridBoard, NodeType.normalWeight, nodeWeightNormal);
 
     /* 3 (key) + left-click */
-    else if (pressedKeys.includes(NodeType.heavyWeight) === true) 
+    else if (pressedKey === NodeType.heavyWeight) 
         handleWeights(ev, gridBoard, NodeType.heavyWeight, nodeWeightHeavy);
 
     /* E (key) + left-click */
-    else if (pressedKeys.includes(NodeType.finish) === true)
+    else if (pressedKey === NodeType.finish)
     {
         if (ev.target.className === NodeType.finish ||
-            ev.target.className === NoNodeTypede.finishShortestPath)
+            ev.target.className === NodeType.finishShortestPath)
         {
             gridBoard.clearFinishPriority(ev.target.id);
     
