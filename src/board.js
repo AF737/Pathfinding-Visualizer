@@ -12,8 +12,7 @@ export default class Board
         this.columns = columns;
         this.startRow = null;
         this.startCol = null;
-        this.finishRows = [];
-        this.finishCols = [];
+        this.finishPositions = [];
         this.nodesMatrix = [];
         this.mouseIsPressed = false;
         this.startIsPlaced = false;
@@ -247,11 +246,13 @@ export default class Board
         document.getElementById(`node-${this.startRow}-${this.startCol}`)
             .className = NodeType.start;
 
-        for (let i = 0; i < this.finishRows.length; i++)
+        for (let i = 0; i < this.finishPositions.length; i++)
         {
-            if (this.finishRows[i] !== null)
-                document.getElementById(`node-${this.finishRows[i]}-${this.finishCols[i]}`)
-                    .className = NodeType.finish;
+            if (this.finishPositions[i] === null)
+                continue;
+             
+            const [row, col] = this.finishPositions[i];
+            document.getElementById(`node-${row}-${col}`).className = NodeType.finish;
         }
     }
 
@@ -341,7 +342,7 @@ export default class Board
     {
         const newFinishPriority = document.createElement('p');
         /* Fill empty indices before adding new ones */
-        let emptyPriority = this.finishRows.indexOf(null);
+        let emptyPriority = this.finishPositions.indexOf(null);
 
         /* No empty index was found */
         if (emptyPriority === -1)
@@ -351,7 +352,7 @@ export default class Board
                 return null;
             /* New priority will have the highest value */
             else
-                emptyPriority = this.finishRows.length;
+                emptyPriority = this.finishPositions.length;
         }
 
         newFinishPriority.id = `finish-priority-${emptyPriority + 1}`;
@@ -364,9 +365,8 @@ export default class Board
         newFinishPriority.innerHTML = `${emptyPriority + 1}`;
         
         const [descriptor, row, col] = id.split('-');
-        this.finishRows[emptyPriority] = row;
-        this.finishCols[emptyPriority] = col;
-        
+        this.finishPositions[emptyPriority] = [row, col];
+
         return newFinishPriority;
     }
 
@@ -378,37 +378,49 @@ export default class Board
         node.className = NodeType.unvisited;
 
         const [descriptor, row, col] = id.split('-');
-        const index = this.finishRows.indexOf(row);
+        let index = 0;
         
-        if (index !== -1)
+        for (let i = 0; i < this.finishPositions.length; i++)
         {
-            this.finishRows[index] = null;
-            this.finishCols[index] = null;
+            if (this.finishPositions[i] === null)
+                continue;
+
+            const [currRow, currCol] = this.finishPositions[i];
+
+            if (currRow === row && currCol === col)
+            {
+                index = i;
+                break;
+            }
         }
+        
+        this.finishPositions[index] = null;
     }
 
     numberOfFinishNodesPlaced()
     {
-        let num = 0;
+        let numOfFinishNodes = 0;
 
-        for (let i = 0; i < this.finishRows.length; i++)
+        for (let i = 0; i < this.finishPositions.length; i++)
         {
-            if (this.finishRows[i] !== null)
-                num++;
+            if (this.finishPositions[i] !== null)
+            numOfFinishNodes++;
         }
 
-        return num;
+        return numOfFinishNodes;
     }
 
     removeAllFinishNodes()
     {
-        for (let i = 0; i < this.finishRows.length; i++)
+        for (let i = 0; i < this.finishPositions.length; i++)
         {
-            if (this.finishRows[i] !== null)
-                this.clearFinishPriority(`node-${this.finishRows[i]}-${this.finishCols[i]}`)
+            if (this.finishPositions[i] !== null)
+            {   
+                const [row, col] = this.finishPositions[i];
+                this.clearFinishPriority(`node-${row}-${col}`);
+            }
         }
 
-        this.finishRows.length = 0;
-        this.finishCols.length = 0;
+        this.finishPositions.length = 0;
     }
 }

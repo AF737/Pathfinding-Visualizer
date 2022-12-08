@@ -149,7 +149,11 @@ function animateAlgorithm(gridBoard, allowsEightDirectionalMovement, isJumpPoint
                             nodeID.className = NodeType.finishShortestPath;
                             break;
                     
-                        default:
+                        case NodeType.visited:
+                        case NodeType.visitedByPreviousAlgorithm:
+                        case NodeType.lightWeight:
+                        case NodeType.normalWeight:
+                        case NodeType.heavyWeight:
                             nodeID.className = NodeType.shortestPath;
                             break;
                     }

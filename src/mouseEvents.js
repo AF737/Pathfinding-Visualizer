@@ -112,20 +112,20 @@ function handleMouseDownAndMove(ev, mouseEv, gridBoard, pressedKey)
         }
     }
 
-    /* If the user presses the key for light weights (1)
+    /* If the user presses the key for light weights (Q)
         while left-clicking */
     else if (pressedKey === NodeType.lightWeight)
         handleWeights(ev, gridBoard, NodeType.lightWeight, nodeWeightLight);
 
-    /* 2 (key) + left-click */
+    /* W (key) + left-click */
     else if (pressedKey === NodeType.normalWeight)
         handleWeights(ev, gridBoard, NodeType.normalWeight, nodeWeightNormal);
 
-    /* 3 (key) + left-click */
+    /* E (key) + left-click */
     else if (pressedKey === NodeType.heavyWeight) 
         handleWeights(ev, gridBoard, NodeType.heavyWeight, nodeWeightHeavy);
 
-    /* E (key) + left-click */
+    /* R (key) + left-click */
     else if (pressedKey === NodeType.finish)
     {
         if (ev.target.className === NodeType.finish ||

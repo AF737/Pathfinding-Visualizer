@@ -41,15 +41,10 @@ Object.freeze(NodeType);
 
 const SpecialNodeKeyboardKeys =
 {
-    lightWeight : '1',
-    normalWeight : '2',
-    heavyWeight : '3',
-    removeOneWayTraversal : 'q',
-    onlyUpTraversal : 'w',
-    finish : 'e',
-    onlyLeftTraversal : 'a',
-    onlyDownTraversal : 's',
-    onlyRightTraversal : 'd'
+    lightWeight : 'q',
+    normalWeight : 'w',
+    heavyWeight : 'e',
+    finish : 'r'
 };
 
 Object.freeze(SpecialNodeKeyboardKeys);
@@ -324,10 +319,10 @@ document.addEventListener('DOMContentLoaded', function()
 
     async function animateAlgorithm(selectedAlgo, gridBoard, index, previousIndex)
     {
-        while (gridBoard.finishRows[index] === null)
+        while (gridBoard.finishPositions[index] === null)
             index++;
 
-        if (index === gridBoard.finishRows.length)
+        if (index === gridBoard.finishPositions.length)
             return;
 
         let startNode;
@@ -338,17 +333,21 @@ document.addEventListener('DOMContentLoaded', function()
         /* There's more than one finish node and the first finish node has been reached so use this finish node as the start node for 
             this iteration */
         else
-            startNode = gridBoard.nodesMatrix[ gridBoard.finishRows[previousIndex] ][ gridBoard.finishCols[previousIndex] ];
+        {
+            const [startRow, startCol] = gridBoard.finishPositions[previousIndex];
+            startNode = gridBoard.nodesMatrix[startRow][startCol];
+        }
 
-        const finishNode = gridBoard.nodesMatrix[ gridBoard.finishRows[index] ][ gridBoard.finishCols[index] ];
+        const [finishRow, finishCol] = gridBoard.finishPositions[index];
+        const finishNode = gridBoard.nodesMatrix[finishRow][finishCol];
 
         /* Only enable the UI again after the algorithm has visited the last finish node */
         let lastFinishNode = true;
 
-        for (let i = index + 1; i < gridBoard.finishRows.length; i++)
+        for (let i = index + 1; i < gridBoard.finishPositions.length; i++)
         {
             /* There's still at least one finish node left that hasn't been visited yet as otherwise all values would be null */
-            if (gridBoard.finishRows[i] !== null)
+            if (gridBoard.finishPositions[i] !== null)
             {
                 lastFinishNode = false;
                 break;
