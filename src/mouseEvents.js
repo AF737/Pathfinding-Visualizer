@@ -40,75 +40,44 @@ function handleMouseDownAndMove(ev, mouseEv, gridBoard, pressedKey)
         return;
 
     previousTarget = ev.target;
-
-    /* Left-click without pressing any keyboard keys */
-    if (pressedKey === null) 
+    
+    /* Desktop version: Left-click without pressing any keyboard keys
+        Mobile Version: Tapping the screen while "wall" or "start" are selected in 
+                        the top left node selection menu */
+    if (pressedKey === null || pressedKey === NodeType.wall) 
     {
-        if (ev.target.className === NodeType.start ||
-            ev.target.className === NodeType.startShortestPath)
+        switch(ev.target.className) 
         {
-            ev.target.className = NodeType.unvisited;
-            gridBoard.startIsPlaced = false;
-            gridBoard.nodesMatrix[gridBoard.startRow][gridBoard.startCol].class = 
-            NodeType.unvisited;
-        }
+            case NodeType.start:
+            case NodeType.startShortestPath:
+            case NodeType.unvisited:
+            case NodeType.lightWeight:
+            case NodeType.normalWeight:
+            case NodeType.heavyWeight:
+            case NodeType.visited:
+            case NodeType.shortestPath:
+                removeStartIfTarget(ev, gridBoard);
+                ev.target.className = NodeType.wall;
+                gridBoard.changeWallStatusOfNodeTo(ev.target.id, true);
+                gridBoard.changeWeightOfNodeTo(ev.target.id, NODE_WEIGHT_NONE);
+                break;
 
-        else if (gridBoard.startIsPlaced === false) 
-        {
-            /* Remove finish node if it's the target */
-            if (ev.target.className === NodeType.finish ||
-                ev.target.className === NodeType.finishShortestPath)
+            /* Left-clicking on a wall removes it */
+            case NodeType.wall:
+                ev.target.className = NodeType.unvisited;
+                gridBoard.changeWallStatusOfNodeTo(ev.target.id, false);
+                break;
+
+            case NodeType.finish:
+            case NodeType.finishShortestPath:
                 gridBoard.clearFinishPriority(ev.target.id);
-
-            /* Reset the old position of start to be unvisited */
-            gridBoard.nodesMatrix[gridBoard.startRow][gridBoard.startCol].class = 
-                NodeType.unvisited;
-            const [descriptor, row, col] = ev.target.id.split('-');
-            /* Update the coordinates of start */
-            gridBoard.startRow = row;
-            gridBoard.startCol = col;
-            /* Mark the new node as the starting point */
-            gridBoard.nodesMatrix[gridBoard.startRow][gridBoard.startCol].class = 
-                NodeType.start;
-            /* Color the node that is being clicked with the start color */
-            ev.target.className = NodeType.start;
-            gridBoard.startIsPlaced = true;
-        }
-
-        else 
-        {
-            switch(ev.target.className) 
-            {
-                /* Simple left-click creates a wall */
-                case NodeType.unvisited:
-                case NodeType.lightWeight:
-                case NodeType.normalWeight:
-                case NodeType.heavyWeight:
-                case NodeType.visited:
-                case NodeType.shortestPath:
-                    /* Remove one way arrow, because these nodes don't have a special class */
-                    ev.target.innerHTML = '';
-                    ev.target.className = NodeType.wall;
-                    gridBoard.changeWallStatusOfNodeTo(ev.target.id, true);
-                    gridBoard.changeWeightOfNodeTo(ev.target.id, NODE_WEIGHT_NONE);
-                    break;
-
-                /* Left-clicking on a wall removes it */
-                case NodeType.wall:
-                    ev.target.className = NodeType.unvisited;
-                    gridBoard.changeWallStatusOfNodeTo(ev.target.id, false);
-                    break;
-
-                case NodeType.finish:
-                case NodeType.finishShortestPath:
-                    gridBoard.clearFinishPriority(ev.target.id);
-                    /* Overwrite className 'unvisited' set by clearFinishPriority */
-                    ev.target.className = NodeType.wall;
-                    
-                    if (gridBoard.numberOfFinishNodesPlaced() === 0)
-                        gridBoard.finishIsPlaced = false;
-                    break;
-            }
+                /* Overwrite className 'unvisited' set by clearFinishPriority */
+                ev.target.className = NodeType.wall;
+                gridBoard.changeWallStatusOfNodeTo(ev.target.id, true);
+                
+                if (gridBoard.numberOfFinishNodesPlaced() === 0)
+                    gridBoard.finishIsPlaced = false;
+                break;
         }
     }
 
@@ -139,6 +108,8 @@ function handleMouseDownAndMove(ev, mouseEv, gridBoard, pressedKey)
 
         else
         {
+            removeStartIfTarget(ev, gridBoard);
+
             const newFinishPriority = gridBoard.addFinishPriority(ev.target.id);
 
             /* Maximum amount of finish nodes has been reached (99) */
@@ -157,6 +128,39 @@ function handleMouseDownAndMove(ev, mouseEv, gridBoard, pressedKey)
             gridBoard.finishIsPlaced = true;
         }
     }
+
+    else if (pressedKey === NodeType.start)
+    {
+        if (ev.target.className === NodeType.start ||
+            ev.target.className === NodeType.startShortestPath)
+            removeStartIfTarget(ev, gridBoard);
+
+        else
+        {
+            if (ev.target.className === NodeType.finish ||
+                ev.target.className === NodeType.finishShortestPath)
+                gridBoard.clearFinishPriority(ev.target.id);
+        
+            /* Reset the old position of start to be unvisited */
+            gridBoard.nodesMatrix[gridBoard.startRow][gridBoard.startCol].class = 
+                NodeType.unvisited;
+            document.getElementById(`node-${gridBoard.startRow}-${gridBoard.startCol}`)
+                .className = NodeType.unvisited;
+
+            const [descriptor, row, col] = ev.target.id.split('-');
+            /* Update the coordinates of start */
+            gridBoard.startRow = row;
+            gridBoard.startCol = col;
+            /* Mark the new node as the starting point */
+            gridBoard.nodesMatrix[gridBoard.startRow][gridBoard.startCol].class = 
+                NodeType.start;
+            /* Color the node that is being clicked with the start color */
+            ev.target.className = NodeType.start;
+            gridBoard.startIsPlaced = true;
+            gridBoard.changeWallStatusOfNodeTo(ev.target.id, false);
+            gridBoard.changeWeightOfNodeTo(ev.target.id, NODE_WEIGHT_NONE);
+        }
+    }
 }
 
 function removeFinishIfTarget(ev, gridBoard)
@@ -168,6 +172,18 @@ function removeFinishIfTarget(ev, gridBoard)
 
         if (gridBoard.numberOfFinishNodesPlaced() === 0)
             gridBoard.finishIsPlaced = false;
+    }
+}
+
+function removeStartIfTarget(ev, gridBoard)
+{
+    if (ev.target.className === NodeType.start ||
+        ev.target.className === NodeType.startShortestPath)
+    {
+        gridBoard.nodesMatrix[gridBoard.startRow][gridBoard.startCol].class = 
+            NodeType.unvisited;
+        gridBoard.startIsPlaced = false;
+        ev.target.className = NodeType.unvisited;
     }
 }
 
@@ -185,6 +201,7 @@ function handleWeights(ev, gridBoard, weightName, weightValue)
     else 
     {
         removeFinishIfTarget(ev, gridBoard);
+        removeStartIfTarget(ev, gridBoard);
 
         ev.target.className = weightName
         gridBoard.changeWeightOfNodeTo(ev.target.id, weightValue);

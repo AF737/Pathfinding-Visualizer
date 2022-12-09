@@ -158,23 +158,38 @@ function displayInfoBoxText(currentPage)
             </p>`;
             break;
         case 4:
-            infoBoxText.innerHTML = `<h2 class="h2InfoBox">Overview of features 1/2</h2>
-            <p class="pInfoBox">Walls can be added by left-clicking on a tile and
-                removed by clicking on it again. <br/>The start node can be moved
-                by simply left-clicking on it and then clicking the tile where you want to 
-                place it. <br/>There can be multiple finish nodes. They can be added by 
-                pressing R while left-clicking. There can be a maximum of 99 finish nodes at
-                once (numbered 1 to 99). The algorithm will move to them in the order of
-                their number starting with the lowest and ending with the highest. <br/>
-                <span style="color: red;">The following does <strong>NOT</strong> 
-                work in the mobile version:</span><br/>There are three different weights 
-                which can be placed by left-clicking while pressing either of these buttons: 
-                <span style="color: #32ccb2;">Q</span>, <span style="color: #e8dd19;">
-                W</span>, <span style="color: #06d314;">E</span>. Their values can be 
-                adjusted individually by using the "Adjust Weights" menu and they can be 
-                removed by pressing the same key and left-clicking.
-            </p>
-            <img src="images/walls_weights_movement.gif" id="movementGif"/>`;
+            /* Desktop version */
+            if (window.innerWidth > 1050)
+            {
+                infoBoxText.innerHTML = `<h2 class="h2InfoBox">Overview of features 1/2</h2>
+                <p class="pInfoBox">Walls can be added by left-clicking on a tile and
+                    removed by clicking on it again. <br/>The start node can be moved
+                    by simply left-clicking on it and then clicking the tile where you want to 
+                    place it. <br/>There can be multiple finish nodes. They can be added by 
+                    pressing R while left-clicking. There can be a maximum of 99 finish nodes at
+                    once (numbered 1 to 99). The algorithm will move to them in the order of
+                    their number beginning with the lowest one. <br/>There are three different 
+                    weights which can be placed by left-clicking while pressing either of these 
+                    buttons: <span style="color: #32ccb2;">Q</span>, <span style="color: #e8dd19;">
+                    W</span>, <span style="color: #06d314;">E</span>. Their values can be 
+                    adjusted individually by using the "Adjust Weights" menu and they can be 
+                    removed by pressing the same key and left-clicking.
+                </p>
+                <img src="images/walls_weights_movement.gif" id="movementGif"/>`;
+            }
+
+            else
+            {
+                infoBoxText.innerHTML = `<h2 class="h2InfoBox">Overview of features 1/2</h2>
+                <p class="pInfoBox">Walls, weights and finish nodes can be added by clicking on 
+                    the button in the top right corner, selecting the node to place and then
+                    tapping on the node. <br/>There can be multiple finish nodes, but at most 99
+                    at once (numbered 1 to 99). The algorithm will move to them in the order of their 
+                    number beginning with the lowest one. <br/> Their values can be adjusted individually 
+                    by using the "Adjust Weights" menu and they can be removed by selecting the specific
+                    weight in the top left menu and then clicking on the node.
+                </p>`
+            }
             break;
         case 5:
             infoBoxText.innerHTML = `<h2 class="h2InfoBox">Overview of features 2/2</h2>

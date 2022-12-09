@@ -404,7 +404,7 @@ export default class Board
         for (let i = 0; i < this.finishPositions.length; i++)
         {
             if (this.finishPositions[i] !== null)
-            numOfFinishNodes++;
+                numOfFinishNodes++;
         }
 
         return numOfFinishNodes;

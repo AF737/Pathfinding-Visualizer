@@ -44,7 +44,8 @@ const SpecialNodeKeyboardKeys =
     lightWeight : 'q',
     normalWeight : 'w',
     heavyWeight : 'e',
-    finish : 'r'
+    finish : 'r',
+    start: 't'
 };
 
 Object.freeze(SpecialNodeKeyboardKeys);
@@ -148,6 +149,11 @@ document.addEventListener('DOMContentLoaded', function()
             {
                 ev.preventDefault();
 
+                /* Prevents touch events from triggering opening the drop down
+                    menu even though the button is disabled */
+                if (algorithmDropDownButton.disabled === true)
+                    return;
+
                 /* Display the menu if the button is clicked */
                 if (algorithmDropDownMenu.style.display === '' || 
                     algorithmDropDownMenu.style.display === 'none') 
@@ -235,7 +241,6 @@ document.addEventListener('DOMContentLoaded', function()
                 gridBoard.removeWeights();
                 gridBoard.resetStartAndFinish();
                 gridBoard.removePreviousAlgorithm();
-                gridBoard.removeOneWayNodes();
             });
         
             skipInfoBoxButton.addEventListener(userEvent, function(ev) 
@@ -269,6 +274,9 @@ document.addEventListener('DOMContentLoaded', function()
             animateAlgorithmButton.addEventListener(userEvent, function(ev) 
             {
                 ev.preventDefault();
+
+                if (animateAlgorithmButton.disabled === true)
+                    return;
 
                 const selectedAlgorithm = document.querySelector('input[name="algorithmOption"]:checked');
                 /* If no algorithm has been selected */
@@ -485,6 +493,43 @@ document.addEventListener('DOMContentLoaded', function()
     {
         adjustGridDimensions();
         createGrid(gridBoard);
+
+        /* Drop down menu accessible by clicking on the top right button (3 bars) */
+        const menuStyles = document.getElementsByClassName('menuStyle');
+        /* Menu accessible by clicking on the colored square in the top left */
+        const mobileNodeSelection = document.getElementById('mobileNodeSelection');
+
+        for (const menuStyle of menuStyles) 
+        {
+            /* Enable buttons again when switching from mobile to desktop
+                version */
+            if (this.window.innerWidth > 1050)
+            {
+                algorithmDropDownButton.disabled = false;
+                animateAlgorithmButton.disabled = false;
+                menuStyle.style.display = 'none';
+            }
+
+            /* Mobile version */
+            else
+            {
+                /* Keep buttons disabled while menu is open
+                    and window is being resized */
+                if (menuStyle.style.display === 'flex' ||
+                    mobileNodeSelection.style.display === 'inline-block') 
+                {
+                    algorithmDropDownButton.disabled = true;
+                    animateAlgorithmButton.disabled = true;
+                }
+
+                else if (menuStyle.style.display === 'none' &&
+                    mobileNodeSelection.style.display === 'none')
+                {
+                    algorithmDropDownButton.disabled = false;
+                    animateAlgorithmButton.disabled = false;
+                }
+            }
+        }
     });
 
     eightDirectionsToggleButton.addEventListener('change', function() 
@@ -577,6 +622,7 @@ document.addEventListener('DOMContentLoaded', function()
         ev.preventDefault();
 
         const menuStyles = document.getElementsByClassName('menuStyle');
+        const mobileNodeSelection = document.getElementById('mobileNodeSelection');
 
         for (const menuStyle of menuStyles) 
         {
@@ -590,6 +636,8 @@ document.addEventListener('DOMContentLoaded', function()
             else 
             {
                 menuStyle.style.display = 'flex';
+                /* Hide other menu to prevent overlap */
+                mobileNodeSelection.style.display = 'none';
                 algorithmDropDownButton.disabled = true;
                 animateAlgorithmButton.disabled = true;
             }
@@ -601,6 +649,7 @@ document.addEventListener('DOMContentLoaded', function()
         ev.preventDefault();
 
         const mobileNodeSelection = document.getElementById('mobileNodeSelection');
+        const menuStyles = document.getElementsByClassName('menuStyle');
 
         if (mobileNodeSelection.style.display === 'inline-block') 
         {
@@ -611,6 +660,9 @@ document.addEventListener('DOMContentLoaded', function()
 
         else 
         {
+            for (const menuStyle of menuStyles)
+                menuStyle.style.display = 'none';
+                
             algorithmDropDownButton.disabled = true;
             animateAlgorithmButton.disabled = true;
             mobileNodeSelection.style.display = 'inline-block';

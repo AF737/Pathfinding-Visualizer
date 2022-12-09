@@ -119,6 +119,11 @@ button#mobileHeavyWeightSelectionButton
     background-color: var(--heavy-weight-node-color);
 }
 
+button#mobileStartSelectionButton
+{
+    background-color: var(--start-node-color);
+}
+
 button#mobileFinishSelectionButton
 {
     background-color: var(--finish-node-color);
@@ -127,8 +132,9 @@ button#mobileFinishSelectionButton
 p.mobileNodeOptionExplanation
 {
     color: var(--main-font-color);
-    font-size: var(--default-fontsize);
+    font-size: 0.8rem;
     text-align: center;
+    margin-top: 20px;
 }
 
 div.menuStyle 
@@ -239,8 +245,10 @@ div#mazeDropDownWrapper
 
 div.weightWrapper 
 {
-    width: 15vw;
-    height: 5vh;
+    /* width: 15vw; */
+    width: inherit;
+    /* height: 5vh; */
+    height: 40px;
     background-color: inherit;
     -webkit-display: inline-flex;
     display: inline-flex;
@@ -248,17 +256,24 @@ div.weightWrapper
 
 div.nodeColorSquare 
 {
-    width: 2vw;
-    height: 4vh;
+    /* width: 2vw; */
+    width: 30px;
+    /* height: 4vh; */
+    height: 30px;
     content: "";
     border: 1px solid var(--main-border-color);
-    margin-top: calc((5vh - 4vh - 2px) / 2);
-    margin-left: 0.5vw;
+    /* margin-top: calc((5vh - 4vh - 2px) / 2); */
+    margin-top: 5px;
+    /* margin-left: 0.5vw; */
+    margin-left: 5px;
 }
 
 input.weightSlider 
 {
-    width: 8vw;
+    /* width: 8vw; */
+    width: calc(100% - 60px);
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 div#lightWeightSquare 
@@ -276,19 +291,15 @@ div#heavyWeightSquare
     background-color: var(--heavy-weight-node-color);
 }
 
-input.weightSlider
-{
-    margin-left: 1.5vw;
-}
-
 div.weightWrapper label 
 {
-    width: 3vw;
-    height: inherit;
+    /* Same as wrapper */
+    height: 40px;
     color: var(--main-font-color);
     font-size: var(--default-fontsize);
     text-align: center;
-    padding-top: 1.5vh;
+    margin-top: calc((40px - var(--default-fontsize)) / 2);
+    margin-right: 5px;
 }
 
 label.switch 
@@ -1068,7 +1079,7 @@ div.heavyWeight
     button.menuButton,
     label.switch,
     span#directionsText:after,
-    span#cornerCuttingText:after 
+    span#cornerCuttingText:after
     {
         font-size: 0.8rem;
     }
@@ -1136,7 +1147,9 @@ div.heavyWeight
     {
         width: 30vw;
         height: 33px;
-        /* Menu bar - element / 2 for equal top and bottom margin */
+        /* (Menu bar height - element) / 2 for equal top and bottom margin.
+            1.66 vw as left and right margin + 30vw width of button
+            is 33.32 vw which is close to 1/3 of the screen */
         margin: 8.5px 1.66vw;
     }
 
@@ -1163,7 +1176,7 @@ div.heavyWeight
         height: 30px;
     }
 
-    div.nodeExplanationWrapper  label
+    div.nodeExplanationWrapper label
     {
         font-size: 0.8rem;
     }
@@ -1199,18 +1212,6 @@ div.heavyWeight
     button#prevInfoBoxButton
     {
         right: 20vw;
-    }
-
-    /* Hide dropdown button because no weights can be placed while in
-        mobile mode */
-    div#weightDropDownWrapper,
-    div#weightsWrapper,
-    button#clearWeights,
-    img#movementGif,
-    img#cornerCuttingGif,
-    img#directionsImg 
-    {
-        display: none;
     }
 }
 
