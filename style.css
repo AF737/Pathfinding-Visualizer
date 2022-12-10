@@ -304,7 +304,7 @@ div.weightWrapper label
 
 label.switch 
 {
-    width: 10vw;
+    width: 15vw;
     height: 50px;
     display: inline-block;
     margin: 25px 0.625vw;
@@ -1215,7 +1215,7 @@ div.heavyWeight
 
     img#cornerCuttingGif
     {
-        width: 80vw;
+        width: 95vw;
     }
 
     img#mobileNodePlacementRemovalGif
@@ -1233,7 +1233,7 @@ div.heavyWeight
 
     img#cornerCuttingGif
     {
-        height: 250px;
+        height: 200px;
     }
 }
 
@@ -1246,7 +1246,7 @@ div.heavyWeight
 
     img#directionsImg 
     {
-        height: 130px;
+        height: 150px;
     }
 }
 
@@ -1259,6 +1259,6 @@ div.heavyWeight
 
     img#directionsImg 
     {
-        height: 100px;
+        height: 130px;
     }
 }
