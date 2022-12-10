@@ -1213,11 +1213,7 @@ div.heavyWeight
         right: 20vw;
     }
 
-    img#cornerCuttingGif
-    {
-        width: 95vw;
-    }
-
+    img#cornerCuttingGif,
     img#mobileNodePlacementRemovalGif
     {
         width: 95vw;
@@ -1226,7 +1222,8 @@ div.heavyWeight
 
 @media screen and (max-height: 800px) 
 {
-    img#desktopNodePlacementRemovalGif 
+    img#desktopNodePlacementRemovalGif,
+    img#mobileNodePlacementRemovalGif 
     {
         height: 150px;
     }
@@ -1239,7 +1236,8 @@ div.heavyWeight
 
 @media screen and (max-height: 700px) 
 {
-    img#desktopNodePlacementRemovalGif 
+    img#desktopNodePlacementRemovalGif,
+    img#mobileNodePlacementRemovalGif 
     {
         height: 120px;
     }
@@ -1252,9 +1250,10 @@ div.heavyWeight
 
 @media screen and (max-height: 600px) 
 {
-    img#desktopNodePlacementRemovalGif 
+    img#desktopNodePlacementRemovalGif,
+    img#mobileNodePlacementRemovalGif 
     {
-        height: 100px;
+        height: 150px;
     }
 
     img#directionsImg 
