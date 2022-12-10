@@ -181,14 +181,13 @@ function displayInfoBoxText(currentPage)
             else
             {
                 infoBoxText.innerHTML = `<h2 class="h2InfoBox">Overview of features 1/2</h2>
-                <p class="pInfoBox">Walls, weights and finish nodes can be added by clicking on 
-                    the button in the top right corner, selecting the node to place and then
-                    tapping on the node. <br/>There can be multiple finish nodes, but at most 99
+                <p class="pInfoBox">Walls, weights, finish nodes and the start node can be added by 
+                    clicking on the button in the top right corner, selecting the node to place and then
+                    tapping on the grid. <br/>There can be multiple finish nodes, but at most 99
                     at once (numbered 1 to 99). The algorithm will move to them in the order of their 
-                    number beginning with the lowest one. <br/> Their values can be adjusted individually 
-                    by using the "Adjust Weights" menu and they can be removed by selecting the specific
-                    weight in the top left menu and then clicking on the node.
-                </p>`
+                    number beginning with the lowest one.
+                </p>
+                <img src="images/placing_removing_nodes.gif" id="mobilePlacementRemovalGif"/>`;
             }
             break;
         case 5:
