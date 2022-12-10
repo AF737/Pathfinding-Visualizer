@@ -1217,11 +1217,16 @@ div.heavyWeight
     {
         width: 80vw;
     }
+
+    img#mobileNodePlacementRemovalGif
+    {
+        width: 95vw;
+    }
 }
 
 @media screen and (max-height: 800px) 
 {
-    img#movementGif 
+    img#desktopNodePlacementRemovalGif 
     {
         height: 150px;
     }
@@ -1234,7 +1239,7 @@ div.heavyWeight
 
 @media screen and (max-height: 700px) 
 {
-    img#movementGif 
+    img#desktopNodePlacementRemovalGif 
     {
         height: 120px;
     }
@@ -1247,7 +1252,7 @@ div.heavyWeight
 
 @media screen and (max-height: 600px) 
 {
-    img#movementGif 
+    img#desktopNodePlacementRemovalGif 
     {
         height: 100px;
     }

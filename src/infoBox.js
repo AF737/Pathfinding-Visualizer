@@ -163,19 +163,14 @@ function displayInfoBoxText(currentPage)
             {
                 infoBoxText.innerHTML = `<h2 class="h2InfoBox">Overview of features 1/2</h2>
                 <p class="pInfoBox">Walls can be added by left-clicking on a tile and
-                    removed by clicking on it again. <br/>The start node can be moved
-                    by simply left-clicking on it and then clicking the tile where you want to 
-                    place it. <br/>There can be multiple finish nodes. They can be added by 
-                    pressing R while left-clicking. There can be a maximum of 99 finish nodes at
-                    once (numbered 1 to 99). The algorithm will move to them in the order of
-                    their number beginning with the lowest one. <br/>There are three different 
-                    weights which can be placed by left-clicking while pressing either of these 
-                    buttons: <span style="color: #32ccb2;">Q</span>, <span style="color: #e8dd19;">
-                    W</span>, <span style="color: #06d314;">E</span>. Their values can be 
-                    adjusted individually by using the "Adjust Weights" menu and they can be 
-                    removed by pressing the same key and left-clicking.
+                    removed by clicking on it again. <br/>There can be multiple finish nodes. They 
+                    can be added by pressing R while left-clicking. There can be a maximum of 99 
+                    finish nodes at once (numbered 1 to 99). The algorithm will move to them in the 
+                    order of their number beginning with the lowest one. <br/>The three different
+                    weights can be added by clicking either <span style="color: #32ccb2;">Q</span>, 
+                    <span style="color: #e8dd19;">W</span> or <span style="color: #06d314;">E</span>.
                 </p>
-                <img src="images/walls_weights_movement.gif" id="movementGif"/>`;
+                <img src="images/placing_removing_nodes_desktop.gif" id="desktopNodePlacementRemovalGif"/>`;
             }
 
             else
@@ -187,7 +182,7 @@ function displayInfoBoxText(currentPage)
                     at once (numbered 1 to 99). The algorithm will move to them in the order of their 
                     number beginning with the lowest one.
                 </p>
-                <img src="images/placing_removing_nodes.gif" id="mobilePlacementRemovalGif"/>`;
+                <img src="images/placing_removing_nodes_mobile.gif" id="mobileNodePlacementRemovalGif"/>`;
             }
             break;
         case 5:
