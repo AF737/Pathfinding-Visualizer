@@ -1126,11 +1126,10 @@ div.heavyWeight
     div.menuStyle 
     {
         width: 100vw;
-        height: 50vh;
         top: 50px;
         display: none;
         flex-wrap: wrap;
-        flex-direction: column;
+        flex-direction: row;
         position: fixed;
         z-index: 1;
     } 
@@ -1213,6 +1212,11 @@ div.heavyWeight
     {
         right: 20vw;
     }
+
+    img#cornerCuttingGif
+    {
+        width: 80vw;
+    }
 }
 
 @media screen and (max-height: 800px) 
@@ -1220,6 +1224,11 @@ div.heavyWeight
     img#movementGif 
     {
         height: 150px;
+    }
+
+    img#cornerCuttingGif
+    {
+        height: 250px;
     }
 }
 
