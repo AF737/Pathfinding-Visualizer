@@ -66,6 +66,7 @@ function handleMouseDownAndMove(ev, mouseEv, gridBoard, pressedKey)
             case NodeType.wall:
                 ev.target.className = NodeType.unvisited;
                 gridBoard.changeWallStatusOfNodeTo(ev.target.id, false);
+                gridBoard.changeWeightOfNodeTo(ev.target.id, NODE_WEIGHT_NONE);
                 break;
 
             case NodeType.finish:
@@ -74,6 +75,7 @@ function handleMouseDownAndMove(ev, mouseEv, gridBoard, pressedKey)
                 /* Overwrite className 'unvisited' set by clearFinishPriority */
                 ev.target.className = NodeType.wall;
                 gridBoard.changeWallStatusOfNodeTo(ev.target.id, true);
+                gridBoard.changeWeightOfNodeTo(ev.target.id, NODE_WEIGHT_NONE);
                 
                 if (gridBoard.numberOfFinishNodesPlaced() === 0)
                     gridBoard.finishIsPlaced = false;
@@ -205,5 +207,6 @@ function handleWeights(ev, gridBoard, weightName, weightValue)
 
         ev.target.className = weightName
         gridBoard.changeWeightOfNodeTo(ev.target.id, weightValue);
+        gridBoard.changeWallStatusOfNodeTo(ev.target.id, false);
     }
 }

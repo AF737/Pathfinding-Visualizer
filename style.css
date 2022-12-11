@@ -1213,8 +1213,7 @@ div.heavyWeight
         right: 20vw;
     }
 
-    img#cornerCuttingGif,
-    img#mobileNodePlacementRemovalGif
+    img#cornerCuttingGif
     {
         width: 95vw;
     }
@@ -1225,7 +1224,7 @@ div.heavyWeight
     img#desktopNodePlacementRemovalGif,
     img#mobileNodePlacementRemovalGif 
     {
-        height: 150px;
+        height: 250px;
     }
 
     img#cornerCuttingGif
@@ -1239,7 +1238,7 @@ div.heavyWeight
     img#desktopNodePlacementRemovalGif,
     img#mobileNodePlacementRemovalGif 
     {
-        height: 120px;
+        height: 200px;
     }
 
     img#directionsImg 
@@ -1253,7 +1252,7 @@ div.heavyWeight
     img#desktopNodePlacementRemovalGif,
     img#mobileNodePlacementRemovalGif 
     {
-        height: 150px;
+        height: 180px;
     }
 
     img#directionsImg 
